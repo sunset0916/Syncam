@@ -6,6 +6,7 @@ import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.DialogInterface;
 import android.os.Bundle;
+import android.text.InputType;
 import android.widget.EditText;
 
 import androidx.annotation.NonNull;
@@ -18,6 +19,7 @@ public class myDialogFragment extends DialogFragment {
     @Override
     public Dialog onCreateDialog(@NonNull Bundle savedInstanceState){
         EditText editText =new EditText(getActivity());
+        editText.setInputType(InputType.TYPE_CLASS_NUMBER);
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
 
 
