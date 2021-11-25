@@ -16,21 +16,20 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="ホスト"
-        android:textSize="50sp"
+        android:textSize="50dp"
         android:id="@+id/tvHost"
         android:layout_weight="1"
-        tools:ignore="HardcodedText,UnusedAttribute" />
+        tools:ignore="HardcodedText,SpUsage,UnusedAttribute" />
     <Button
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginLeft="30dp"
         android:layout_marginRight="30dp"
-        android:textSize="50sp"
+        android:textSize="45dp"
         android:text="ルーム作成"
         android:layout_weight="1"
-        android:layout_gravity="center"
         android:id="@+id/bSet"
-        tools:ignore="HardcodedText" />
+        tools:ignore="HardcodedText,SpUsage" />
     <LinearLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -43,18 +42,16 @@
         android:layout_height="wrap_content"
         android:layout_weight="1"
         android:text="ゲスト"
-        android:textSize="50sp"
-        tools:ignore="HardcodedText,UnusedAttribute" />
+        android:textSize="50dp"
+        tools:ignore="HardcodedText,SpUsage,UnusedAttribute" />
     <Button
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:textSize="50dp"
+        android:textSize="45dp"
         android:text="ルーム参加"
         android:layout_marginLeft="30dp"
         android:layout_marginRight="30dp"
         android:layout_weight="1"
-        android:layout_gravity="center"
-        android:textFontWeight="6"
         android:id="@+id/bJoin"
         tools:ignore="HardcodedText,SpUsage,UnusedAttribute" />
 </LinearLayout>
