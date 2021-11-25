@@ -25,8 +25,6 @@ public class myDialogFragment extends DialogFragment {
 
 
         builder.setTitle("ルーム参加")
-
-                .setTitle("ここにルーム番号入力してください")
                 .setPositiveButton("OK", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {

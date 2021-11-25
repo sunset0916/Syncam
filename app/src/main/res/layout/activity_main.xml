@@ -16,7 +16,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="ホスト"
-        android:autoSizeTextType="uniform"
+        android:textSize="50sp"
         android:id="@+id/tvHost"
         android:layout_weight="1"
         tools:ignore="HardcodedText,UnusedAttribute" />
@@ -36,14 +36,14 @@
         android:layout_height="wrap_content"
         android:layout_weight="1"
         tools:ignore="UselessLeaf" />
+
     <TextView
+        android:id="@+id/tvGuest"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="ゲスト"
-        android:autoSizeTextType="uniform"
         android:layout_weight="1"
-        android:id="@+id/tvGuest"
-        android:paddingTop="60dp"
+        android:text="ゲスト"
+        android:textSize="50sp"
         tools:ignore="HardcodedText,UnusedAttribute" />
     <Button
         android:layout_width="match_parent"
