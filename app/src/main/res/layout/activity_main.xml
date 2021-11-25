@@ -1,11 +1,60 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:weightSum="8"
+    android:orientation="vertical"
     tools:context=".MainActivity">
-
-
-
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        tools:ignore="UselessLeaf" />
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="ホスト"
+        android:autoSizeTextType="uniform"
+        android:id="@+id/tvHost"
+        android:layout_weight="1"
+        tools:ignore="HardcodedText,UnusedAttribute" />
+    <Button
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="30dp"
+        android:layout_marginRight="30dp"
+        android:textSize="50sp"
+        android:text="ルーム作成"
+        android:layout_weight="1"
+        android:layout_gravity="center"
+        android:id="@+id/bSet"
+        tools:ignore="HardcodedText" />
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        tools:ignore="UselessLeaf" />
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="ゲスト"
+        android:autoSizeTextType="uniform"
+        android:layout_weight="1"
+        android:id="@+id/tvGuest"
+        android:paddingTop="60dp"
+        tools:ignore="HardcodedText,UnusedAttribute" />
+    <Button
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textSize="50dp"
+        android:text="ルーム参加"
+        android:layout_marginLeft="30dp"
+        android:layout_marginRight="30dp"
+        android:layout_weight="1"
+        android:layout_gravity="center"
+        android:textFontWeight="6"
+        android:id="@+id/bJoin"
+        tools:ignore="HardcodedText,SpUsage,UnusedAttribute" />
 </LinearLayout>
