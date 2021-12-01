@@ -32,4 +32,16 @@ public class HostActivity extends AppCompatActivity {
                 }
         );
     }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        ReadWrite.ref.child(MainActivity.rn).removeValue();
+    }
+
+    @Override
+    protected void onRestart() {
+        super.onRestart();
+        finish();
+    }
 }

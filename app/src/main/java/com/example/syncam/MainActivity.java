@@ -8,13 +8,18 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.DialogFragment;
 
 import com.firebase.client.Firebase;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
+import java.util.Objects;
 import java.util.Random;
 
 public class MainActivity extends AppCompatActivity implements View.OnClickListener {
@@ -41,10 +46,19 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             for(int i = rn.length(); i < 6; i++){
                 rn = "0" + rn;
             }
-            ReadWrite.SendRoomNumber(rn);
             Toast.makeText(MainActivity.this,"Number = " + rn,Toast.LENGTH_SHORT).show();
-            Intent intent = new Intent(MainActivity.this, HostActivity.class);
-            startActivity(intent);
+            ReadWrite.ref.get().addOnCompleteListener(new OnCompleteListener<DataSnapshot>() {
+                @Override
+                public void onComplete(@NonNull Task<DataSnapshot> task) {
+                    if(String.valueOf(Objects.requireNonNull(task.getResult()).getValue()).contains("number=" + rn)) {
+                        onClick(findViewById(R.id.bSet));
+                    }else{
+                        ReadWrite.SendRoomNumber(rn);
+                        Intent intent = new Intent(MainActivity.this, HostActivity.class);
+                        startActivity(intent);
+                    }
+                }
+            });
         }
     }
 }
