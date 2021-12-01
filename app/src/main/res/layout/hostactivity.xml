@@ -1,37 +1,37 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical">
-
     <LinearLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:orientation="horizontal">
-
         <TextView
             android:id="@+id/tv1"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginLeft="30dp"
             android:text="ルーム番号"
-            android:textSize="45dp" />
-
+            android:textSize="45dp"
+            tools:ignore="HardcodedText,RtlHardcoded,SpUsage" />
         <TextView
-            android:id="@+id/tvnumber"
+            android:id="@+id/tvNumber"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="000000"
-            android:textSize="45dp" />
-
+            android:textSize="40dp"
+            tools:ignore="HardcodedText,SpUsage" />
     </LinearLayout>
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="0台接続中"
         android:layout_marginLeft="30dp"
-        android:id="@+id/tvview"/>
+        android:id="@+id/tvView"
+        tools:ignore="HardcodedText,RtlHardcoded" />
     <ScrollView
         android:id="@+id/scrollView"
         android:layout_width="match_parent"
@@ -46,92 +46,39 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="2:HUAWEI MAR-LX2J"
-                android:textSize="20sp"/>
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="2:HUAWEI MAR-LX2J"
-                android:textSize="20sp"/>
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="2:HUAWEI MAR-LX2J"
-                android:textSize="20sp"/>
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="2:HUAWEI MAR-LX2J"
-                android:textSize="20sp"/>
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="2:HUAWEI MAR-LX2J"
-                android:textSize="20sp"/>
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="2:HUAWEI MAR-LX2J"
-                android:textSize="20sp"/>
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="2:HUAWEI MAR-LX2J"
-                android:textSize="20sp"/>
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="2:HUAWEI MAR-LX2J"
-                android:textSize="20sp"/>
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="2:HUAWEI MAR-LX2J"
-                android:textSize="20sp"/>
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="2:HUAWEI MAR-LX2J"
-                android:textSize="20sp"/>
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="2:HUAWEI MAR-LX2J"
-                android:textSize="20sp"/>
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="2:HUAWEI MAR-LX2J"
-                android:textSize="20sp"/>
-
+                android:textSize="20sp"
+                tools:ignore="HardcodedText" />
         </LinearLayout>
     </ScrollView>
-
     <Button
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="終了"
         android:textSize="36sp"
-        android:id="@+id/bfinish"/>
+        android:id="@+id/bFinish"
+        tools:ignore="HardcodedText" />
     <LinearLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:orientation="horizontal">
-
         <ImageButton
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:background="@drawable/ic_baseline_add_a_photo_24" />
+            android:background="@drawable/ic_baseline_add_a_photo_24"
+            tools:ignore="ContentDescription" />
         <ImageButton
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:background="@drawable/ic_baseline_videocam_24"/>
+            android:background="@drawable/ic_baseline_videocam_24"
+            tools:ignore="ContentDescription" />
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textSize="30sp"
             android:layout_marginLeft="15dp"
             android:text="00:00:00"
-            android:id="@+id/tvtime"/>
+            android:id="@+id/tvtime"
+            tools:ignore="HardcodedText,RtlHardcoded" />
     </LinearLayout>
     <LinearLayout
         android:layout_width="wrap_content"
@@ -142,11 +89,7 @@
             android:layout_height="wrap_content"
             android:text="撮影開始"
             android:textSize="55sp"
-            android:id="@+id/bstart"/>
-
-
-
+            android:id="@+id/bStart"
+            tools:ignore="HardcodedText" />
     </LinearLayout>
-
-
 </LinearLayout>

@@ -19,16 +19,12 @@ import com.google.firebase.database.DataSnapshot;
 import java.util.Objects;
 
 public class myDialogFragment extends DialogFragment {
-
     @NonNull
     @Override
-    public Dialog onCreateDialog(@NonNull Bundle savedInstanceState){
+    public Dialog onCreateDialog(Bundle savedInstanceState){
         EditText editText =new EditText(getActivity());
         editText.setInputType(InputType.TYPE_CLASS_NUMBER);
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
-
-
-
         builder.setTitle("ルーム参加")
                 .setPositiveButton("OK", new DialogInterface.OnClickListener() {
                     @Override

@@ -20,10 +20,10 @@ public class HostActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.hostactivity);
 
-        TextView textView=(TextView)findViewById(R.id.tvnumber);
+        TextView textView=(TextView)findViewById(R.id.tvNumber);
         textView.setText(MainActivity.rn);
 
-        findViewById(R.id.bfinish).setOnClickListener(
+        findViewById(R.id.bFinish).setOnClickListener(
                 new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
