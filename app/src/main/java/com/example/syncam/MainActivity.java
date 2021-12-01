@@ -1,17 +1,18 @@
 package com.example.syncam;
 
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.fragment.app.DialogFragment;
-
 import android.annotation.SuppressLint;
 import android.app.AppComponentFactory;
-import android.app.Application;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 import android.widget.Toast;
 
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.fragment.app.DialogFragment;
+
 import com.firebase.client.Firebase;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 
 import java.util.Random;
 
@@ -50,11 +51,15 @@ class RoomInfo{
     RoomInfo(String s){
         number = s;
     }
+    public String getNumber() {
+        return number;
+    }
 }
 @SuppressLint("NewApi")
 class ReadWrite extends AppComponentFactory{
     static void SendRoomNumber(String s){
-        Firebase rooms = new Firebase("https://sunset0916-syncam-default-rtdb.firebaseio.com/room");
-        rooms.child(s).setValue(new RoomInfo(s));
+        final FirebaseDatabase database = FirebaseDatabase.getInstance();
+        DatabaseReference ref = database.getReference("room");
+        ref.child(s).setValue(new RoomInfo(s));
     }
 }
