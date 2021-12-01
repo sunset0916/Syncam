@@ -29,7 +29,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         Button btn2 = (Button) findViewById(R.id.bSet);
         btn2.setOnClickListener(this);
     }
-
+    static String rn;
     @Override
     public void onClick(View view) {
         if (view.getId() == R.id.bJoin) {
@@ -37,7 +37,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             dialogFragment.show(getSupportFragmentManager(), "my_dialog");
         }else if(view.getId() == R.id.bSet){
             Random r = new Random();
-            String rn = String.valueOf(r.nextInt(1000000));
+            rn = String.valueOf(r.nextInt(1000000));
             for(int i = rn.length(); i < 6; i++){
                 rn = "0" + rn;
             }

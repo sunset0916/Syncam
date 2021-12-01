@@ -14,7 +14,7 @@
             android:id="@+id/tv1"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="45dp"
+            android:layout_marginLeft="30dp"
             android:text="ルーム番号"
             android:textSize="45dp" />
 
@@ -22,7 +22,7 @@
             android:id="@+id/tvnumber"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="00000"
+            android:text="000000"
             android:textSize="45dp" />
 
     </LinearLayout>

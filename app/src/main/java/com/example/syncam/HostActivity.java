@@ -4,6 +4,7 @@ import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.View;
+import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -18,6 +19,9 @@ public class HostActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState){
         super.onCreate(savedInstanceState);
         setContentView(R.layout.hostactivity);
+
+        TextView textView=(TextView)findViewById(R.id.tvnumber);
+        textView.setText(MainActivity.rn);
 
         findViewById(R.id.bfinish).setOnClickListener(
                 new View.OnClickListener() {
