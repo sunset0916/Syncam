@@ -2,6 +2,7 @@ package com.example.syncam;
 
 import android.annotation.SuppressLint;
 import android.app.AppComponentFactory;
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
@@ -42,6 +43,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             }
             ReadWrite.SendRoomNumber(rn);
             Toast.makeText(MainActivity.this,"Number = " + rn,Toast.LENGTH_SHORT).show();
+            Intent intent = new Intent(MainActivity.this, HostActivity.class);
+            startActivity(intent);
         }
     }
 }
