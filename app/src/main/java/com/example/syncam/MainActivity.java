@@ -61,9 +61,9 @@ class RoomInfo{
 
 @SuppressLint("NewApi")
 class ReadWrite extends AppComponentFactory{
+    static final FirebaseDatabase database = FirebaseDatabase.getInstance();
+    static DatabaseReference ref = database.getReference("room");
     static void SendRoomNumber(String s){
-        final FirebaseDatabase database = FirebaseDatabase.getInstance();
-        DatabaseReference ref = database.getReference("room");
         ref.child(s).setValue(new RoomInfo(s));
     }
 }
