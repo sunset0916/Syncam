@@ -1,8 +1,10 @@
 package com.example.syncam;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.TextView;
 
@@ -14,6 +16,19 @@ public class HostActivity extends AppCompatActivity {
         MenuInflater inflater = getMenuInflater();
         inflater.inflate(R.menu.setting, menu);
         return true;
+    }
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.action_button:
+                Intent intent = new Intent(HostActivity.this, SettingsActivity.class);
+                startActivity(intent);
+                return true;
+
+            default:
+                break;
+        }
+        return super.onOptionsItemSelected(item);
     }
     @Override
     protected void onCreate(Bundle savedInstanceState){
