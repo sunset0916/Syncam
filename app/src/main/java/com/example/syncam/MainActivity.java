@@ -4,6 +4,7 @@ import android.annotation.SuppressLint;
 import android.app.AppComponentFactory;
 import android.content.Intent;
 import android.os.Bundle;
+import android.text.Editable;
 import android.view.View;
 import android.widget.Button;
 import android.widget.Toast;
@@ -73,11 +74,34 @@ class RoomInfo{
     }
 }
 
+class DeviceInfo{
+    String number;
+    String manufacturer;
+    String model;
+    DeviceInfo(String s1,String s2,String s3){
+        number = s1;
+        manufacturer = s2;
+        model = s3;
+    }
+    public String getNumber(){
+        return number;
+    }
+    public String getManufacturer(){
+        return manufacturer;
+    }
+    public String getModel(){
+        return model;
+    }
+}
 @SuppressLint("NewApi")
 class ReadWrite extends AppComponentFactory{
     static final FirebaseDatabase database = FirebaseDatabase.getInstance();
     static DatabaseReference ref = database.getReference("room");
     static void SendRoomNumber(String s){
         ref.child(s).setValue(new RoomInfo(s));
+    }
+    static void SendDeviceInfo(String s, String s1, String s2, String s3){
+        DatabaseReference cref = ref.child(s);
+        cref.child(s1).setValue(new DeviceInfo(s1,s2,s3));
     }
 }
