@@ -54,6 +54,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                     if(String.valueOf(Objects.requireNonNull(task.getResult()).getValue()).contains("number=" + rn)) {
                         onClick(findViewById(R.id.bSet));
                     }else{
+                        HostActivity.flag = true;
                         ReadWrite.SendRoomNumber(rn);
                         Intent intent = new Intent(MainActivity.this, HostActivity.class);
                         startActivity(intent);
