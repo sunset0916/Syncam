@@ -68,8 +68,7 @@ public class HostActivity extends AppCompatActivity {
         ReadWrite.ref.get().addOnCompleteListener(new OnCompleteListener<DataSnapshot>() {
             @Override
             public void onComplete(@NonNull Task<DataSnapshot> task) {
-                if(String.valueOf(Objects.requireNonNull(task.getResult()).getValue()).contains("number=" + MainActivity.rn)){
-                }else{
+                if (!String.valueOf(Objects.requireNonNull(task.getResult()).getValue()).contains("number=" + MainActivity.rn)) {
                     finish();
                 }
             }
