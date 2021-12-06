@@ -24,6 +24,7 @@ public class SettingsActivity extends AppCompatActivity {
         }
     }
 
+
     public static class SettingsFragment extends PreferenceFragmentCompat {
         @Override
         public void onCreatePreferences(Bundle savedInstanceState, String rootKey) {

@@ -1,35 +1,37 @@
-<PreferenceScreen xmlns:app="http://schemas.android.com/apk/res-auto">
-
-    <PreferenceCategory app:title="@string/messages_header">
-
-        <EditTextPreference
+<PreferenceScreen xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:android="http://schemas.android.com/apk/res/android">
+    <PreferenceCategory app:title="撮影環境設定">
+        <CheckBoxPreference
             app:key="signature"
-            app:title="@string/signature_title"
+            app:title="ゲスト端末の画面を暗くする"
             app:useSimpleSummaryProvider="true" />
-
-        <ListPreference
-            app:defaultValue="reply"
-            app:entries="@array/reply_entries"
-            app:entryValues="@array/reply_values"
-            app:key="reply"
-            app:title="@string/reply_title"
+        <CheckBoxPreference
+            app:key="signature"
+            app:title="ホスト端末での録音"
             app:useSimpleSummaryProvider="true" />
-
     </PreferenceCategory>
-
-    <PreferenceCategory app:title="@string/sync_header">
-
-        <SwitchPreferenceCompat
-            app:key="sync"
-            app:title="@string/sync_title" />
-
-        <SwitchPreferenceCompat
-            app:dependency="sync"
-            app:key="attachment"
-            app:summaryOff="@string/attachment_summary_off"
-            app:summaryOn="@string/attachment_summary_on"
-            app:title="@string/attachment_title" />
-
+    <PreferenceCategory app:title="詳細設定">
+        <ListPreference
+            android:negativeButtonText="キャンセル"
+            app:entries="@array/entries"
+            app:entryValues="@array/entryValues"
+            app:key="viewpreference"
+            app:title="解像度"
+            app:useSimpleSummaryProvider="true"/>
+        <ListPreference
+            android:negativeButtonText="キャンセル"
+            app:entries="@array/entries2"
+            app:entryValues="@array/entryValues2"
+            app:key="timerpreference"
+            app:title="タイマー"
+            app:useSimpleSummaryProvider="true"/>
+        <ListPreference
+            android:negativeButtonText="キャンセル"
+            app:entries="@array/entries3"
+            app:entryValues="@array/entryValues3"
+            app:key="preference"
+            app:title="保存先"
+            app:useSimpleSummaryProvider="true"/>
     </PreferenceCategory>
 
 </PreferenceScreen>
