@@ -1,6 +1,7 @@
 package com.example.syncam;
 
 import android.os.Bundle;
+import android.view.View;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBar;
@@ -24,10 +25,6 @@ public class SettingsActivity extends AppCompatActivity {
                     .beginTransaction()
                     .replace(R.id.settings, new SettingsFragment())
                     .commit();
-        }
-        ActionBar actionBar = getSupportActionBar();
-        if (actionBar != null) {
-            actionBar.setDisplayHomeAsUpEnabled(true);
         }
     }
 
@@ -59,8 +56,7 @@ public class SettingsActivity extends AppCompatActivity {
         ReadWrite.ref.get().addOnCompleteListener(new OnCompleteListener<DataSnapshot>() {
             @Override
             public void onComplete(@NonNull Task<DataSnapshot> task) {
-                if(String.valueOf(Objects.requireNonNull(task.getResult()).getValue()).contains("number=" + MainActivity.rn)){
-                }else{
+                if (!String.valueOf(Objects.requireNonNull(task.getResult()).getValue()).contains("number=" + MainActivity.rn)) {
                     finish();
                 }
             }
