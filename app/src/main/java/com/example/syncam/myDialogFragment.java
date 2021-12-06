@@ -41,9 +41,14 @@ public class myDialogFragment extends DialogFragment {
                                         public void onComplete(@NonNull Task<DataSnapshot> task) {
                                             String s1 = "device11",s2,s3;
                                             for(int i = 1; i < 12; i++){
-                                                if(String.valueOf(Objects.requireNonNull(task.getResult()).getValue()).contains("device" + String.valueOf(i))) {
+                                                if(String.valueOf(i).length() == 1){
+                                                    s1 = "device" + "0" + String.valueOf(i);
                                                 }else{
                                                     s1 = "device" + String.valueOf(i);
+                                                }
+                                                if(String.valueOf(Objects.requireNonNull(task.getResult()).getValue()).contains(s1)) {
+                                                    s1 = "device11";
+                                                }else{
                                                     break;
                                                 }
                                             }
