@@ -38,14 +38,7 @@ public class HostActivity extends AppCompatActivity {
         TextView textView=(TextView)findViewById(R.id.tvNumber);
         textView.setText(MainActivity.rn);
 
-        findViewById(R.id.bFinish).setOnClickListener(
-                new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        finish();
-                    }
-                }
-        );
+
     }
 
     @Override
