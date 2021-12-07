@@ -3,10 +3,11 @@ package com.example.syncam;
 import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.TypedValue;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
-import android.view.View;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -21,7 +22,6 @@ import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 
-import java.util.Arrays;
 import java.util.Objects;
 
 public class HostActivity extends AppCompatActivity {
@@ -42,6 +42,7 @@ public class HostActivity extends AppCompatActivity {
         }
         return super.onOptionsItemSelected(item);
     }
+
     @Override
     protected void onCreate(Bundle savedInstanceState){
         super.onCreate(savedInstanceState);
@@ -49,29 +50,31 @@ public class HostActivity extends AppCompatActivity {
 
         TextView textView=(TextView)findViewById(R.id.tvNumber);
         textView.setText(MainActivity.rn);
+        LinearLayout l2 = (LinearLayout) findViewById(R.id.ll1);
 
         DatabaseReference room = ReadWrite.ref.child(MainActivity.rn);
         room.child("devices").addChildEventListener(new ChildEventListener() {
+            @SuppressLint("SetTextI18n")
             @Override
             public void onChildAdded(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) {
                 Toast.makeText(HostActivity.this,"デバイスが追加されました。",Toast.LENGTH_SHORT).show();
+                TextView tv = new TextView(HostActivity.this);
+                tv.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT,
+                        LinearLayout.LayoutParams.WRAP_CONTENT));
+                tv.setText("test");
+                tv.setTextSize(TypedValue.COMPLEX_UNIT_SP, 30);
+                l2.addView(tv);
             }
-
             @Override
             public void onChildChanged(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) {
-
             }
-
             @Override
             public void onChildRemoved(@NonNull DataSnapshot snapshot) {
                 Toast.makeText(HostActivity.this,"デバイスが削除されました。",Toast.LENGTH_SHORT).show();
             }
-
             @Override
             public void onChildMoved(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) {
-
             }
-
             @Override
             public void onCancelled(@NonNull DatabaseError error) {
 
