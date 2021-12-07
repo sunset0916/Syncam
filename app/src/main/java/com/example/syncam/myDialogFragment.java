@@ -34,9 +34,10 @@ public class myDialogFragment extends DialogFragment {
                         ReadWrite.ref.get().addOnCompleteListener(new OnCompleteListener<DataSnapshot>() {
                             @Override
                             public void onComplete(@NonNull Task<DataSnapshot> task) {
-                                if(String.valueOf(Objects.requireNonNull(task.getResult()).getValue()).contains("number=" + editText.getText())){
-                                    DatabaseReference cref = ReadWrite.ref.child(String.valueOf(editText.getText()));
-                                    cref.get().addOnCompleteListener(new OnCompleteListener<DataSnapshot>() {
+                                if(String.valueOf(Objects.requireNonNull(task.getResult()).getValue()).contains("roomNumber=" + editText.getText())){
+                                    DatabaseReference room = ReadWrite.ref.child(String.valueOf(editText.getText()));
+                                    DatabaseReference devices = room.child("devices");
+                                    devices.get().addOnCompleteListener(new OnCompleteListener<DataSnapshot>() {
                                         @Override
                                         public void onComplete(@NonNull Task<DataSnapshot> task) {
                                             String s1 = "device11",s2,s3;

@@ -51,7 +51,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             ReadWrite.ref.get().addOnCompleteListener(new OnCompleteListener<DataSnapshot>() {
                 @Override
                 public void onComplete(@NonNull Task<DataSnapshot> task) {
-                    if(String.valueOf(Objects.requireNonNull(task.getResult()).getValue()).contains("number=" + rn)) {
+                    if(String.valueOf(Objects.requireNonNull(task.getResult()).getValue()).contains("roomNumber=" + rn)) {
                         onClick(findViewById(R.id.bSet));
                     }else{
                         HostActivity.flag = true;
@@ -66,26 +66,26 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 }
 
 class RoomInfo{
-    String number;
+    String roomNumber;
     RoomInfo(String s){
-        number = s;
+        roomNumber = s;
     }
-    public String getNumber() {
-        return number;
+    public String getRoomNumber() {
+        return roomNumber;
     }
 }
 
 class DeviceInfo{
-    String number;
+    String deviceNumber;
     String manufacturer;
     String model;
     DeviceInfo(String s1,String s2,String s3){
-        number = s1;
+        deviceNumber = s1;
         manufacturer = s2;
         model = s3;
     }
-    public String getNumber(){
-        return number;
+    public String getDeviceNumber(){
+        return deviceNumber;
     }
     public String getManufacturer(){
         return manufacturer;
@@ -102,7 +102,8 @@ class ReadWrite extends AppComponentFactory{
         ref.child(s).setValue(new RoomInfo(s));
     }
     static void SendDeviceInfo(String s, String s1, String s2, String s3){
-        DatabaseReference cref = ref.child(s);
-        cref.child(s1).setValue(new DeviceInfo(s1,s2,s3));
+        DatabaseReference room = ref.child(s);
+        DatabaseReference devices = room.child("devices");
+        devices.child(s1).setValue(new DeviceInfo(s1,s2,s3));
     }
 }

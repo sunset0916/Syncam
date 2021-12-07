@@ -19,6 +19,7 @@ import com.google.android.gms.tasks.Task;
 import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
 
 import java.util.Arrays;
 import java.util.Objects;
@@ -49,7 +50,8 @@ public class HostActivity extends AppCompatActivity {
         TextView textView=(TextView)findViewById(R.id.tvNumber);
         textView.setText(MainActivity.rn);
 
-        ReadWrite.ref.child(MainActivity.rn).addChildEventListener(new ChildEventListener() {
+        DatabaseReference room = ReadWrite.ref.child(MainActivity.rn);
+        room.child("devices").addChildEventListener(new ChildEventListener() {
             @Override
             public void onChildAdded(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) {
                 Toast.makeText(HostActivity.this,"デバイスが追加されました。",Toast.LENGTH_SHORT).show();
@@ -91,7 +93,7 @@ public class HostActivity extends AppCompatActivity {
         ReadWrite.ref.get().addOnCompleteListener(new OnCompleteListener<DataSnapshot>() {
             @Override
             public void onComplete(@NonNull Task<DataSnapshot> task) {
-                if (!String.valueOf(Objects.requireNonNull(task.getResult()).getValue()).contains("number=" + MainActivity.rn)) {
+                if (!String.valueOf(Objects.requireNonNull(task.getResult()).getValue()).contains("roomNumber=" + MainActivity.rn)) {
                     finish();
                 }
             }

@@ -16,9 +16,10 @@
         tools:ignore="AllowBackup">
         <activity
             android:name=".SettingsActivity"
-            android:label="設定"></activity>
+            android:label="設定" />
         <activity android:name=".HostActivity" />
-        <activity android:name=".MainActivity">
+        <activity android:name=".MainActivity"
+            tools:ignore="IntentFilterExportedReceiver">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
