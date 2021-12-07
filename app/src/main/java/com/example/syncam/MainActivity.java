@@ -1,10 +1,7 @@
 package com.example.syncam;
 
-import android.annotation.SuppressLint;
-import android.app.AppComponentFactory;
 import android.content.Intent;
 import android.os.Bundle;
-import android.text.Editable;
 import android.view.View;
 import android.widget.Button;
 import android.widget.Toast;
@@ -94,8 +91,8 @@ class DeviceInfo{
         return model;
     }
 }
-@SuppressLint("NewApi")
-class ReadWrite extends AppComponentFactory{
+
+class ReadWrite extends AppCompatActivity{
     static final FirebaseDatabase database = FirebaseDatabase.getInstance();
     static DatabaseReference ref = database.getReference("room");
     static void SendRoomNumber(String s){
