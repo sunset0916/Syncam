@@ -2,36 +2,41 @@
     xmlns:android="http://schemas.android.com/apk/res/android">
     <PreferenceCategory app:title="撮影環境設定">
         <CheckBoxPreference
-            app:key="signature"
+            app:key="Syncam-Setting-dark"
             app:title="ゲスト端末の画面を暗くする"
-            app:useSimpleSummaryProvider="true" />
+            app:useSimpleSummaryProvider="true"
+            app:defaultValue="true"/>
         <CheckBoxPreference
-            app:key="signature"
+            app:key="Syncam-Setting-record"
             app:title="ホスト端末での録音"
-            app:useSimpleSummaryProvider="true" />
+            app:useSimpleSummaryProvider="true"
+            android:defaultValue="false"/>
     </PreferenceCategory>
     <PreferenceCategory app:title="詳細設定">
         <ListPreference
             android:negativeButtonText="キャンセル"
             app:entries="@array/entries"
             app:entryValues="@array/entryValues"
-            app:key="viewpreference"
+            app:key="Syncam-Setting-resolution"
             app:title="解像度"
-            app:useSimpleSummaryProvider="true"/>
+            app:useSimpleSummaryProvider="true"
+            android:defaultValue="1080p FHD 30FPS"/>
         <ListPreference
             android:negativeButtonText="キャンセル"
             app:entries="@array/entries2"
             app:entryValues="@array/entryValues2"
-            app:key="timerpreference"
+            app:key="Syncam-Setting-timer"
             app:title="タイマー"
-            app:useSimpleSummaryProvider="true"/>
+            app:useSimpleSummaryProvider="true"
+            android:defaultValue="5秒"/>
         <ListPreference
             android:negativeButtonText="キャンセル"
             app:entries="@array/entries3"
             app:entryValues="@array/entryValues3"
-            app:key="preference"
+            app:key="Syncam-Setting-preference"
             app:title="保存先"
-            app:useSimpleSummaryProvider="true"/>
+            app:useSimpleSummaryProvider="true"
+            android:defaultValue="本体ストレージ"/>
     </PreferenceCategory>
 
 </PreferenceScreen>

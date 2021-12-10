@@ -3,6 +3,7 @@ package com.example.syncam;
 import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.util.TypedValue;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -22,6 +23,8 @@ import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Objects;
 
 public class HostActivity extends AppCompatActivity {
@@ -48,7 +51,8 @@ public class HostActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.hostactivity);
 
-        TextView textView=(TextView)findViewById(R.id.tvNumber);
+        TextView tvc = (TextView)findViewById(R.id.tvCount);
+        TextView textView = (TextView)findViewById(R.id.tvNumber);
         textView.setText(MainActivity.rn);
         LinearLayout l2 = (LinearLayout) findViewById(R.id.ll1);
 
@@ -57,27 +61,93 @@ public class HostActivity extends AppCompatActivity {
             @SuppressLint("SetTextI18n")
             @Override
             public void onChildAdded(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) {
-                Toast.makeText(HostActivity.this,"デバイスが追加されました。",Toast.LENGTH_SHORT).show();
+                String s = String.valueOf(snapshot.getValue());
+                int start,end;
+                String model,deviceNumber,manufacturer;
+                if(s.contains(", model=")){
+                    start = s.indexOf(", model=") + 8;
+                    if((s.indexOf(", deviceNumber=") - start) < 0 && (s.indexOf(", manufacturer=") - start) < 0){
+                        end = s.indexOf("}");
+                        model = s.substring(start,end);
+                        if(s.indexOf("deviceNumber=") < s.indexOf("manufacturer=")){
+                            start = 20;
+                            end = s.indexOf(", manufacturer=");
+                            deviceNumber = s.substring(start,end);
+                            start += 17;
+                            end = s.indexOf(", model=");
+                            manufacturer = s.substring(start,end);
+                        }else{
+                            start = 14;
+                            end = s.indexOf(", deviceNumber=");
+                            manufacturer = s.substring(start,end);
+                            start = end + 21;
+                            end = s.indexOf(", model=");
+                            deviceNumber = s.substring(start,end);
+                        }
+                    }else if(s.indexOf("deviceNumber=") < s.indexOf("manufacturer=")){
+                        end = s.indexOf(", manufacturer=");
+                        model = s.substring(start,end);
+                        start = 20;
+                        end = s.indexOf(", model=");
+                        deviceNumber = s.substring(start,end);
+                        start = s.indexOf(", manufacturer=") + 15;
+                        end = s.indexOf("}");
+                        manufacturer = s.substring(start,end);
+                    }else{
+                        end = s.indexOf(", deviceNumber=");
+                        model = s.substring(start,end);
+                        start = 14;
+                        end = s.indexOf(", model=");
+                        manufacturer = s.substring(start,end);
+                        start = s.indexOf(", deviceNumber=") + 21;
+                        end = s.indexOf("}");
+                        deviceNumber = s.substring(start,end);
+                    }
+                }else{
+                    start = 7;
+                    if(s.indexOf(", deviceNumber=") < s.indexOf(", manufacturer=")){
+                        end = s.indexOf(", deviceNumber=");
+                        model = s.substring(start,end);
+                        start = end + 21;
+                        end = s.indexOf(", manufacturer=");
+                        deviceNumber = s.substring(start,end);
+                        start = end + 15;
+                        end = s.indexOf("}");
+                        manufacturer = s.substring(start,end);
+                    }else{
+                        end = s.indexOf(", manufacturer=");
+                        model = s.substring(start,end);
+                        start = end + 15;
+                        end = s.indexOf(", deviceNumber=");
+                        manufacturer = s.substring(start,end);
+                        start = end + 21;
+                        end = s.indexOf("}");
+                        deviceNumber = s.substring(start,end);
+                    }
+                }
                 TextView tv = new TextView(HostActivity.this);
                 tv.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT,
                         LinearLayout.LayoutParams.WRAP_CONTENT));
-                tv.setText("test");
-                tv.setTextSize(TypedValue.COMPLEX_UNIT_SP, 30);
+                tv.setText(deviceNumber + " " + manufacturer + " " + model);
+                tv.setTextSize(TypedValue.COMPLEX_UNIT_SP, 20);
+                tv.setId(getResources().getIdentifier(deviceNumber,"id","com.example.syncam"));
                 l2.addView(tv);
+                tvc.setText(String.valueOf(Integer.parseInt(tvc.getText().toString().substring(0,1)) + 1) + tvc.getText().toString().substring(1,5));
             }
             @Override
             public void onChildChanged(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) {
             }
+            @SuppressLint("SetTextI18n")
             @Override
             public void onChildRemoved(@NonNull DataSnapshot snapshot) {
-                Toast.makeText(HostActivity.this,"デバイスが削除されました。",Toast.LENGTH_SHORT).show();
+                l2.removeView(findViewById(getResources().getIdentifier(String.valueOf(snapshot.getKey()).substring(6,8),"id","com.example.syncam")));
+                tvc.setText(String.valueOf(Integer.parseInt(tvc.getText().toString().substring(0,1)) - 1) + tvc.getText().toString().substring(1,5));
             }
             @Override
             public void onChildMoved(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) {
             }
             @Override
             public void onCancelled(@NonNull DatabaseError error) {
-
             }
         });
     }
