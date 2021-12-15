@@ -2,11 +2,11 @@ package com.example.syncam;
 
 import android.app.AlertDialog;
 import android.app.Dialog;
+import android.content.Context;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.os.Bundle;
-import android.os.Debug;
 import android.text.InputType;
-import android.util.Log;
 import android.widget.EditText;
 import android.widget.Toast;
 
@@ -21,6 +21,14 @@ import com.google.firebase.database.DatabaseReference;
 import java.util.Objects;
 
 public class myDialogFragment extends DialogFragment {
+    public MainActivity activity;
+
+    @Override
+    public void onAttach(@NonNull Context activity) {
+        super.onAttach(activity);
+        this.activity = (MainActivity) activity;
+    }
+
     @NonNull
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState){
@@ -34,7 +42,7 @@ public class myDialogFragment extends DialogFragment {
                         ReadWrite.ref.get().addOnCompleteListener(new OnCompleteListener<DataSnapshot>() {
                             @Override
                             public void onComplete(@NonNull Task<DataSnapshot> task) {
-                                if(String.valueOf(Objects.requireNonNull(task.getResult()).getValue()).contains("roomNumber=" + editText.getText())){
+                                if(String.valueOf(Objects.requireNonNull(task.getResult()).getValue()).contains("roomNumber=" + editText.getText()) && editText.getText().toString().length() == 6){
                                     DatabaseReference room = ReadWrite.ref.child(String.valueOf(editText.getText()));
                                     DatabaseReference devices = room.child("devices");
                                     devices.get().addOnCompleteListener(new OnCompleteListener<DataSnapshot>() {
@@ -50,15 +58,23 @@ public class myDialogFragment extends DialogFragment {
                                                 if(String.valueOf(Objects.requireNonNull(task.getResult()).getValue()).contains(s1)) {
                                                     s1 = "device11";
                                                 }else{
+                                                    GuestActivity.deviceNumber = s1;
                                                     break;
                                                 }
                                             }
                                             if(!s1.equals("device11")){
                                                 String s = String.valueOf(editText.getText());
                                                 ReadWrite.SendDeviceInfo(s,s1,android.os.Build.MANUFACTURER,android.os.Build.MODEL);
+                                                MainActivity.rn = editText.getText().toString();
+//                                                Intent intent = new Intent(activity,GuestActivity.class);
+//                                                startActivity(intent);
+                                            }else{
+                                                Toast.makeText(activity,"over max connect devices",Toast.LENGTH_SHORT).show();
                                             }
                                         }
                                     });
+                                }else{
+                                    Toast.makeText(activity,"room is not found",Toast.LENGTH_SHORT).show();
                                 }
                             }
                         });

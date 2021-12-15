@@ -15,11 +15,21 @@
         android:theme="@style/Theme.Syncam"
         tools:ignore="AllowBackup">
         <activity
+            android:name=".GuestActivity"
+            android:screenOrientation="landscape" />
+        <activity
             android:name=".SettingsActivity"
-            android:label="設定" />
-        <activity android:name=".HostActivity" />
-        <activity android:name=".MainActivity"
-            tools:ignore="IntentFilterExportedReceiver">
+            android:label="設定"
+            android:screenOrientation="portrait"
+            tools:ignore="LockedOrientationActivity" />
+        <activity
+            android:name=".HostActivity"
+            android:screenOrientation="portrait"
+            tools:ignore="LockedOrientationActivity" />
+        <activity
+            android:name=".MainActivity"
+            android:screenOrientation="portrait"
+            tools:ignore="IntentFilterExportedReceiver,LockedOrientationActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 

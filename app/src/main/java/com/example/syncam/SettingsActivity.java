@@ -46,6 +46,7 @@ public class SettingsActivity extends AppCompatActivity {
         super.onStop();
         if(!HostActivity.flag){
             ReadWrite.ref.child(MainActivity.rn).removeValue();
+            MainActivity.rn = null;
         }
     }
 
@@ -57,6 +58,7 @@ public class SettingsActivity extends AppCompatActivity {
             public void onComplete(@NonNull Task<DataSnapshot> task) {
                 if (!String.valueOf(Objects.requireNonNull(task.getResult()).getValue()).contains("roomNumber=" + MainActivity.rn)) {
                     finish();
+                    MainActivity.rn = null;
                 }
             }
         });

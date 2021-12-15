@@ -1,8 +1,8 @@
 package com.example.syncam;
 
+import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.Toast;
@@ -24,7 +24,7 @@ import java.util.Objects;
 import java.util.Random;
 
 public class MainActivity extends AppCompatActivity implements View.OnClickListener {
-
+    static MainActivity activity;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -35,7 +35,10 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         Button btn2 = (Button) findViewById(R.id.bSet);
         btn2.setOnClickListener(this);
     }
-    static String rn;
+    public void onAttach(Activity activity){
+        MainActivity.activity = (MainActivity) activity;
+    }
+    static String rn = null;
     boolean connect = false;
     @Override
     public void onClick(View view) {
