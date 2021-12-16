@@ -58,16 +58,16 @@ public class myDialogFragment extends DialogFragment {
                                                 if(String.valueOf(Objects.requireNonNull(task.getResult()).getValue()).contains(s1)) {
                                                     s1 = "device11";
                                                 }else{
-                                                    GuestActivity.deviceNumber = s1;
                                                     break;
                                                 }
                                             }
                                             if(!s1.equals("device11")){
                                                 String s = String.valueOf(editText.getText());
                                                 ReadWrite.SendDeviceInfo(s,s1,android.os.Build.MANUFACTURER,android.os.Build.MODEL);
-                                                MainActivity.rn = editText.getText().toString();
-//                                                Intent intent = new Intent(activity,GuestActivity.class);
-//                                                startActivity(intent);
+                                                MainActivity.roomNumber = editText.getText().toString();
+                                                MainActivity.deviceNumber = s1;
+                                                Intent intent = new Intent(activity,GuestActivity.class);
+                                                activity.startActivity(intent);
                                             }else{
                                                 Toast.makeText(activity,"over max connect devices",Toast.LENGTH_SHORT).show();
                                             }

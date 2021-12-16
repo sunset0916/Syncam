@@ -39,6 +39,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         MainActivity.activity = (MainActivity) activity;
     }
     static String rn = null;
+    static String roomNumber;
+    static String deviceNumber;
     boolean connect = false;
     @Override
     public void onClick(View view) {
