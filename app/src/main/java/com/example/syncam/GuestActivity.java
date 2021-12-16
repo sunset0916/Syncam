@@ -18,6 +18,7 @@ import androidx.lifecycle.LifecycleOwner;
 
 import android.Manifest;
 import android.annotation.SuppressLint;
+import android.app.Application;
 import android.content.ContentResolver;
 import android.content.ContentValues;
 import android.content.pm.PackageManager;
@@ -46,6 +47,7 @@ import java.util.Objects;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Executor;
 
+import static android.media.MediaRecorder.VideoEncoder.HEVC;
 import static android.provider.MediaStore.MediaColumns.MIME_TYPE;
 
 public class GuestActivity extends AppCompatActivity implements ImageAnalysis.Analyzer, View.OnClickListener {
@@ -69,6 +71,7 @@ public class GuestActivity extends AppCompatActivity implements ImageAnalysis.An
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        setTheme(R.style.AppTheme_NoTitleBar);
         setContentView(R.layout.activity_guest);
         roomNumber = MainActivity.roomNumber;
         deviceNumber = MainActivity.deviceNumber;
@@ -109,7 +112,7 @@ public class GuestActivity extends AppCompatActivity implements ImageAnalysis.An
         cameraProviderFuture = ProcessCameraProvider.getInstance(this);
 
 
-//        if (checkPermissions()) {
+        if (checkPermissions()) {
             previewView.post((Runnable) (new Runnable() {
                 public final void run() {
                     cameraProviderFuture.addListener(() -> {
@@ -122,16 +125,16 @@ public class GuestActivity extends AppCompatActivity implements ImageAnalysis.An
                     }, getExecutor());
                 }
             }));
-//        } else {
-//            ActivityCompat.requestPermissions(this, REQUIRED_PERMISSIONS, REQUEST_CODE_FOR_PERMISSIONS);
-//            ProcessCameraProvider cameraProvider = null;
-//            try {
-//                cameraProvider = cameraProviderFuture.get();
-//            } catch (ExecutionException | InterruptedException e) {
-//                e.printStackTrace();
-//            }
-//            startCameraX(cameraProvider);
-//        }
+        } else {
+            ActivityCompat.requestPermissions(this, REQUIRED_PERMISSIONS, REQUEST_CODE_FOR_PERMISSIONS);
+            ProcessCameraProvider cameraProvider = null;
+            try {
+                cameraProvider = cameraProviderFuture.get();
+            } catch (ExecutionException | InterruptedException e) {
+                e.printStackTrace();
+            }
+            startCameraX(cameraProvider);
+        }
     }
 
     @Override
@@ -299,9 +302,9 @@ public class GuestActivity extends AppCompatActivity implements ImageAnalysis.An
         getWindow().setAttributes(lp);
 
         if (videoCapture != null) {
-            File movieDir = new File(getExternalFilesDir(Environment.DIRECTORY_MOVIES) + "/");
-//            final String SAVE_DIR = "/DCIM/SYNCAM";
-//            File movieDir = new File(Environment.getExternalStorageDirectory().getPath() + SAVE_DIR);
+            //File movieDir = new File(getExternalFilesDir(Environment.DIRECTORY_MOVIES) + "/");
+            final String SAVE_DIR = "/DCIM/SYNCAM";
+            File movieDir = new File(Environment.getExternalStorageDirectory().getPath() + SAVE_DIR);
 
             if (!movieDir.exists())
                 movieDir.mkdir();
@@ -342,12 +345,12 @@ public class GuestActivity extends AppCompatActivity implements ImageAnalysis.An
             } catch (Exception e) {
                 e.printStackTrace();
             }
-//            ContentValues values = new ContentValues();
-//            ContentResolver contentResolver = getContentResolver();
-//            values.put(MIME_TYPE, "image/mp4");
-//            values.put(MediaStore.Video.Media.TITLE, vidFilePath);
-//            values.put("_data", AttachName);
-//            contentResolver.insert(MediaStore.Video.Media.EXTERNAL_CONTENT_URI, values);
+            ContentValues values = new ContentValues();
+            ContentResolver contentResolver = getContentResolver();
+            values.put("image/mp4",MIME_TYPE);
+            values.put(MediaStore.Video.Media.TITLE, vidFilePath);
+            values.put("_data", AttachName);
+            contentResolver.insert(MediaStore.Video.Media.EXTERNAL_CONTENT_URI, values);
         }
 
     }
@@ -356,9 +359,9 @@ public class GuestActivity extends AppCompatActivity implements ImageAnalysis.An
     //画像保存　↓↓
     private void capturePhoto() {
 //        File photoDir = new File(Environment.getExternalStorageDirectory()+"/"+Environment.DIRECTORY_DCIM+"/cameraxt/");
-//        final String SAVE_DIR = "/DCIM/SYNCAM";
-//        File photoDir = new File(Environment.getExternalStorageDirectory().getPath() + SAVE_DIR);
-        File photoDir = new File(getExternalFilesDir(Environment.DIRECTORY_PICTURES) + "/");
+        final String SAVE_DIR = "/DCIM/SYNCAM";
+        File photoDir = new File(Environment.getExternalStorageDirectory().getPath() + SAVE_DIR);
+//        File photoDir = new File(getExternalFilesDir(Environment.DIRECTORY_PICTURES) + "/");
         if (!photoDir.exists())
             photoDir.mkdir();
 
@@ -379,18 +382,18 @@ public class GuestActivity extends AppCompatActivity implements ImageAnalysis.An
 
                     @Override
                     public void onError(@NonNull ImageCaptureException exception) {
-                         Toast.makeText(GuestActivity.this, "エラー" + exception.getMessage(), Toast.LENGTH_SHORT).show();
-//                        Toast.makeText(GuestActivity.this, "カメラモードではありません", Toast.LENGTH_SHORT).show();
+//                         Toast.makeText(GuestActivity.this, "エラー" + exception.getMessage(), Toast.LENGTH_SHORT).show();
+                        Toast.makeText(GuestActivity.this, "カメラモードではありません", Toast.LENGTH_SHORT).show();
 
                     }
                 }
         );
-//        ContentValues values = new ContentValues();
-//        ContentResolver contentResolver = getContentResolver();
-//        values.put(MIME_TYPE, "image/jpeg");
-//        values.put(MediaStore.Images.Media.TITLE, photoFilePath);
-//        values.put("_data", AttachName);
-//        contentResolver.insert(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, values);
+        ContentValues values = new ContentValues();
+        ContentResolver contentResolver = getContentResolver();
+        values.put(MIME_TYPE, "image/jpeg");
+        values.put(MediaStore.Images.Media.TITLE, photoFilePath);
+        values.put("_data", AttachName);
+        contentResolver.insert(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, values);
 
     }
     //画像保存　↑↑
