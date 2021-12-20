@@ -2,12 +2,14 @@ package com.example.syncam;
 
 import android.annotation.SuppressLint;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.util.Log;
 import android.util.TypedValue;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
+import android.view.View;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -15,6 +17,7 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.preference.PreferenceManager;
 
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
@@ -148,6 +151,25 @@ public class HostActivity extends AppCompatActivity {
             }
             @Override
             public void onCancelled(@NonNull DatabaseError error) {
+            }
+        });
+
+        findViewById(R.id.bStart).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                SharedPreferences pref = PreferenceManager.getDefaultSharedPreferences(HostActivity.this);
+                Log.d("Pref", String.valueOf(pref.getBoolean("Syncam-Setting-dark",true)));
+                Log.d("Pref", String.valueOf(pref.getBoolean("Syncam-Setting-record",false)));
+                Log.d("Pref",pref.getString("Syncam-Setting-resolution","No Pref"));
+                Log.d("Pref",pref.getString("Syncam-Setting-timer","No Pref"));
+                Log.d("Pref",pref.getString("Syncam-Setting-preference","No Pref"));
+                String dark,record,resolution,start,preference;
+                dark = String.valueOf(pref.getBoolean("Syncam-Setting-dark",true));
+                record = String.valueOf(pref.getBoolean("Syncam-Setting-record",false));
+                resolution = pref.getString("Syncam-Setting-resolution","1080p FHD 30FPS");
+                start = "0";
+                preference = pref.getString("Syncam-Setting-preference","本体ストレージ");
+                ReadWrite.SendSettings(dark,record,resolution,start,preference);
             }
         });
     }

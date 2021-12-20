@@ -98,6 +98,25 @@ public class GuestActivity extends AppCompatActivity implements ImageAnalysis.An
             }
         });
 
+        ReadWrite.ref.child(roomNumber).child("Settings").addChildEventListener(new ChildEventListener() {
+            @Override
+            public void onChildAdded(@NonNull DataSnapshot snapshot, @Nullable @org.jetbrains.annotations.Nullable String previousChildName) {
+                Toast.makeText(GuestActivity.this,"Shooting has started",Toast.LENGTH_SHORT).show();
+            }
+            @Override
+            public void onChildChanged(@NonNull DataSnapshot snapshot, @Nullable @org.jetbrains.annotations.Nullable String previousChildName) {
+            }
+            @Override
+            public void onChildRemoved(@NonNull DataSnapshot snapshot) {
+            }
+            @Override
+            public void onChildMoved(@NonNull DataSnapshot snapshot, @Nullable @org.jetbrains.annotations.Nullable String previousChildName) {
+            }
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+            }
+        });
+
         immersiveMode();
 
         previewView = findViewById(R.id.previewView);

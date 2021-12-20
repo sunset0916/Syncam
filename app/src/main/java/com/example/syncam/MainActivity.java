@@ -115,6 +115,33 @@ class DeviceInfo{
     }
 }
 
+class Settings{
+    String dark;
+    String record;
+    String resolution;
+    String start;
+    String preference;
+    Settings(String a,String b,String c,String d,String e){
+        dark = a;
+        record = b;
+        resolution = c;
+        start = d;
+        preference = e;
+    }
+    public String getDark() {
+        return dark;
+    }
+    public String getRecord() {
+        return record;
+    }
+    public String getResolution() {
+        return resolution;
+    }
+    public String getStart() {
+        return start;
+    }
+}
+
 class ReadWrite extends AppCompatActivity{
     static final FirebaseDatabase database = FirebaseDatabase.getInstance();
     static DatabaseReference ref = database.getReference("room");
@@ -125,5 +152,9 @@ class ReadWrite extends AppCompatActivity{
         DatabaseReference room = ref.child(s);
         DatabaseReference devices = room.child("devices");
         devices.child(s1).setValue(new DeviceInfo(s1,s2,s3));
+    }
+    static void SendSettings(String a,String b,String c,String d,String e){
+        DatabaseReference settings = ref.child(MainActivity.rn).child("Settings");
+        settings.setValue(new Settings(a, b, c, d, e));
     }
 }
