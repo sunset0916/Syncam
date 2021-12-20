@@ -1,11 +1,13 @@
 package com.example.syncam;
 
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -44,6 +46,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         Button btn2 = (Button) findViewById(R.id.bSet);
         btn2.setOnClickListener(this);
 
+
         if (checkPermissions()) {
         } else {
             ActivityCompat.requestPermissions(this, REQUIRED_PERMISSIONS, REQUEST_CODE_FOR_PERMISSIONS);
@@ -66,6 +69,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     static String roomNumber;
     static String deviceNumber;
     boolean connect = false;
+
+    @SuppressLint("NonConstantResourceId")
     @Override
     public void onClick(View view) {
         DatabaseReference connectedRef = FirebaseDatabase.getInstance().getReference(".info/connected");
@@ -106,7 +111,26 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         }else{
             Toast.makeText(MainActivity.this,"not Firebase connection",Toast.LENGTH_SHORT).show();
         }
+
     }
+
+   public void OnClick(View view){
+       ImageButton IBC=(ImageButton)findViewById(R.id.imageC);
+       IBC.setOnClickListener(this);
+       ImageButton IBV=(ImageButton)findViewById(R.id.imageV);
+       IBV.setOnClickListener(this);
+        switch(view.getId()){
+            case R.id.imageC:
+                IBC.setEnabled(false);
+                IBV.setEnabled(true);
+                break;
+            case R.id.imageV:
+                IBC.setEnabled(true);
+                IBV.setEnabled(false);
+                break;
+        }
+   }
+
 }
 
 class RoomInfo{

@@ -10,6 +10,7 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -30,7 +31,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
 
-public class HostActivity extends AppCompatActivity {
+public class HostActivity extends AppCompatActivity implements View.OnClickListener {
     @Override
     public boolean onCreateOptionsMenu (Menu menu){
         MenuInflater inflater = getMenuInflater();
@@ -58,6 +59,12 @@ public class HostActivity extends AppCompatActivity {
         TextView textView = (TextView)findViewById(R.id.tvNumber);
         textView.setText(MainActivity.rn);
         LinearLayout l2 = (LinearLayout) findViewById(R.id.ll1);
+        ImageButton IBC=(ImageButton)findViewById(R.id.imageC);
+        IBC.setOnClickListener(this);
+        ImageButton IBV=(ImageButton)findViewById(R.id.imageV);
+        IBV.setOnClickListener(this);
+        IBC.setEnabled(true);
+        IBV.setEnabled(false);
 
         DatabaseReference room = ReadWrite.ref.child(MainActivity.rn);
         room.child("devices").addChildEventListener(new ChildEventListener() {
@@ -195,5 +202,26 @@ public class HostActivity extends AppCompatActivity {
                 }
             }
         });
+    }
+
+
+
+
+    @Override
+    public void onClick(View view) {
+        ImageButton IBC=(ImageButton)findViewById(R.id.imageC);
+        IBC.setOnClickListener(this);
+        ImageButton IBV=(ImageButton)findViewById(R.id.imageV);
+        IBV.setOnClickListener(this);
+        switch(view.getId()){
+            case R.id.imageC:
+                IBC.setEnabled(false);
+                IBV.setEnabled(true);
+                break;
+            case R.id.imageV:
+                IBC.setEnabled(true);
+                IBV.setEnabled(false);
+                break;
+        }
     }
 }
