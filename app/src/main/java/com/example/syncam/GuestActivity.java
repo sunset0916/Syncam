@@ -101,7 +101,9 @@ public class GuestActivity extends AppCompatActivity implements ImageAnalysis.An
         ReadWrite.ref.child(roomNumber).child("Settings").addChildEventListener(new ChildEventListener() {
             @Override
             public void onChildAdded(@NonNull DataSnapshot snapshot, @Nullable @org.jetbrains.annotations.Nullable String previousChildName) {
-                Toast.makeText(GuestActivity.this,"Shooting has started",Toast.LENGTH_SHORT).show();
+                if(snapshot.getKey().equals("start")) {
+                    capturePhoto();
+                }
             }
             @Override
             public void onChildChanged(@NonNull DataSnapshot snapshot, @Nullable @org.jetbrains.annotations.Nullable String previousChildName) {
