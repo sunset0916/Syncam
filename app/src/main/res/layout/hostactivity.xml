@@ -94,7 +94,7 @@
 
 
             <TextView
-                android:id="@+id/tvtime"
+                android:id="@+id/tvTime"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="30dp"
@@ -113,7 +113,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_weight="0.3"
-                android:text="撮影開始"
+                android:text="　撮影　"
                 android:textSize="55sp"
                 tools:ignore="HardcodedText,InefficientWeight" />
         </LinearLayout>

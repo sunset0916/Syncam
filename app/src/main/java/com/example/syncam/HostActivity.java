@@ -10,6 +10,7 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -33,11 +34,12 @@ import java.util.Objects;
 
 public class HostActivity extends AppCompatActivity implements View.OnClickListener {
     @Override
-    public boolean onCreateOptionsMenu (Menu menu){
+    public boolean onCreateOptionsMenu(Menu menu) {
         MenuInflater inflater = getMenuInflater();
         inflater.inflate(R.menu.setting, menu);
         return true;
     }
+
     @SuppressLint("NonConstantResourceId")
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
@@ -51,20 +53,23 @@ public class HostActivity extends AppCompatActivity implements View.OnClickListe
     }
 
     @Override
-    protected void onCreate(Bundle savedInstanceState){
+    protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.hostactivity);
 
-        TextView tvc = (TextView)findViewById(R.id.tvCount);
-        TextView textView = (TextView)findViewById(R.id.tvNumber);
+        TextView tvc = (TextView) findViewById(R.id.tvCount);
+        TextView textView = (TextView) findViewById(R.id.tvNumber);
         textView.setText(MainActivity.rn);
         LinearLayout l2 = (LinearLayout) findViewById(R.id.ll1);
-        ImageButton IBC=(ImageButton)findViewById(R.id.imageC);
+        ImageButton IBC = (ImageButton) findViewById(R.id.imageC);
         IBC.setOnClickListener(this);
-        ImageButton IBV=(ImageButton)findViewById(R.id.imageV);
+        ImageButton IBV = (ImageButton) findViewById(R.id.imageV);
         IBV.setOnClickListener(this);
-        IBC.setEnabled(true);
-        IBV.setEnabled(false);
+        TextView tv1=(TextView)findViewById(R.id.tvTime);
+
+        IBC.setEnabled(false);
+        IBV.setEnabled(true);
+        tv1.setVisibility(View.INVISIBLE);
 
         DatabaseReference room = ReadWrite.ref.child(MainActivity.rn);
         room.child("devices").addChildEventListener(new ChildEventListener() {
@@ -72,67 +77,67 @@ public class HostActivity extends AppCompatActivity implements View.OnClickListe
             @Override
             public void onChildAdded(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) {
                 String s = String.valueOf(snapshot.getValue());
-                int start,end;
-                String model,deviceNumber,manufacturer;
-                if(s.contains(", model=")){
+                int start, end;
+                String model, deviceNumber, manufacturer;
+                if (s.contains(", model=")) {
                     start = s.indexOf(", model=") + 8;
-                    if((s.indexOf(", deviceNumber=") - start) < 0 && (s.indexOf(", manufacturer=") - start) < 0){
+                    if ((s.indexOf(", deviceNumber=") - start) < 0 && (s.indexOf(", manufacturer=") - start) < 0) {
                         end = s.indexOf("}");
-                        model = s.substring(start,end);
-                        if(s.indexOf("deviceNumber=") < s.indexOf("manufacturer=")){
+                        model = s.substring(start, end);
+                        if (s.indexOf("deviceNumber=") < s.indexOf("manufacturer=")) {
                             start = 20;
                             end = s.indexOf(", manufacturer=");
-                            deviceNumber = s.substring(start,end);
+                            deviceNumber = s.substring(start, end);
                             start += 17;
                             end = s.indexOf(", model=");
-                            manufacturer = s.substring(start,end);
-                        }else{
+                            manufacturer = s.substring(start, end);
+                        } else {
                             start = 14;
                             end = s.indexOf(", deviceNumber=");
-                            manufacturer = s.substring(start,end);
+                            manufacturer = s.substring(start, end);
                             start = end + 21;
                             end = s.indexOf(", model=");
-                            deviceNumber = s.substring(start,end);
+                            deviceNumber = s.substring(start, end);
                         }
-                    }else if(s.indexOf("deviceNumber=") < s.indexOf("manufacturer=")){
+                    } else if (s.indexOf("deviceNumber=") < s.indexOf("manufacturer=")) {
                         end = s.indexOf(", manufacturer=");
-                        model = s.substring(start,end);
+                        model = s.substring(start, end);
                         start = 20;
                         end = s.indexOf(", model=");
-                        deviceNumber = s.substring(start,end);
+                        deviceNumber = s.substring(start, end);
                         start = s.indexOf(", manufacturer=") + 15;
                         end = s.indexOf("}");
-                        manufacturer = s.substring(start,end);
-                    }else{
+                        manufacturer = s.substring(start, end);
+                    } else {
                         end = s.indexOf(", deviceNumber=");
-                        model = s.substring(start,end);
+                        model = s.substring(start, end);
                         start = 14;
                         end = s.indexOf(", model=");
-                        manufacturer = s.substring(start,end);
+                        manufacturer = s.substring(start, end);
                         start = s.indexOf(", deviceNumber=") + 21;
                         end = s.indexOf("}");
-                        deviceNumber = s.substring(start,end);
+                        deviceNumber = s.substring(start, end);
                     }
-                }else{
+                } else {
                     start = 7;
-                    if(s.indexOf(", deviceNumber=") < s.indexOf(", manufacturer=")){
+                    if (s.indexOf(", deviceNumber=") < s.indexOf(", manufacturer=")) {
                         end = s.indexOf(", deviceNumber=");
-                        model = s.substring(start,end);
+                        model = s.substring(start, end);
                         start = end + 21;
                         end = s.indexOf(", manufacturer=");
-                        deviceNumber = s.substring(start,end);
+                        deviceNumber = s.substring(start, end);
                         start = end + 15;
                         end = s.indexOf("}");
-                        manufacturer = s.substring(start,end);
-                    }else{
+                        manufacturer = s.substring(start, end);
+                    } else {
                         end = s.indexOf(", manufacturer=");
-                        model = s.substring(start,end);
+                        model = s.substring(start, end);
                         start = end + 15;
                         end = s.indexOf(", deviceNumber=");
-                        manufacturer = s.substring(start,end);
+                        manufacturer = s.substring(start, end);
                         start = end + 21;
                         end = s.indexOf("}");
-                        deviceNumber = s.substring(start,end);
+                        deviceNumber = s.substring(start, end);
                     }
                 }
                 TextView tv = new TextView(HostActivity.this);
@@ -140,22 +145,26 @@ public class HostActivity extends AppCompatActivity implements View.OnClickListe
                         LinearLayout.LayoutParams.WRAP_CONTENT));
                 tv.setText(deviceNumber + " " + manufacturer + " " + model);
                 tv.setTextSize(TypedValue.COMPLEX_UNIT_SP, 20);
-                tv.setId(getResources().getIdentifier(deviceNumber,"id","com.example.syncam"));
+                tv.setId(getResources().getIdentifier(deviceNumber, "id", "com.example.syncam"));
                 l2.addView(tv);
-                tvc.setText(String.valueOf(Integer.parseInt(tvc.getText().toString().substring(0,1)) + 1) + tvc.getText().toString().substring(1,5));
+                tvc.setText(String.valueOf(Integer.parseInt(tvc.getText().toString().substring(0, 1)) + 1) + tvc.getText().toString().substring(1, 5));
             }
+
             @Override
             public void onChildChanged(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) {
             }
+
             @SuppressLint("SetTextI18n")
             @Override
             public void onChildRemoved(@NonNull DataSnapshot snapshot) {
-                l2.removeView(findViewById(getResources().getIdentifier(String.valueOf(snapshot.getKey()).substring(6,8),"id","com.example.syncam")));
-                tvc.setText(String.valueOf(Integer.parseInt(tvc.getText().toString().substring(0,1)) - 1) + tvc.getText().toString().substring(1,5));
+                l2.removeView(findViewById(getResources().getIdentifier(String.valueOf(snapshot.getKey()).substring(6, 8), "id", "com.example.syncam")));
+                tvc.setText(String.valueOf(Integer.parseInt(tvc.getText().toString().substring(0, 1)) - 1) + tvc.getText().toString().substring(1, 5));
             }
+
             @Override
             public void onChildMoved(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) {
             }
+
             @Override
             public void onCancelled(@NonNull DatabaseError error) {
             }
@@ -165,26 +174,28 @@ public class HostActivity extends AppCompatActivity implements View.OnClickListe
             @Override
             public void onClick(View v) {
                 SharedPreferences pref = PreferenceManager.getDefaultSharedPreferences(HostActivity.this);
-                Log.d("Pref", String.valueOf(pref.getBoolean("Syncam-Setting-dark",true)));
-                Log.d("Pref", String.valueOf(pref.getBoolean("Syncam-Setting-record",false)));
-                Log.d("Pref",pref.getString("Syncam-Setting-resolution","No Pref"));
-                Log.d("Pref",pref.getString("Syncam-Setting-timer","No Pref"));
-                Log.d("Pref",pref.getString("Syncam-Setting-preference","No Pref"));
-                String dark,record,resolution,start,preference;
-                dark = String.valueOf(pref.getBoolean("Syncam-Setting-dark",true));
-                record = String.valueOf(pref.getBoolean("Syncam-Setting-record",false));
-                resolution = pref.getString("Syncam-Setting-resolution","1080p FHD 30FPS");
+                Log.d("Pref", String.valueOf(pref.getBoolean("Syncam-Setting-dark", true)));
+                Log.d("Pref", String.valueOf(pref.getBoolean("Syncam-Setting-record", false)));
+                Log.d("Pref", pref.getString("Syncam-Setting-resolution", "No Pref"));
+                Log.d("Pref", pref.getString("Syncam-Setting-timer", "No Pref"));
+                Log.d("Pref", pref.getString("Syncam-Setting-preference", "No Pref"));
+                String dark, record, resolution, start, preference;
+                dark = String.valueOf(pref.getBoolean("Syncam-Setting-dark", true));
+                record = String.valueOf(pref.getBoolean("Syncam-Setting-record", false));
+                resolution = pref.getString("Syncam-Setting-resolution", "1080p FHD 30FPS");
                 start = "0";
-                preference = pref.getString("Syncam-Setting-preference","本体ストレージ");
-                ReadWrite.SendSettings(dark,record,resolution,start,preference);
+                preference = pref.getString("Syncam-Setting-preference", "本体ストレージ");
+                ReadWrite.SendSettings(dark, record, resolution, start, preference);
             }
         });
     }
+
     static boolean flag = true;
+
     @Override
     protected void onStop() {
         super.onStop();
-        if(flag) {
+        if (flag) {
             ReadWrite.ref.child(MainActivity.rn).removeValue();
             MainActivity.rn = null;
         }
@@ -205,22 +216,31 @@ public class HostActivity extends AppCompatActivity implements View.OnClickListe
     }
 
 
+    boolean videoMode = false;
 
 
     @Override
     public void onClick(View view) {
-        ImageButton IBC=(ImageButton)findViewById(R.id.imageC);
+        ImageButton IBC = (ImageButton) findViewById(R.id.imageC);
         IBC.setOnClickListener(this);
-        ImageButton IBV=(ImageButton)findViewById(R.id.imageV);
+        ImageButton IBV = (ImageButton) findViewById(R.id.imageV);
         IBV.setOnClickListener(this);
-        switch(view.getId()){
+        TextView tv1=(TextView)findViewById(R.id.tvTime);
+        Button bStart = findViewById(R.id.bStart);
+        switch (view.getId()) {
             case R.id.imageC:
                 IBC.setEnabled(false);
                 IBV.setEnabled(true);
+                videoMode = false;
+                bStart.setText("　撮影　");
+                tv1.setVisibility(View.INVISIBLE);
                 break;
             case R.id.imageV:
                 IBC.setEnabled(true);
                 IBV.setEnabled(false);
+                videoMode = true;
+                bStart.setText("撮影開始");
+                tv1.setVisibility(View.VISIBLE);
                 break;
         }
     }
