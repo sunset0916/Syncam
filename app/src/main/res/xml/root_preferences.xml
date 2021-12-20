@@ -13,14 +13,14 @@
             android:defaultValue="false"/>
     </PreferenceCategory>
     <PreferenceCategory app:title="詳細設定">
-        <ListPreference
-            android:negativeButtonText="キャンセル"
-            app:entries="@array/entries"
-            app:entryValues="@array/entryValues"
-            app:key="Syncam-Setting-resolution"
-            app:title="解像度"
-            app:useSimpleSummaryProvider="true"
-            android:defaultValue="1080p FHD 30FPS"/>
+<!--        <ListPreference-->
+<!--            android:negativeButtonText="キャンセル"-->
+<!--            app:entries="@array/entries"-->
+<!--            app:entryValues="@array/entryValues"-->
+<!--            app:key="Syncam-Setting-resolution"-->
+<!--            app:title="解像度"-->
+<!--            app:useSimpleSummaryProvider="true"-->
+<!--            android:defaultValue="1080p FHD 30FPS"/>-->
         <ListPreference
             android:negativeButtonText="キャンセル"
             app:entries="@array/entries2"

@@ -176,16 +176,17 @@ public class HostActivity extends AppCompatActivity implements View.OnClickListe
                 SharedPreferences pref = PreferenceManager.getDefaultSharedPreferences(HostActivity.this);
                 Log.d("Pref", String.valueOf(pref.getBoolean("Syncam-Setting-dark", true)));
                 Log.d("Pref", String.valueOf(pref.getBoolean("Syncam-Setting-record", false)));
-                Log.d("Pref", pref.getString("Syncam-Setting-resolution", "No Pref"));
                 Log.d("Pref", pref.getString("Syncam-Setting-timer", "No Pref"));
                 Log.d("Pref", pref.getString("Syncam-Setting-preference", "No Pref"));
-                String dark, record, resolution, start, preference;
+                String dark, video, start, preference;
                 dark = String.valueOf(pref.getBoolean("Syncam-Setting-dark", true));
-                record = String.valueOf(pref.getBoolean("Syncam-Setting-record", false));
-                resolution = pref.getString("Syncam-Setting-resolution", "1080p FHD 30FPS");
+                video = String.valueOf(videoMode);
                 start = "0";
                 preference = pref.getString("Syncam-Setting-preference", "本体ストレージ");
-                ReadWrite.SendSettings(dark, record, resolution, start, preference);
+                ReadWrite.SendSettings(dark, video, start, preference);
+                if(!videoMode){
+                    ReadWrite.ref.child(MainActivity.rn).child("Settings").removeValue();
+                }
             }
         });
     }
@@ -219,6 +220,7 @@ public class HostActivity extends AppCompatActivity implements View.OnClickListe
     boolean videoMode = false;
 
 
+    @SuppressLint("NonConstantResourceId")
     @Override
     public void onClick(View view) {
         ImageButton IBC = (ImageButton) findViewById(R.id.imageC);

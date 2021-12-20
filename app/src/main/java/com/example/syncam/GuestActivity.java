@@ -66,7 +66,11 @@ public class GuestActivity extends AppCompatActivity implements ImageAnalysis.An
     private Button bChange;
     int REQUEST_CODE_FOR_PERMISSIONS = 1234;
     final String[] REQUIRED_PERMISSIONS = new String[]{"android.permission.CAMERA", "android.permission.WRITE_EXTERNAL_STORAGE", "android.permission.RECORD_AUDIO"};
-
+    int count = 0;
+    boolean dark;
+    boolean sdcard;
+    int startTime;
+    boolean videoMode;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -101,8 +105,23 @@ public class GuestActivity extends AppCompatActivity implements ImageAnalysis.An
         ReadWrite.ref.child(roomNumber).child("Settings").addChildEventListener(new ChildEventListener() {
             @Override
             public void onChildAdded(@NonNull DataSnapshot snapshot, @Nullable @org.jetbrains.annotations.Nullable String previousChildName) {
-                if(snapshot.getKey().equals("start")) {
+                switch (Objects.requireNonNull(snapshot.getKey())){
+                    case "dark" :
+                        dark = Boolean.parseBoolean(String.valueOf(snapshot.getValue()));
+                        break;
+                    case "preference" :
+                        sdcard = Objects.requireNonNull(snapshot.getValue()).equals("SDカードを優先");
+                        break;
+                    case "start" :
+                        startTime = Integer.parseInt((String) Objects.requireNonNull(snapshot.getValue()));
+                        break;
+                    case "video" :
+                        videoMode = Boolean.parseBoolean(String.valueOf(snapshot.getValue()));;
+                }
+                count ++;
+                if(count == 4 && !videoMode){
                     capturePhoto();
+                    count = 0;
                 }
             }
             @Override

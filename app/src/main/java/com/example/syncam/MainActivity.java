@@ -114,6 +114,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     }
 
+   @SuppressLint("NonConstantResourceId")
    public void OnClick(View view){
        ImageButton IBC=(ImageButton)findViewById(R.id.imageC);
        IBC.setOnClickListener(this);
@@ -165,28 +166,26 @@ class DeviceInfo{
 
 class Settings{
     String dark;
-    String record;
-    String resolution;
+    String video;
     String start;
     String preference;
-    Settings(String a,String b,String c,String d,String e){
+    Settings(String a,String b,String c,String d){
         dark = a;
-        record = b;
-        resolution = c;
-        start = d;
-        preference = e;
+        video = b;
+        start = c;
+        preference = d;
     }
     public String getDark() {
         return dark;
     }
-    public String getRecord() {
-        return record;
-    }
-    public String getResolution() {
-        return resolution;
+    public String getVideo() {
+        return video;
     }
     public String getStart() {
         return start;
+    }
+    public String getPreference() {
+        return preference;
     }
 }
 
@@ -201,8 +200,8 @@ class ReadWrite extends AppCompatActivity{
         DatabaseReference devices = room.child("devices");
         devices.child(s1).setValue(new DeviceInfo(s1,s2,s3));
     }
-    static void SendSettings(String a,String b,String c,String d,String e){
+    static void SendSettings(String a,String b,String c,String d){
         DatabaseReference settings = ref.child(MainActivity.rn).child("Settings");
-        settings.setValue(new Settings(a, b, c, d, e));
+        settings.setValue(new Settings(a, b, c, d));
     }
 }
