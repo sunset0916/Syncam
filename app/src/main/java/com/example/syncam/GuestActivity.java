@@ -68,7 +68,8 @@ public class GuestActivity extends AppCompatActivity implements ImageAnalysis.An
     final String[] REQUIRED_PERMISSIONS = new String[]{"android.permission.CAMERA", "android.permission.WRITE_EXTERNAL_STORAGE", "android.permission.RECORD_AUDIO"};
     int count = 0;
     boolean dark;
-    boolean sdcard;
+    int resolutionX = 1920;
+    int resolutionY = 1080;
     int startTime;
     int endTime;
     boolean videoMode;
@@ -115,54 +116,67 @@ public class GuestActivity extends AppCompatActivity implements ImageAnalysis.An
                     case "dark":
                         dark = Boolean.parseBoolean(String.valueOf(snapshot.getValue()));
                         break;
-                    case "preference":
-                        sdcard = Objects.requireNonNull(snapshot.getValue()).equals("SDカードを優先");
+                    case "resolution":
+                        switch (String.valueOf(snapshot.getValue())){
+                            case "720p HD":
+                                resolutionX = 1280;
+                                resolutionY = 720;
+                                break;
+                            case "1080p FHD":
+                                resolutionX = 1920;
+                                resolutionY = 1080;
+                                break;
+                            case "2160p 4K":
+                                resolutionX = 3840;
+                                resolutionY = 2160;
+                                break;
+                        }
                         break;
                     case "start":
                         startTime = Integer.parseInt((String) Objects.requireNonNull(snapshot.getValue()));
                         break;
                     case "video":
                         videoMode = Boolean.parseBoolean(String.valueOf(snapshot.getValue()));
-//                        if(videoMode){
-//                            previewView.post((Runnable) (new Runnable() {
-//                                public final void run() {
-//                                    cameraProviderFuture.addListener(() -> {
-//                                        try {
-//                                            ProcessCameraProvider cameraProvider = cameraProviderFuture.get();
-//                                            startCameraXv(cameraProvider);
-//                                        } catch (ExecutionException | InterruptedException e) {
-//                                            e.printStackTrace();
-//                                        }
-//                                    }, getExecutor());
-//                                }
-//                            }));
-//                        }else{
-//                            previewView.post((Runnable) (new Runnable() {
-//                                public final void run() {
-//                                    cameraProviderFuture.addListener(() -> {
-//                                        try {
-//                                            ProcessCameraProvider cameraProvider = cameraProviderFuture.get();
-//                                            startCameraX(cameraProvider);
-//                                        } catch (ExecutionException | InterruptedException e) {
-//                                            e.printStackTrace();
-//                                        }
-//                                    }, getExecutor());
-//                                }
-//                            }));
-//                        }
                         break;
                     case "end":
                         endTime = Integer.parseInt((String) Objects.requireNonNull(snapshot.getValue()));
-                        videoCapture.stopRecording();
+                        int i = endTime - MainActivity.getToday() + MainActivity.timeLag;
+                        new Handler().postDelayed(funcVe,i);
                         count = 0;
                 }
                 count++;
-                if (count == 4 && !videoMode) {
-
-                    capturePhoto();
-                    count = 0;
-                } else if (count == 4) {
-                    recordVideo();
+                if (count == 4) {
+                    int i = startTime - MainActivity.getToday() + MainActivity.timeLag;
+                    if(videoMode){
+                        new Handler().postDelayed(funcV,i);
+                        previewView.post((Runnable) (new Runnable() {
+                            public final void run() {
+                                cameraProviderFuture.addListener(() -> {
+                                    try {
+                                        ProcessCameraProvider cameraProvider = cameraProviderFuture.get();
+                                        startCameraXv(cameraProvider);
+                                    } catch (ExecutionException | InterruptedException e) {
+                                        e.printStackTrace();
+                                    }
+                                }, getExecutor());
+                            }
+                        }));
+                    }else{
+                        new Handler().postDelayed(funcC,i);
+                        previewView.post((Runnable) (new Runnable() {
+                            public final void run() {
+                                cameraProviderFuture.addListener(() -> {
+                                    try {
+                                        ProcessCameraProvider cameraProvider = cameraProviderFuture.get();
+                                        startCameraX(cameraProvider);
+                                    } catch (ExecutionException | InterruptedException e) {
+                                        e.printStackTrace();
+                                    }
+                                }, getExecutor());
+                            }
+                        }));
+                        count = 0;
+                    }
                 }
             }
 
@@ -248,7 +262,7 @@ public class GuestActivity extends AppCompatActivity implements ImageAnalysis.An
 
         // preview
         Preview preview = new Preview.Builder()
-                .setTargetResolution(new Size(1920, 1080))
+                .setTargetResolution(new Size(resolutionX, resolutionY))
                 .build();
         preview.setSurfaceProvider(previewView.getSurfaceProvider());
 
@@ -256,7 +270,7 @@ public class GuestActivity extends AppCompatActivity implements ImageAnalysis.An
         // Image capture use case
         imageCapture = new ImageCapture.Builder()
                 .setCaptureMode(ImageCapture.CAPTURE_MODE_MINIMIZE_LATENCY)
-                .setTargetResolution(new Size(1920, 1080))
+                .setTargetResolution(new Size(resolutionX, resolutionY))
                 .build();
 
 
@@ -286,7 +300,7 @@ public class GuestActivity extends AppCompatActivity implements ImageAnalysis.An
 
         // preview
         Preview preview = new Preview.Builder()
-                .setTargetResolution(new Size(1920, 1080))
+                .setTargetResolution(new Size(resolutionX, resolutionY))
                 .build();
         preview.setSurfaceProvider(previewView.getSurfaceProvider());
 
@@ -294,7 +308,7 @@ public class GuestActivity extends AppCompatActivity implements ImageAnalysis.An
         // Image capture use case
         imageCapture = new ImageCapture.Builder()
                 .setCaptureMode(ImageCapture.CAPTURE_MODE_MINIMIZE_LATENCY)
-                .setTargetResolution(new Size(1920, 1080))
+                .setTargetResolution(new Size(resolutionX, resolutionY))
                 .build();
 
 
@@ -398,7 +412,7 @@ public class GuestActivity extends AppCompatActivity implements ImageAnalysis.An
 
             Date date = new Date();
             String timestamp = String.valueOf(date.getTime());
-            String vidFilePath = movieDir.getAbsolutePath() + "/" + timestamp + ".mp4";
+            String vidFilePath = movieDir.getAbsolutePath() + "/" + android.os.Build.MODEL + "_" + timestamp + ".mp4";
             File vidFile = new File(vidFilePath);
             String AttachName = vidFilePath;
             try {
@@ -457,7 +471,7 @@ public class GuestActivity extends AppCompatActivity implements ImageAnalysis.An
 
         Date date = new Date();
         String timestamp = String.valueOf(date.getTime());
-        String photoFilePath = photoDir.getAbsolutePath() + "/" + timestamp + ".jpg";
+        String photoFilePath = photoDir.getAbsolutePath() + "/" + android.os.Build.MODEL + "_" + timestamp + ".jpg";
         File photoFile = new File(photoFilePath);
         String AttachName = photoFilePath;
 
@@ -532,4 +546,24 @@ public class GuestActivity extends AppCompatActivity implements ImageAnalysis.An
         return true;
     }
     //判断　↑↑
+
+    private final Runnable funcC= new Runnable() {
+        @Override
+        public void run() {
+            capturePhoto();
+        }
+    };
+    private final Runnable funcV= new Runnable() {
+        @Override
+        public void run() {
+            recordVideo();
+        }
+    };
+    private final Runnable funcVe= new Runnable() {
+        @SuppressLint("RestrictedApi")
+        @Override
+        public void run() {
+            videoCapture.stopRecording();
+        }
+    };
 }

@@ -71,8 +71,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         btn2.setOnClickListener(this);
 
 
-        if (checkPermissions()) {
-        } else {
+        if (!checkPermissions()) {
             ActivityCompat.requestPermissions(this, REQUIRED_PERMISSIONS, REQUEST_CODE_FOR_PERMISSIONS);
         }
 
@@ -103,24 +102,17 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 ntptimes = ntptimes * 1000;
                 ntptimeS = ntptimeS + ntptimes;
                 Log.d("ntptime", String.valueOf(ntptimeS) );
-                int timelag=0;
-                if (time > ntptimeS) {
-                    timelag = '+'+time - ntptimeS;
-                } else {
-                    timelag ='-'+ ntptimeS - time;
-                }
+                timeLag = time - ntptimeS;
 
-                timeLag=timelag;
                 Log.d("Lagtime", String.valueOf(timeLag) );
             }
-
         }
                 .execute();
     }
 
 
     @SuppressLint("NewApi")
-    private int getToday() {
+    public static int getToday() {
         Date date = new Date();
 
         @SuppressLint("SimpleDateFormat") SimpleDateFormat hourformat = new SimpleDateFormat("HH");
@@ -204,27 +196,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         }else{
             Toast.makeText(MainActivity.this,"not Firebase connection",Toast.LENGTH_SHORT).show();
         }
-
     }
-
-   @SuppressLint("NonConstantResourceId")
-   public void OnClick(View view){
-       ImageButton IBC=(ImageButton)findViewById(R.id.imageC);
-       IBC.setOnClickListener(this);
-       ImageButton IBV=(ImageButton)findViewById(R.id.imageV);
-       IBV.setOnClickListener(this);
-        switch(view.getId()){
-            case R.id.imageC:
-                IBC.setEnabled(false);
-                IBV.setEnabled(true);
-                break;
-            case R.id.imageV:
-                IBC.setEnabled(true);
-                IBV.setEnabled(false);
-                break;
-        }
-   }
-
 }
 
 class RoomInfo{
@@ -261,12 +233,12 @@ class Settings{
     String dark;
     String video;
     String start;
-    String preference;
+    String resolution;
     Settings(String a,String b,String c,String d){
         dark = a;
         video = b;
         start = c;
-        preference = d;
+        resolution = d;
     }
     public String getDark() {
         return dark;
@@ -277,8 +249,8 @@ class Settings{
     public String getStart() {
         return start;
     }
-    public String getPreference() {
-        return preference;
+    public String getResolution() {
+        return resolution;
     }
 }
 

@@ -1,21 +1,15 @@
 <resources>
-<!--    <string-array name="entries">-->
-<!--        <item>720p HD 30FPS</item>-->
-<!--        <item>720p HD 60FPS</item>-->
-<!--        <item>1080p FHD 30FPS</item>-->
-<!--        <item>1080p FHD 60FPS</item>-->
-<!--        <item>2160p 4K 30FPS</item>-->
-<!--        <item>2160p 4k 60FPS</item>-->
-<!--    </string-array>-->
+    <string-array name="entries">
+        <item>720p HD</item>
+        <item>1080p FHD</item>
+        <item>2160p 4K</item>
+    </string-array>
 
-<!--    <string-array name="entryValues">-->
-<!--        <item>720p HD 30FPS</item>-->
-<!--        <item>720p HD 60FPS</item>-->
-<!--        <item>1080p FHD 30FPS</item>-->
-<!--        <item>1080p FHD 60FPS</item>-->
-<!--        <item>2160p 4K 30FPS</item>-->
-<!--        <item>2160p 4k 60FPS</item>-->
-<!--    </string-array>-->
+    <string-array name="entryValues">
+        <item>720p HD</item>
+        <item>1080p FHD</item>
+        <item>2160p 4K</item>
+    </string-array>
     <string-array name="entries2">
         <item>5秒</item>
         <item>10秒</item>
@@ -26,14 +20,5 @@
         <item>5秒</item>
         <item>10秒</item>
         <item>15秒</item>
-    </string-array>
-    <string-array name="entries3">
-        <item>本体ストレージ</item>
-        <item>SDカードを優先</item>
-    </string-array>
-
-    <string-array name="entryValues3">
-        <item>本体ストレージ</item>
-        <item>SDカードを優先</item>
     </string-array>
 </resources>

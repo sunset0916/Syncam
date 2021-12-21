@@ -13,14 +13,14 @@
             android:defaultValue="false"/>
     </PreferenceCategory>
     <PreferenceCategory app:title="詳細設定">
-<!--        <ListPreference-->
-<!--            android:negativeButtonText="キャンセル"-->
-<!--            app:entries="@array/entries"-->
-<!--            app:entryValues="@array/entryValues"-->
-<!--            app:key="Syncam-Setting-resolution"-->
-<!--            app:title="解像度"-->
-<!--            app:useSimpleSummaryProvider="true"-->
-<!--            android:defaultValue="1080p FHD 30FPS"/>-->
+        <ListPreference
+            android:negativeButtonText="キャンセル"
+            app:entries="@array/entries"
+            app:entryValues="@array/entryValues"
+            app:key="Syncam-Setting-resolution"
+            app:title="解像度"
+            app:useSimpleSummaryProvider="true"
+            android:defaultValue="1080p FHD"/>
         <ListPreference
             android:negativeButtonText="キャンセル"
             app:entries="@array/entries2"
@@ -29,14 +29,6 @@
             app:title="タイマー"
             app:useSimpleSummaryProvider="true"
             android:defaultValue="5秒"/>
-        <ListPreference
-            android:negativeButtonText="キャンセル"
-            app:entries="@array/entries3"
-            app:entryValues="@array/entryValues3"
-            app:key="Syncam-Setting-preference"
-            app:title="保存先"
-            app:useSimpleSummaryProvider="true"
-            android:defaultValue="本体ストレージ"/>
     </PreferenceCategory>
 
 </PreferenceScreen>

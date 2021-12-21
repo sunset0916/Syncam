@@ -176,16 +176,38 @@ public class HostActivity extends AppCompatActivity implements View.OnClickListe
                 SharedPreferences pref = PreferenceManager.getDefaultSharedPreferences(HostActivity.this);
                 Button b = (Button) v;
                 if(b.getText().equals("撮影終了")) {
-                    ReadWrite.ref.child(MainActivity.rn).child("Settings").setValue(new EndTime("0"));
+                    String end;
+                    switch (pref.getString("Syncam-Setting-timer","5秒")){
+                        case "10秒":
+                            end = String.valueOf(MainActivity.getToday() + 10000 - MainActivity.timeLag);
+                            break;
+                        case "15秒":
+                            end = String.valueOf(MainActivity.getToday() + 15000 - MainActivity.timeLag);
+                            break;
+                        default:
+                            end = String.valueOf(MainActivity.getToday() + 5000 - MainActivity.timeLag);
+                            break;
+                    }
+                    ReadWrite.ref.child(MainActivity.rn).child("Settings").setValue(new EndTime(end));
                     ReadWrite.ref.child(MainActivity.rn).child("Settings").removeValue();
                     b.setText("撮影開始");
                 }else{
-                    String dark, video, start, preference;
+                    String dark, video, start, resolution;
                     dark = String.valueOf(pref.getBoolean("Syncam-Setting-dark", true));
                     video = String.valueOf(videoMode);
-                    start = "0";
-                    preference = pref.getString("Syncam-Setting-preference", "本体ストレージ");
-                    ReadWrite.SendSettings(dark, video, start, preference);
+                    switch (pref.getString("Syncam-Setting-timer","5秒")){
+                        case "10秒":
+                            start = String.valueOf(MainActivity.getToday() + 10000 - MainActivity.timeLag);
+                            break;
+                        case "15秒":
+                            start = String.valueOf(MainActivity.getToday() + 15000 - MainActivity.timeLag);
+                            break;
+                        default:
+                            start = String.valueOf(MainActivity.getToday() + 5000 - MainActivity.timeLag);
+                            break;
+                    }
+                    resolution = pref.getString("Syncam-Setting-resolution", "1080p FHD");
+                    ReadWrite.SendSettings(dark, video, start, resolution);
                     if (videoMode) {
                         b.setText("撮影終了");
                     }else{
