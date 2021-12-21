@@ -189,6 +189,16 @@ class Settings{
     }
 }
 
+class EndTime{
+    String end;
+    EndTime(String s){
+        end = s;
+    }
+    public String getEnd() {
+        return end;
+    }
+}
+
 class ReadWrite extends AppCompatActivity{
     static final FirebaseDatabase database = FirebaseDatabase.getInstance();
     static DatabaseReference ref = database.getReference("room");

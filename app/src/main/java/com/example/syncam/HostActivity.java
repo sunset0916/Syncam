@@ -174,18 +174,23 @@ public class HostActivity extends AppCompatActivity implements View.OnClickListe
             @Override
             public void onClick(View v) {
                 SharedPreferences pref = PreferenceManager.getDefaultSharedPreferences(HostActivity.this);
-                Log.d("Pref", String.valueOf(pref.getBoolean("Syncam-Setting-dark", true)));
-                Log.d("Pref", String.valueOf(pref.getBoolean("Syncam-Setting-record", false)));
-                Log.d("Pref", pref.getString("Syncam-Setting-timer", "No Pref"));
-                Log.d("Pref", pref.getString("Syncam-Setting-preference", "No Pref"));
-                String dark, video, start, preference;
-                dark = String.valueOf(pref.getBoolean("Syncam-Setting-dark", true));
-                video = String.valueOf(videoMode);
-                start = "0";
-                preference = pref.getString("Syncam-Setting-preference", "本体ストレージ");
-                ReadWrite.SendSettings(dark, video, start, preference);
-                if(!videoMode){
+                Button b = (Button) v;
+                if(b.getText().equals("撮影終了")) {
+                    ReadWrite.ref.child(MainActivity.rn).child("Settings").setValue(new EndTime("0"));
                     ReadWrite.ref.child(MainActivity.rn).child("Settings").removeValue();
+                    b.setText("撮影開始");
+                }else{
+                    String dark, video, start, preference;
+                    dark = String.valueOf(pref.getBoolean("Syncam-Setting-dark", true));
+                    video = String.valueOf(videoMode);
+                    start = "0";
+                    preference = pref.getString("Syncam-Setting-preference", "本体ストレージ");
+                    ReadWrite.SendSettings(dark, video, start, preference);
+                    if (videoMode) {
+                        b.setText("撮影終了");
+                    }else{
+                        ReadWrite.ref.child(MainActivity.rn).child("Settings").removeValue();
+                    }
                 }
             }
         });

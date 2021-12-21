@@ -70,6 +70,7 @@ public class GuestActivity extends AppCompatActivity implements ImageAnalysis.An
     boolean dark;
     boolean sdcard;
     int startTime;
+    int endTime;
     boolean videoMode;
 
     @Override
@@ -103,6 +104,7 @@ public class GuestActivity extends AppCompatActivity implements ImageAnalysis.An
         });
 
         ReadWrite.ref.child(roomNumber).child("Settings").addChildEventListener(new ChildEventListener() {
+            @SuppressLint("RestrictedApi")
             @Override
             public void onChildAdded(@NonNull DataSnapshot snapshot, @Nullable @org.jetbrains.annotations.Nullable String previousChildName) {
                 switch (Objects.requireNonNull(snapshot.getKey())){
@@ -116,12 +118,19 @@ public class GuestActivity extends AppCompatActivity implements ImageAnalysis.An
                         startTime = Integer.parseInt((String) Objects.requireNonNull(snapshot.getValue()));
                         break;
                     case "video" :
-                        videoMode = Boolean.parseBoolean(String.valueOf(snapshot.getValue()));;
+                        videoMode = Boolean.parseBoolean(String.valueOf(snapshot.getValue()));
+                        break;
+                    case "end" :
+                        endTime = Integer.parseInt((String) Objects.requireNonNull(snapshot.getValue()));
+                        videoCapture.stopRecording();
+                        count = 0;
                 }
                 count ++;
                 if(count == 4 && !videoMode){
                     capturePhoto();
                     count = 0;
+                }else if(count == 4){
+                    recordVideo();
                 }
             }
             @Override
