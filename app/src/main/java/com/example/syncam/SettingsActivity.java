@@ -15,7 +15,6 @@ import com.google.firebase.database.DataSnapshot;
 import java.util.Objects;
 
 public class SettingsActivity extends AppCompatActivity {
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -27,6 +26,7 @@ public class SettingsActivity extends AppCompatActivity {
                     .commit();
         }
     }
+
 
     public static class SettingsFragment extends PreferenceFragmentCompat {
         @Override

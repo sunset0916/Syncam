@@ -5,8 +5,10 @@ import android.app.Activity;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.Toast;
 
@@ -28,7 +30,20 @@ import com.google.firebase.database.ValueEventListener;
 
 import java.util.Objects;
 import java.util.Random;
+import java.util.TimeZone;
 import java.util.concurrent.ExecutionException;
+
+import android.annotation.SuppressLint;
+import android.icu.text.SimpleDateFormat;
+import android.os.Build;
+import android.os.Bundle;
+
+import androidx.annotation.RequiresApi;
+import androidx.appcompat.app.AppCompatActivity;
+
+import java.util.Date;
+import java.util.Locale;
+
 
 public class MainActivity extends AppCompatActivity implements View.OnClickListener {
     static MainActivity activity;
@@ -36,6 +51,15 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     int REQUEST_CODE_FOR_PERMISSIONS = 1234;
     final String[] REQUIRED_PERMISSIONS = new String[]{"android.permission.CAMERA", "android.permission.WRITE_EXTERNAL_STORAGE", "android.permission.RECORD_AUDIO"};
 
+
+    public String ntphh;
+    public String ntpmm;
+    public String ntpss;
+    public String ntpSSS;
+
+    static int timeLag;
+
+    @SuppressLint("StaticFieldLeak")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -51,6 +75,75 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         } else {
             ActivityCompat.requestPermissions(this, REQUIRED_PERMISSIONS, REQUEST_CODE_FOR_PERMISSIONS);
         }
+
+        @SuppressLint({"NewApi", "LocalSuppress"}) int date = getToday();
+
+        new NTPTask() {
+            @SuppressLint({"StaticFieldLeak", "SetTextI18n"})
+            @Override
+            protected void onPostExecute(String text) {
+                super.onPostExecute(text);
+
+                int time=getToday();
+
+                ntphh = text.substring(0, 2);
+                ntpmm = text.substring(3, 5);
+                ntpss = text.substring(6, 8);
+                ntpSSS = text.substring(9, 12);
+
+                int ntptimeh = Integer.parseInt(ntphh);
+                int ntptimem = Integer.parseInt(ntpmm);
+                int ntptimes = Integer.parseInt(ntpss);
+                int ntptimeS = Integer.parseInt(ntpSSS);
+
+                ntptimeh = ntptimeh * 60;
+                ntptimem = ntptimem + ntptimeh;
+                ntptimem = ntptimem * 60;
+                ntptimes = ntptimes + ntptimem;
+                ntptimes = ntptimes * 1000;
+                ntptimeS = ntptimeS + ntptimes;
+                Log.d("ntptime", String.valueOf(ntptimeS) );
+                int timelag=0;
+                if (time > ntptimeS) {
+                    timelag = '+'+time - ntptimeS;
+                } else {
+                    timelag ='-'+ ntptimeS - time;
+                }
+
+                timeLag=timelag;
+                Log.d("Lagtime", String.valueOf(timeLag) );
+            }
+
+        }
+                .execute();
+    }
+
+
+    @SuppressLint("NewApi")
+    private int getToday() {
+        Date date = new Date();
+
+        @SuppressLint("SimpleDateFormat") SimpleDateFormat hourformat = new SimpleDateFormat("HH");
+        String HHformat=hourformat.format(date);
+        int hour=Integer.parseInt(HHformat);
+        @SuppressLint("SimpleDateFormat") SimpleDateFormat minuteformat = new SimpleDateFormat("mm");
+        String mmformat=minuteformat.format(date);
+        int minute=Integer.parseInt(mmformat);
+        @SuppressLint("SimpleDateFormat") SimpleDateFormat secondformat = new SimpleDateFormat("ss");
+        String ssformat=secondformat.format(date);
+        int second=Integer.parseInt(ssformat);
+        @SuppressLint("SimpleDateFormat") SimpleDateFormat millisecondformat = new SimpleDateFormat("SSS");
+        String SSSformat=millisecondformat.format(date);
+        int millisecond=Integer.parseInt(SSSformat);
+        int phonetimeh = hour * 60;
+        int phonetimem = minute + phonetimeh;
+        phonetimem = phonetimem * 60;
+        int phonetimes = second + phonetimem;
+        phonetimes = phonetimes * 1000;
+        int phonetimeS = millisecond + phonetimes;
+        Log.d("phonetime", String.valueOf(phonetimeS) );
+        return phonetimeS;
+
     }
     //判断　↓↓
     private boolean checkPermissions() {
