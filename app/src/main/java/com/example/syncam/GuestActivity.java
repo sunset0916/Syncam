@@ -81,23 +81,27 @@ public class GuestActivity extends AppCompatActivity implements ImageAnalysis.An
         roomNumber = MainActivity.roomNumber;
         deviceNumber = MainActivity.deviceNumber;
         devices = ReadWrite.ref.child(roomNumber).child("devices");
-        Log.d("variable",roomNumber + deviceNumber);
+        Log.d("variable", roomNumber + deviceNumber);
         ReadWrite.ref.addChildEventListener(new ChildEventListener() {
             @Override
             public void onChildAdded(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) {
             }
+
             @Override
             public void onChildChanged(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) {
             }
+
             @Override
             public void onChildRemoved(@NonNull DataSnapshot snapshot) {
-                if(Objects.requireNonNull(snapshot.getKey()).toString().equals(roomNumber)){
+                if (Objects.requireNonNull(snapshot.getKey()).toString().equals(roomNumber)) {
                     finish();
                 }
             }
+
             @Override
             public void onChildMoved(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) {
             }
+
             @Override
             public void onCancelled(@NonNull DatabaseError error) {
             }
@@ -107,41 +111,73 @@ public class GuestActivity extends AppCompatActivity implements ImageAnalysis.An
             @SuppressLint("RestrictedApi")
             @Override
             public void onChildAdded(@NonNull DataSnapshot snapshot, @Nullable @org.jetbrains.annotations.Nullable String previousChildName) {
-                switch (Objects.requireNonNull(snapshot.getKey())){
-                    case "dark" :
+                switch (Objects.requireNonNull(snapshot.getKey())) {
+                    case "dark":
                         dark = Boolean.parseBoolean(String.valueOf(snapshot.getValue()));
                         break;
-                    case "preference" :
+                    case "preference":
                         sdcard = Objects.requireNonNull(snapshot.getValue()).equals("SDカードを優先");
                         break;
-                    case "start" :
+                    case "start":
                         startTime = Integer.parseInt((String) Objects.requireNonNull(snapshot.getValue()));
                         break;
-                    case "video" :
+                    case "video":
                         videoMode = Boolean.parseBoolean(String.valueOf(snapshot.getValue()));
+//                        if(videoMode){
+//                            previewView.post((Runnable) (new Runnable() {
+//                                public final void run() {
+//                                    cameraProviderFuture.addListener(() -> {
+//                                        try {
+//                                            ProcessCameraProvider cameraProvider = cameraProviderFuture.get();
+//                                            startCameraXv(cameraProvider);
+//                                        } catch (ExecutionException | InterruptedException e) {
+//                                            e.printStackTrace();
+//                                        }
+//                                    }, getExecutor());
+//                                }
+//                            }));
+//                        }else{
+//                            previewView.post((Runnable) (new Runnable() {
+//                                public final void run() {
+//                                    cameraProviderFuture.addListener(() -> {
+//                                        try {
+//                                            ProcessCameraProvider cameraProvider = cameraProviderFuture.get();
+//                                            startCameraX(cameraProvider);
+//                                        } catch (ExecutionException | InterruptedException e) {
+//                                            e.printStackTrace();
+//                                        }
+//                                    }, getExecutor());
+//                                }
+//                            }));
+//                        }
                         break;
-                    case "end" :
+                    case "end":
                         endTime = Integer.parseInt((String) Objects.requireNonNull(snapshot.getValue()));
                         videoCapture.stopRecording();
                         count = 0;
                 }
-                count ++;
-                if(count == 4 && !videoMode){
+                count++;
+                if (count == 4 && !videoMode) {
+
                     capturePhoto();
                     count = 0;
-                }else if(count == 4){
+                } else if (count == 4) {
                     recordVideo();
                 }
             }
+
             @Override
             public void onChildChanged(@NonNull DataSnapshot snapshot, @Nullable @org.jetbrains.annotations.Nullable String previousChildName) {
             }
+
             @Override
             public void onChildRemoved(@NonNull DataSnapshot snapshot) {
             }
+
             @Override
             public void onChildMoved(@NonNull DataSnapshot snapshot, @Nullable @org.jetbrains.annotations.Nullable String previousChildName) {
             }
+
             @Override
             public void onCancelled(@NonNull DatabaseError error) {
             }
@@ -346,9 +382,11 @@ public class GuestActivity extends AppCompatActivity implements ImageAnalysis.An
     @SuppressLint("RestrictedApi")
     private void recordVideo() {
 
-        WindowManager.LayoutParams lp = getWindow().getAttributes();
-        lp.screenBrightness = 0.01F;
-        getWindow().setAttributes(lp);
+        if (dark) {
+            WindowManager.LayoutParams lp = getWindow().getAttributes();
+            lp.screenBrightness = 0.01F;
+            getWindow().setAttributes(lp);
+        }
 
         if (videoCapture != null) {
             //File movieDir = new File(getExternalFilesDir(Environment.DIRECTORY_MOVIES) + "/");
@@ -374,19 +412,22 @@ public class GuestActivity extends AppCompatActivity implements ImageAnalysis.An
                             @Override
                             public void onVideoSaved(@NonNull VideoCapture.OutputFileResults outputFileResults) {
                                 Toast.makeText(GuestActivity.this, "保存しました", Toast.LENGTH_SHORT).show();
-
-                                WindowManager.LayoutParams lp = getWindow().getAttributes();
-                                lp.screenBrightness = 1.0F;
-                                getWindow().setAttributes(lp);
+                                if (dark) {
+                                    WindowManager.LayoutParams lp = getWindow().getAttributes();
+                                    lp.screenBrightness = 1.0F;
+                                    getWindow().setAttributes(lp);
+                                }
                             }
 
                             @Override
                             public void onError(int videoCaptureError, @NonNull String message, @Nullable Throwable cause) {
                                 // Toast.makeText(MainActivity.this, "エラー:" + message, Toast.LENGTH_SHORT).show();
                                 Toast.makeText(GuestActivity.this, "ビデオモードではありません", Toast.LENGTH_SHORT).show();
-                                WindowManager.LayoutParams lp = getWindow().getAttributes();
-                                lp.screenBrightness = 1.0F;
-                                getWindow().setAttributes(lp);
+                                if(dark) {
+                                    WindowManager.LayoutParams lp = getWindow().getAttributes();
+                                    lp.screenBrightness = 1.0F;
+                                    getWindow().setAttributes(lp);
+                                }
                             }
 
                         }
@@ -396,7 +437,7 @@ public class GuestActivity extends AppCompatActivity implements ImageAnalysis.An
             }
             ContentValues values = new ContentValues();
             ContentResolver contentResolver = getContentResolver();
-            values.put("image/mp4",MIME_TYPE);
+            values.put("image/mp4", MIME_TYPE);
             values.put(MediaStore.Video.Media.TITLE, vidFilePath);
             values.put("_data", AttachName);
             contentResolver.insert(MediaStore.Video.Media.EXTERNAL_CONTENT_URI, values);
