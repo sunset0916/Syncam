@@ -7,6 +7,7 @@ import android.annotation.SuppressLint;
 import android.content.ContentResolver;
 import android.content.ContentValues;
 import android.content.pm.PackageManager;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
 import android.os.Handler;
@@ -46,20 +47,17 @@ import java.util.Objects;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Executor;
 
-public class GuestActivity extends AppCompatActivity implements ImageAnalysis.Analyzer, View.OnClickListener {
+public class GuestActivity extends AppCompatActivity implements ImageAnalysis.Analyzer {
 
     String deviceNumber;
     String roomNumber;
     DatabaseReference devices;
     private ListenableFuture<ProcessCameraProvider> cameraProviderFuture;
 
-    private static final String TAG = "MyApp";
     PreviewView previewView;
     private ImageCapture imageCapture;
     private VideoCapture videoCapture;
-    private Button bRecord;
-    private Button bCapture;
-    private Button bChange;
+
     int REQUEST_CODE_FOR_PERMISSIONS = 1234;
     final String[] REQUIRED_PERMISSIONS = new String[]{"android.permission.CAMERA", "android.permission.WRITE_EXTERNAL_STORAGE", "android.permission.RECORD_AUDIO"};
     int count = 0;
@@ -113,7 +111,7 @@ public class GuestActivity extends AppCompatActivity implements ImageAnalysis.An
                         dark = Boolean.parseBoolean(String.valueOf(snapshot.getValue()));
                         break;
                     case "resolution":
-                        switch (String.valueOf(snapshot.getValue())){
+                        switch (String.valueOf(snapshot.getValue())) {
                             case "720p HD":
                                 resolutionX = 1280;
                                 resolutionY = 720;
@@ -137,14 +135,14 @@ public class GuestActivity extends AppCompatActivity implements ImageAnalysis.An
                     case "end":
                         endTime = Integer.parseInt((String) Objects.requireNonNull(snapshot.getValue()));
                         int i = endTime - MainActivity.getToday() + MainActivity.timeLag;
-                        new Handler().postDelayed(funcVe,i);
+                        new Handler().postDelayed(funcVe, i);
                         count = 0;
                 }
                 count++;
                 if (count == 4) {
                     int i = startTime - MainActivity.getToday() + MainActivity.timeLag;
-                    if(videoMode){
-                        new Handler().postDelayed(funcV,i);
+                    if (videoMode) {
+                        new Handler().postDelayed(funcV, i);
                         previewView.post((Runnable) (new Runnable() {
                             public final void run() {
                                 cameraProviderFuture.addListener(() -> {
@@ -157,8 +155,8 @@ public class GuestActivity extends AppCompatActivity implements ImageAnalysis.An
                                 }, getExecutor());
                             }
                         }));
-                    }else{
-                        new Handler().postDelayed(funcC,i);
+                    } else {
+                        new Handler().postDelayed(funcC, i);
                         previewView.post((Runnable) (new Runnable() {
                             public final void run() {
                                 cameraProviderFuture.addListener(() -> {
@@ -196,40 +194,22 @@ public class GuestActivity extends AppCompatActivity implements ImageAnalysis.An
         immersiveMode();
 
         previewView = findViewById(R.id.previewView);
-        bCapture = findViewById(R.id.bCapture);
-        bRecord = findViewById(R.id.bRecord);
-        bChange = findViewById(R.id.bChange);
-        bChange.setText("☮");
-        bRecord.setText("🔴");
-        bChange.setOnClickListener(this);
-        bCapture.setOnClickListener(this);
-        bRecord.setOnClickListener(this);
+
         cameraProviderFuture = ProcessCameraProvider.getInstance(this);
 
-
-        if (checkPermissions()) {
-            previewView.post((Runnable) (new Runnable() {
-                public final void run() {
-                    cameraProviderFuture.addListener(() -> {
-                        try {
-                            ProcessCameraProvider cameraProvider = cameraProviderFuture.get();
-                            startCameraX(cameraProvider);
-                        } catch (ExecutionException | InterruptedException e) {
-                            e.printStackTrace();
-                        }
-                    }, getExecutor());
-                }
-            }));
-        } else {
-            ActivityCompat.requestPermissions(this, REQUIRED_PERMISSIONS, REQUEST_CODE_FOR_PERMISSIONS);
-            ProcessCameraProvider cameraProvider = null;
-            try {
-                cameraProvider = cameraProviderFuture.get();
-            } catch (ExecutionException | InterruptedException e) {
-                e.printStackTrace();
+        previewView.post((Runnable) (new Runnable() {
+            public final void run() {
+                cameraProviderFuture.addListener(() -> {
+                    try {
+                        ProcessCameraProvider cameraProvider = cameraProviderFuture.get();
+                        startCameraX(cameraProvider);
+                    } catch (ExecutionException | InterruptedException e) {
+                        e.printStackTrace();
+                    }
+                }, getExecutor());
             }
-            startCameraX(cameraProvider);
-        }
+        }));
+
     }
 
     @Override
@@ -267,12 +247,6 @@ public class GuestActivity extends AppCompatActivity implements ImageAnalysis.An
         imageCapture = new ImageCapture.Builder()
                 .setCaptureMode(ImageCapture.CAPTURE_MODE_MINIMIZE_LATENCY)
                 .setTargetResolution(new Size(resolutionX, resolutionY))
-                .build();
-
-
-        // Video capture use case
-        videoCapture = new VideoCapture.Builder()
-                .setVideoFrameRate(60)
                 .build();
 
         // Image analysis use case
@@ -334,60 +308,6 @@ public class GuestActivity extends AppCompatActivity implements ImageAnalysis.An
     }
     //画面出力　↑↑
 
-    //ボタン処理　↓↓
-    @SuppressLint("RestrictedApi")
-    @Override
-    public void onClick(View view) {
-        switch (view.getId()) {
-            case R.id.bCapture:
-                capturePhoto();
-                break;
-            case R.id.bRecord:
-                if (bRecord.getText() == "🔴") {
-                    bRecord.setText("🔶");
-                    recordVideo();
-//                    LayoutParams lp = getWindow().getAttributes();
-//                    lp.screenBrightness = 0.01F;
-//                    getWindow().setAttributes(lp);
-                } else {
-                    bRecord.setText("🔴");
-                    videoCapture.stopRecording();
-//                    LayoutParams lp = getWindow().getAttributes();
-//                    lp.screenBrightness = 1.0F;
-//                    getWindow().setAttributes(lp);
-                }
-                break;
-            case R.id.bChange:
-                if (bChange.getText() == "☮") {
-                    bChange.setText("☯");
-                    previewView.post((Runnable) (new Runnable() {
-                        public final void run() {
-                            cameraProviderFuture.addListener(() -> {
-                                try {
-                                    ProcessCameraProvider cameraProvider = cameraProviderFuture.get();
-                                    startCameraXv(cameraProvider);
-                                } catch (ExecutionException | InterruptedException e) {
-                                    e.printStackTrace();
-                                }
-                            }, getExecutor());
-                        }
-                    }));
-                } else {
-                    bChange.setText("☮");
-                    ProcessCameraProvider cameraProvider = null;
-                    try {
-                        cameraProvider = cameraProviderFuture.get();
-                    } catch (ExecutionException | InterruptedException e) {
-                        e.printStackTrace();
-                    }
-                    startCameraX(cameraProvider);
-                }
-                break;
-
-        }
-    }
-    //ボタン処理　↑↑
-
     //動画保存　↓↓
     @SuppressLint("RestrictedApi")
     private void recordVideo() {
@@ -398,10 +318,16 @@ public class GuestActivity extends AppCompatActivity implements ImageAnalysis.An
             getWindow().setAttributes(lp);
         }
 
+        File movieDir;
+
         if (videoCapture != null) {
-            //File movieDir = new File(getExternalFilesDir(Environment.DIRECTORY_MOVIES) + "/");
-            final String SAVE_DIR = "/DCIM/SYNCAM";
-            File movieDir = new File(Environment.getExternalStorageDirectory().getPath() + SAVE_DIR);
+            int apiInt = Build.VERSION.SDK_INT;
+            if (apiInt <= 29) {
+                final String SAVE_DIR = "/DCIM/SYNCAM";
+                movieDir = new File(Environment.getExternalStorageDirectory().getPath() + SAVE_DIR);
+            } else {
+                movieDir = new File(getExternalFilesDir(Environment.DIRECTORY_MOVIES) + "/");
+            }
 
             if (!movieDir.exists())
                 movieDir.mkdir();
@@ -431,9 +357,8 @@ public class GuestActivity extends AppCompatActivity implements ImageAnalysis.An
 
                             @Override
                             public void onError(int videoCaptureError, @NonNull String message, @Nullable Throwable cause) {
-                                // Toast.makeText(MainActivity.this, "エラー:" + message, Toast.LENGTH_SHORT).show();
-                                Toast.makeText(GuestActivity.this, "ビデオモードではありません", Toast.LENGTH_SHORT).show();
-                                if(dark) {
+                                Toast.makeText(GuestActivity.this, "エラー:" + message, Toast.LENGTH_SHORT).show();
+                                if (dark) {
                                     WindowManager.LayoutParams lp = getWindow().getAttributes();
                                     lp.screenBrightness = 1.0F;
                                     getWindow().setAttributes(lp);
@@ -458,10 +383,14 @@ public class GuestActivity extends AppCompatActivity implements ImageAnalysis.An
 
     //画像保存　↓↓
     private void capturePhoto() {
-//        File photoDir = new File(Environment.getExternalStorageDirectory()+"/"+Environment.DIRECTORY_DCIM+"/cameraxt/");
-        final String SAVE_DIR = "/DCIM/SYNCAM";
-        File photoDir = new File(Environment.getExternalStorageDirectory().getPath() + SAVE_DIR);
-//        File photoDir = new File(getExternalFilesDir(Environment.DIRECTORY_PICTURES) + "/");
+        File photoDir;
+        int apiInt = Build.VERSION.SDK_INT;
+        if (apiInt <= 29) {
+            final String SAVE_DIR = "/DCIM/SYNCAM";
+            photoDir = new File(Environment.getExternalStorageDirectory().getPath() + SAVE_DIR);
+        } else {
+            photoDir = new File(getExternalFilesDir(Environment.DIRECTORY_PICTURES) + "/");
+        }
         if (!photoDir.exists())
             photoDir.mkdir();
 
@@ -482,9 +411,7 @@ public class GuestActivity extends AppCompatActivity implements ImageAnalysis.An
 
                     @Override
                     public void onError(@NonNull ImageCaptureException exception) {
-//                         Toast.makeText(GuestActivity.this, "エラー" + exception.getMessage(), Toast.LENGTH_SHORT).show();
-                        Toast.makeText(GuestActivity.this, "カメラモードではありません", Toast.LENGTH_SHORT).show();
-
+                        Toast.makeText(GuestActivity.this, "エラー" + exception.getMessage(), Toast.LENGTH_SHORT).show();
                     }
                 }
         );
@@ -497,7 +424,6 @@ public class GuestActivity extends AppCompatActivity implements ImageAnalysis.An
 
     }
     //画像保存　↑↑
-
 
     //バー消去　↓↓
     private void immersiveMode() {
@@ -532,30 +458,19 @@ public class GuestActivity extends AppCompatActivity implements ImageAnalysis.An
     }
     //バー消去　↑↑
 
-    //判断　↓↓
-    private boolean checkPermissions() {
-        for (String permission : REQUIRED_PERMISSIONS) {
-            if (ContextCompat.checkSelfPermission(this, permission) != PackageManager.PERMISSION_GRANTED) {
-                return false;
-            }
-        }
-        return true;
-    }
-    //判断　↑↑
-
-    private final Runnable funcC= new Runnable() {
+    private final Runnable funcC = new Runnable() {
         @Override
         public void run() {
             capturePhoto();
         }
     };
-    private final Runnable funcV= new Runnable() {
+    private final Runnable funcV = new Runnable() {
         @Override
         public void run() {
             recordVideo();
         }
     };
-    private final Runnable funcVe= new Runnable() {
+    private final Runnable funcVe = new Runnable() {
         @SuppressLint("RestrictedApi")
         @Override
         public void run() {
