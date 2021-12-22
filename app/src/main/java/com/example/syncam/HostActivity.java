@@ -4,7 +4,6 @@ import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.util.Log;
 import android.util.TypedValue;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -14,22 +13,17 @@ import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.preference.PreferenceManager;
 
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.Task;
 import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 
-import java.util.HashMap;
-import java.util.Map;
 import java.util.Objects;
 
 public class HostActivity extends AppCompatActivity implements View.OnClickListener {
@@ -57,15 +51,15 @@ public class HostActivity extends AppCompatActivity implements View.OnClickListe
         super.onCreate(savedInstanceState);
         setContentView(R.layout.hostactivity);
 
-        TextView tvc = (TextView) findViewById(R.id.tvCount);
-        TextView textView = (TextView) findViewById(R.id.tvNumber);
+        TextView tvc = findViewById(R.id.tvCount);
+        TextView textView = findViewById(R.id.tvNumber);
         textView.setText(MainActivity.rn);
-        LinearLayout l2 = (LinearLayout) findViewById(R.id.ll1);
-        ImageButton IBC = (ImageButton) findViewById(R.id.imageC);
+        LinearLayout l2 = findViewById(R.id.ll1);
+        ImageButton IBC = findViewById(R.id.imageC);
         IBC.setOnClickListener(this);
-        ImageButton IBV = (ImageButton) findViewById(R.id.imageV);
+        ImageButton IBV = findViewById(R.id.imageV);
         IBV.setOnClickListener(this);
-        TextView tv1=(TextView)findViewById(R.id.tvTime);
+        TextView tv1= findViewById(R.id.tvTime);
 
         IBC.setEnabled(false);
         IBV.setEnabled(true);
@@ -147,7 +141,7 @@ public class HostActivity extends AppCompatActivity implements View.OnClickListe
                 tv.setTextSize(TypedValue.COMPLEX_UNIT_SP, 20);
                 tv.setId(getResources().getIdentifier(deviceNumber, "id", "com.example.syncam"));
                 l2.addView(tv);
-                tvc.setText(String.valueOf(Integer.parseInt(tvc.getText().toString().substring(0, 1)) + 1) + tvc.getText().toString().substring(1, 5));
+                tvc.setText((Integer.parseInt(tvc.getText().toString().substring(0, 1)) + 1) + tvc.getText().toString().substring(1, 5));
             }
 
             @Override
@@ -158,7 +152,7 @@ public class HostActivity extends AppCompatActivity implements View.OnClickListe
             @Override
             public void onChildRemoved(@NonNull DataSnapshot snapshot) {
                 l2.removeView(findViewById(getResources().getIdentifier(String.valueOf(snapshot.getKey()).substring(6, 8), "id", "com.example.syncam")));
-                tvc.setText(String.valueOf(Integer.parseInt(tvc.getText().toString().substring(0, 1)) - 1) + tvc.getText().toString().substring(1, 5));
+                tvc.setText((Integer.parseInt(tvc.getText().toString().substring(0, 1)) - 1) + tvc.getText().toString().substring(1, 5));
             }
 
             @Override
@@ -170,49 +164,46 @@ public class HostActivity extends AppCompatActivity implements View.OnClickListe
             }
         });
 
-        findViewById(R.id.bStart).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                SharedPreferences pref = PreferenceManager.getDefaultSharedPreferences(HostActivity.this);
-                Button b = (Button) v;
-                if(b.getText().equals("撮影終了")) {
-                    String end;
-                    switch (pref.getString("Syncam-Setting-timer","5秒")){
-                        case "10秒":
-                            end = String.valueOf(MainActivity.getToday() + 10000 - MainActivity.timeLag);
-                            break;
-                        case "15秒":
-                            end = String.valueOf(MainActivity.getToday() + 15000 - MainActivity.timeLag);
-                            break;
-                        default:
-                            end = String.valueOf(MainActivity.getToday() + 5000 - MainActivity.timeLag);
-                            break;
-                    }
-                    ReadWrite.ref.child(MainActivity.rn).child("Settings").setValue(new EndTime(end));
-                    ReadWrite.ref.child(MainActivity.rn).child("Settings").removeValue();
-                    b.setText("撮影開始");
+        findViewById(R.id.bStart).setOnClickListener(v -> {
+            SharedPreferences pref = PreferenceManager.getDefaultSharedPreferences(HostActivity.this);
+            Button b = (Button) v;
+            if(b.getText().equals("撮影終了")) {
+                String end;
+                switch (pref.getString("Syncam-Setting-timer","5秒")){
+                    case "10秒":
+                        end = String.valueOf(MainActivity.getToday() + 10000 - MainActivity.timeLag);
+                        break;
+                    case "15秒":
+                        end = String.valueOf(MainActivity.getToday() + 15000 - MainActivity.timeLag);
+                        break;
+                    default:
+                        end = String.valueOf(MainActivity.getToday() + 5000 - MainActivity.timeLag);
+                        break;
+                }
+                ReadWrite.ref.child(MainActivity.rn).child("Settings").setValue(new EndTime(end));
+                ReadWrite.ref.child(MainActivity.rn).child("Settings").removeValue();
+                b.setText("撮影開始");
+            }else{
+                String dark, video, start, resolution;
+                dark = String.valueOf(pref.getBoolean("Syncam-Setting-dark", true));
+                video = String.valueOf(videoMode);
+                switch (pref.getString("Syncam-Setting-timer","5秒")){
+                    case "10秒":
+                        start = String.valueOf(MainActivity.getToday() + 10000 - MainActivity.timeLag);
+                        break;
+                    case "15秒":
+                        start = String.valueOf(MainActivity.getToday() + 15000 - MainActivity.timeLag);
+                        break;
+                    default:
+                        start = String.valueOf(MainActivity.getToday() + 5000 - MainActivity.timeLag);
+                        break;
+                }
+                resolution = pref.getString("Syncam-Setting-resolution", "1080p FHD");
+                ReadWrite.SendSettings(dark, video, start, resolution);
+                if (videoMode) {
+                    b.setText("撮影終了");
                 }else{
-                    String dark, video, start, resolution;
-                    dark = String.valueOf(pref.getBoolean("Syncam-Setting-dark", true));
-                    video = String.valueOf(videoMode);
-                    switch (pref.getString("Syncam-Setting-timer","5秒")){
-                        case "10秒":
-                            start = String.valueOf(MainActivity.getToday() + 10000 - MainActivity.timeLag);
-                            break;
-                        case "15秒":
-                            start = String.valueOf(MainActivity.getToday() + 15000 - MainActivity.timeLag);
-                            break;
-                        default:
-                            start = String.valueOf(MainActivity.getToday() + 5000 - MainActivity.timeLag);
-                            break;
-                    }
-                    resolution = pref.getString("Syncam-Setting-resolution", "1080p FHD");
-                    ReadWrite.SendSettings(dark, video, start, resolution);
-                    if (videoMode) {
-                        b.setText("撮影終了");
-                    }else{
-                        ReadWrite.ref.child(MainActivity.rn).child("Settings").removeValue();
-                    }
+                    ReadWrite.ref.child(MainActivity.rn).child("Settings").removeValue();
                 }
             }
         });
@@ -232,29 +223,24 @@ public class HostActivity extends AppCompatActivity implements View.OnClickListe
     @Override
     protected void onRestart() {
         super.onRestart();
-        ReadWrite.ref.get().addOnCompleteListener(new OnCompleteListener<DataSnapshot>() {
-            @Override
-            public void onComplete(@NonNull Task<DataSnapshot> task) {
-                if (!String.valueOf(Objects.requireNonNull(task.getResult()).getValue()).contains("roomNumber=" + MainActivity.rn)) {
-                    finish();
-                    MainActivity.rn = null;
-                }
+        ReadWrite.ref.get().addOnCompleteListener(task -> {
+            if (!String.valueOf(Objects.requireNonNull(task.getResult()).getValue()).contains("roomNumber=" + MainActivity.rn)) {
+                finish();
+                MainActivity.rn = null;
             }
         });
     }
 
-
     boolean videoMode = false;
-
 
     @SuppressLint("NonConstantResourceId")
     @Override
     public void onClick(View view) {
-        ImageButton IBC = (ImageButton) findViewById(R.id.imageC);
+        ImageButton IBC = findViewById(R.id.imageC);
         IBC.setOnClickListener(this);
-        ImageButton IBV = (ImageButton) findViewById(R.id.imageV);
+        ImageButton IBV = findViewById(R.id.imageV);
         IBV.setOnClickListener(this);
-        TextView tv1=(TextView)findViewById(R.id.tvTime);
+        TextView tv1= findViewById(R.id.tvTime);
         Button bStart = findViewById(R.id.bStart);
         switch (view.getId()) {
             case R.id.imageC:

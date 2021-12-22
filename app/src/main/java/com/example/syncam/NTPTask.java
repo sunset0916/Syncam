@@ -11,13 +11,13 @@ import java.net.InetAddress;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
-public class NTPTask extends AsyncTask<Integer,Integer,String> {
+public class NTPTask extends AsyncTask<Integer, Integer, String> {
     @Override
     protected String doInBackground(Integer... params) {
         final String NTP_SERVER = "ntp.nict.jp";
         @SuppressLint("SimpleDateFormat") SimpleDateFormat formater = new SimpleDateFormat("HH:mm:ss.SSS");
         NTPUDPClient client = new NTPUDPClient();
-        String result="";
+        String result = "";
         try {
             client.open();
             InetAddress host = InetAddress.getByName(NTP_SERVER);
@@ -28,7 +28,7 @@ public class NTPTask extends AsyncTask<Integer,Integer,String> {
 
             exactTime = new Date(System.currentTimeMillis() + info.getOffset());
             Log.d("Time", String.valueOf(exactTime));
-            result=formater.format(exactTime);
+            result = formater.format(exactTime);
         } catch (Exception e) {
             e.printStackTrace();
         } finally {
@@ -36,5 +36,4 @@ public class NTPTask extends AsyncTask<Integer,Integer,String> {
         }
         return result;
     }
-
 }

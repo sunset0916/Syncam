@@ -1,5 +1,23 @@
 package com.example.syncam;
 
+import static android.provider.MediaStore.MediaColumns.MIME_TYPE;
+
+import android.Manifest;
+import android.annotation.SuppressLint;
+import android.content.ContentResolver;
+import android.content.ContentValues;
+import android.content.pm.PackageManager;
+import android.os.Bundle;
+import android.os.Environment;
+import android.os.Handler;
+import android.provider.MediaStore;
+import android.util.Log;
+import android.util.Size;
+import android.view.View;
+import android.view.WindowManager;
+import android.widget.Button;
+import android.widget.Toast;
+
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
@@ -16,25 +34,6 @@ import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.lifecycle.LifecycleOwner;
 
-import android.Manifest;
-import android.annotation.SuppressLint;
-import android.app.Application;
-import android.content.ContentResolver;
-import android.content.ContentValues;
-import android.content.pm.PackageManager;
-import android.os.Bundle;
-import android.os.Environment;
-import android.os.Handler;
-import android.provider.MediaStore;
-import android.util.Log;
-import android.util.Size;
-import android.view.View;
-import android.view.WindowManager;
-import android.widget.Button;
-import android.widget.Toast;
-
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.Task;
 import com.google.common.util.concurrent.ListenableFuture;
 import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
@@ -46,9 +45,6 @@ import java.util.Date;
 import java.util.Objects;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Executor;
-
-import static android.media.MediaRecorder.VideoEncoder.HEVC;
-import static android.provider.MediaStore.MediaColumns.MIME_TYPE;
 
 public class GuestActivity extends AppCompatActivity implements ImageAnalysis.Analyzer, View.OnClickListener {
 
@@ -94,7 +90,7 @@ public class GuestActivity extends AppCompatActivity implements ImageAnalysis.An
 
             @Override
             public void onChildRemoved(@NonNull DataSnapshot snapshot) {
-                if (Objects.requireNonNull(snapshot.getKey()).toString().equals(roomNumber)) {
+                if (Objects.requireNonNull(snapshot.getKey()).equals(roomNumber)) {
                     finish();
                 }
             }

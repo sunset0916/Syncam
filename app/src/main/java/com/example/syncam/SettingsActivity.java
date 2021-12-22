@@ -1,16 +1,9 @@
 package com.example.syncam;
 
 import android.os.Bundle;
-import android.view.View;
 
-import androidx.annotation.NonNull;
-import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.preference.PreferenceFragmentCompat;
-
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.Task;
-import com.google.firebase.database.DataSnapshot;
 
 import java.util.Objects;
 
@@ -26,7 +19,6 @@ public class SettingsActivity extends AppCompatActivity {
                     .commit();
         }
     }
-
 
     public static class SettingsFragment extends PreferenceFragmentCompat {
         @Override
@@ -53,13 +45,10 @@ public class SettingsActivity extends AppCompatActivity {
     @Override
     protected void onRestart() {
         super.onRestart();
-        ReadWrite.ref.get().addOnCompleteListener(new OnCompleteListener<DataSnapshot>() {
-            @Override
-            public void onComplete(@NonNull Task<DataSnapshot> task) {
-                if (!String.valueOf(Objects.requireNonNull(task.getResult()).getValue()).contains("roomNumber=" + MainActivity.rn)) {
-                    finish();
-                    MainActivity.rn = null;
-                }
+        ReadWrite.ref.get().addOnCompleteListener(task -> {
+            if (!String.valueOf(Objects.requireNonNull(task.getResult()).getValue()).contains("roomNumber=" + MainActivity.rn)) {
+                finish();
+                MainActivity.rn = null;
             }
         });
     }

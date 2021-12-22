@@ -1,56 +1,36 @@
 package com.example.syncam;
 
 import android.annotation.SuppressLint;
-import android.app.Activity;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.icu.text.SimpleDateFormat;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
-import android.widget.EditText;
-import android.widget.ImageButton;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.camera.lifecycle.ProcessCameraProvider;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.DialogFragment;
 
 import com.firebase.client.Firebase;
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.Task;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
+import java.util.Date;
 import java.util.Objects;
 import java.util.Random;
-import java.util.TimeZone;
-import java.util.concurrent.ExecutionException;
-
-import android.annotation.SuppressLint;
-import android.icu.text.SimpleDateFormat;
-import android.os.Build;
-import android.os.Bundle;
-
-import androidx.annotation.RequiresApi;
-import androidx.appcompat.app.AppCompatActivity;
-
-import java.util.Date;
-import java.util.Locale;
-
 
 public class MainActivity extends AppCompatActivity implements View.OnClickListener {
-    static MainActivity activity;
 
     int REQUEST_CODE_FOR_PERMISSIONS = 1234;
     final String[] REQUIRED_PERMISSIONS = new String[]{"android.permission.CAMERA", "android.permission.WRITE_EXTERNAL_STORAGE", "android.permission.RECORD_AUDIO"};
-
 
     public String ntphh;
     public String ntpmm;
@@ -65,9 +45,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         super.onCreate(savedInstanceState);
         Firebase.setAndroidContext(this);
         setContentView(R.layout.activity_main);
-        Button btn1 = (Button) findViewById(R.id.bJoin);
+        Button btn1 = findViewById(R.id.bJoin);
         btn1.setOnClickListener(this);
-        Button btn2 = (Button) findViewById(R.id.bSet);
+        Button btn2 = findViewById(R.id.bSet);
         btn2.setOnClickListener(this);
 
 
@@ -75,15 +55,11 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             ActivityCompat.requestPermissions(this, REQUIRED_PERMISSIONS, REQUEST_CODE_FOR_PERMISSIONS);
         }
 
-        @SuppressLint({"NewApi", "LocalSuppress"}) int date = getToday();
-
         new NTPTask() {
             @SuppressLint({"StaticFieldLeak", "SetTextI18n"})
             @Override
             protected void onPostExecute(String text) {
                 super.onPostExecute(text);
-
-                int time=getToday();
 
                 ntphh = text.substring(0, 2);
                 ntpmm = text.substring(3, 5);
@@ -102,7 +78,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 ntptimes = ntptimes * 1000;
                 ntptimeS = ntptimeS + ntptimes;
                 Log.d("ntptime", String.valueOf(ntptimeS) );
-                timeLag = time - ntptimeS;
+                timeLag = getToday() - ntptimeS;
 
                 Log.d("Lagtime", String.valueOf(timeLag) );
             }
@@ -135,7 +111,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         int phonetimeS = millisecond + phonetimes;
         Log.d("phonetime", String.valueOf(phonetimeS) );
         return phonetimeS;
-
     }
     //判断　↓↓
     private boolean checkPermissions() {
@@ -147,9 +122,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         return true;
     }
     //判断　↑↑
-    public void onAttach(Activity activity){
-        MainActivity.activity = (MainActivity) activity;
-    }
     static String rn = null;
     static String roomNumber;
     static String deviceNumber;
@@ -179,17 +151,14 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                     rn = "0" + rn;
                 }
                 Toast.makeText(MainActivity.this, "Number = " + rn, Toast.LENGTH_SHORT).show();
-                ReadWrite.ref.get().addOnCompleteListener(new OnCompleteListener<DataSnapshot>() {
-                    @Override
-                    public void onComplete(@NonNull Task<DataSnapshot> task) {
-                        if (String.valueOf(Objects.requireNonNull(task.getResult()).getValue()).contains("roomNumber=" + rn)) {
-                            onClick(findViewById(R.id.bSet));
-                        } else {
-                            HostActivity.flag = true;
-                            ReadWrite.SendRoomNumber(rn);
-                            Intent intent = new Intent(MainActivity.this, HostActivity.class);
-                            startActivity(intent);
-                        }
+                ReadWrite.ref.get().addOnCompleteListener(task -> {
+                    if (String.valueOf(Objects.requireNonNull(task.getResult()).getValue()).contains("roomNumber=" + rn)) {
+                        onClick(findViewById(R.id.bSet));
+                    } else {
+                        HostActivity.flag = true;
+                        ReadWrite.SendRoomNumber(rn);
+                        Intent intent = new Intent(MainActivity.this, HostActivity.class);
+                        startActivity(intent);
                     }
                 });
             }
