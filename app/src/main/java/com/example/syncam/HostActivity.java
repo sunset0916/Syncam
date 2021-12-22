@@ -4,6 +4,8 @@ import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Looper;
 import android.util.TypedValue;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -24,7 +26,13 @@ import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 
+import java.sql.Date;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.Locale;
 import java.util.Objects;
+import java.util.Timer;
+import java.util.TimerTask;
 
 public class HostActivity extends AppCompatActivity implements View.OnClickListener {
     @Override
@@ -183,6 +191,7 @@ public class HostActivity extends AppCompatActivity implements View.OnClickListe
                 ReadWrite.ref.child(MainActivity.rn).child("Settings").setValue(new EndTime(end));
                 ReadWrite.ref.child(MainActivity.rn).child("Settings").removeValue();
                 b.setText("撮影開始");
+                new Handler().postDelayed(endTimer,Integer.parseInt(end) - MainActivity.getToday() + MainActivity.timeLag);
             }else{
                 String dark, video, start, resolution;
                 dark = String.valueOf(pref.getBoolean("Syncam-Setting-dark", true));
@@ -202,11 +211,71 @@ public class HostActivity extends AppCompatActivity implements View.OnClickListe
                 ReadWrite.SendSettings(dark, video, start, resolution);
                 if (videoMode) {
                     b.setText("撮影終了");
+                    new Handler().postDelayed(startTimer,Integer.parseInt(start) - MainActivity.getToday() + MainActivity.timeLag);
                 }else{
                     ReadWrite.ref.child(MainActivity.rn).child("Settings").removeValue();
                 }
             }
         });
+    }
+    private final Runnable startTimer= () -> {
+        stopwatch();
+        TimerStart();
+    };
+    @SuppressLint("SetTextI18n")
+    private final Runnable endTimer= () -> {
+        TimerStop();
+        TextView tv1 = findViewById(R.id.tvTime);
+        tv1.setText("00:00:00");
+    };
+    private Timer timer;
+    private final Handler handler=new Handler(Looper.getMainLooper());
+    private TextView timerText;
+    private long count,delay,period;
+
+    protected void stopwatch(){
+        long nowInmillis=System.currentTimeMillis();
+        Date nowDate=new Date(nowInmillis);
+
+        @SuppressLint("SimpleDateFormat") DateFormat format = new SimpleDateFormat("HH:mm:ss");
+        String text = format.format(nowDate);
+
+        delay=0;
+        period=10;
+
+        timerText=findViewById(R.id.tvTime);
+        timerText.setText(text);
+    }
+
+    void TimerStart(){
+        if(null !=timer){
+            timer.cancel();
+        }
+        timer=new Timer();
+        CountUpTimerTask timerTask = new CountUpTimerTask();
+
+        timer.schedule(timerTask,delay,period);
+
+        count=0;
+    }
+    void TimerStop(){
+        if(null!=timer){
+            timer.cancel();
+        }
+    }
+
+    class CountUpTimerTask extends TimerTask{
+        @Override
+        public void run(){
+            handler.post(() -> {
+                count++;
+                long hh=count/100/60/60;
+                long mm=count/100/60%60;
+                long ss=count/100%60;
+                timerText.setText(
+                        String.format(Locale.US,"%1$02d:%2$02d:%3$02d",hh,mm,ss));
+            });
+        }
     }
 
     static boolean flag = true;
