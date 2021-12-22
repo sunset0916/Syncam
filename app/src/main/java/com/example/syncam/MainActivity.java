@@ -50,7 +50,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         Button btn2 = findViewById(R.id.bSet);
         btn2.setOnClickListener(this);
 
-
         if (!checkPermissions()) {
             ActivityCompat.requestPermissions(this, REQUIRED_PERMISSIONS, REQUEST_CODE_FOR_PERMISSIONS);
         }
@@ -85,7 +84,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         }
                 .execute();
     }
-
 
     @SuppressLint("NewApi")
     public static int getToday() {
@@ -150,7 +148,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 for (int i = rn.length(); i < 6; i++) {
                     rn = "0" + rn;
                 }
-                Toast.makeText(MainActivity.this, "Number = " + rn, Toast.LENGTH_SHORT).show();
                 ReadWrite.ref.get().addOnCompleteListener(task -> {
                     if (String.valueOf(Objects.requireNonNull(task.getResult()).getValue()).contains("roomNumber=" + rn)) {
                         onClick(findViewById(R.id.bSet));
@@ -163,7 +160,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 });
             }
         }else{
-            Toast.makeText(MainActivity.this,"not Firebase connection",Toast.LENGTH_SHORT).show();
+            Toast.makeText(MainActivity.this,"データベースに接続できませんでした",Toast.LENGTH_SHORT).show();
         }
     }
 }

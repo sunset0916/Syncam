@@ -58,11 +58,11 @@ public class myDialogFragment extends DialogFragment {
                                 Intent intent = new Intent(activity,GuestActivity.class);
                                 activity.startActivity(intent);
                             }else{
-                                Toast.makeText(activity,"over max connect devices",Toast.LENGTH_SHORT).show();
+                                Toast.makeText(activity,"ルームの最大接続台数に達しています",Toast.LENGTH_SHORT).show();
                             }
                         });
                     }else{
-                        Toast.makeText(activity,"room is not found",Toast.LENGTH_SHORT).show();
+                        Toast.makeText(activity,"指定したルームは見つかりませんでした",Toast.LENGTH_SHORT).show();
                     }
                 }))
                 .setView(editText)

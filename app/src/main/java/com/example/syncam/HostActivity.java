@@ -35,6 +35,7 @@ import java.util.Timer;
 import java.util.TimerTask;
 
 public class HostActivity extends AppCompatActivity implements View.OnClickListener {
+    boolean endFlag = false;
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         MenuInflater inflater = getMenuInflater();
@@ -72,6 +73,8 @@ public class HostActivity extends AppCompatActivity implements View.OnClickListe
         IBC.setEnabled(false);
         IBV.setEnabled(true);
         tv1.setVisibility(View.INVISIBLE);
+
+        endFlag = false;
 
         DatabaseReference room = ReadWrite.ref.child(MainActivity.rn);
         room.child("devices").addChildEventListener(new ChildEventListener() {
@@ -284,8 +287,10 @@ public class HostActivity extends AppCompatActivity implements View.OnClickListe
     protected void onStop() {
         super.onStop();
         if (flag) {
-            ReadWrite.ref.child(MainActivity.rn).removeValue();
-            MainActivity.rn = null;
+            if(!endFlag) {
+                ReadWrite.ref.child(MainActivity.rn).removeValue();
+                MainActivity.rn = null;
+            }
         }
     }
 
@@ -296,6 +301,7 @@ public class HostActivity extends AppCompatActivity implements View.OnClickListe
             if (!String.valueOf(Objects.requireNonNull(task.getResult()).getValue()).contains("roomNumber=" + MainActivity.rn)) {
                 finish();
                 MainActivity.rn = null;
+                endFlag = true;
             }
         });
     }

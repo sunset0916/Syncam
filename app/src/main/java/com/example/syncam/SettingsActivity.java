@@ -8,6 +8,8 @@ import androidx.preference.PreferenceFragmentCompat;
 import java.util.Objects;
 
 public class SettingsActivity extends AppCompatActivity {
+
+    boolean endFlag = false;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -18,6 +20,7 @@ public class SettingsActivity extends AppCompatActivity {
                     .replace(R.id.settings, new SettingsFragment())
                     .commit();
         }
+        endFlag = false;
     }
 
     public static class SettingsFragment extends PreferenceFragmentCompat {
@@ -37,8 +40,10 @@ public class SettingsActivity extends AppCompatActivity {
     protected void onStop() {
         super.onStop();
         if(!HostActivity.flag){
-            ReadWrite.ref.child(MainActivity.rn).removeValue();
-            MainActivity.rn = null;
+            if(!endFlag) {
+                ReadWrite.ref.child(MainActivity.rn).removeValue();
+                MainActivity.rn = null;
+            }
         }
     }
 
@@ -49,6 +54,7 @@ public class SettingsActivity extends AppCompatActivity {
             if (!String.valueOf(Objects.requireNonNull(task.getResult()).getValue()).contains("roomNumber=" + MainActivity.rn)) {
                 finish();
                 MainActivity.rn = null;
+                endFlag = true;
             }
         });
     }
