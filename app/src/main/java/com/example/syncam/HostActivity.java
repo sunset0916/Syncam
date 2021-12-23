@@ -181,6 +181,7 @@ public class HostActivity extends AppCompatActivity implements View.OnClickListe
         findViewById(R.id.bStart).setOnClickListener(v -> {
             SharedPreferences pref = PreferenceManager.getDefaultSharedPreferences(HostActivity.this);
             Button b = (Button) v;
+            b.setEnabled(false);
             boolean record = pref.getBoolean("Syncam-Setting-record", false);
             if(b.getText().equals("撮影終了")) {
                 String end;
@@ -202,6 +203,7 @@ public class HostActivity extends AppCompatActivity implements View.OnClickListe
                 if(record) {
                     new Handler().postDelayed(funcAs, Integer.parseInt(end) - MainActivity.getToday() + MainActivity.timeLag);
                 }
+                new Handler().postDelayed(buttonEnabled,Integer.parseInt(end) - MainActivity.getToday() + MainActivity.timeLag);
             }else{
                 String dark, video, start, resolution;
                 dark = String.valueOf(pref.getBoolean("Syncam-Setting-dark", true));
@@ -225,21 +227,30 @@ public class HostActivity extends AppCompatActivity implements View.OnClickListe
                     if(record) {
                         new Handler().postDelayed(funcA, Integer.parseInt(start) - MainActivity.getToday() + MainActivity.timeLag);
                     }
+                    new Handler().postDelayed(buttonEnabled,Integer.parseInt(start) - MainActivity.getToday() + MainActivity.timeLag);
                 }else{
                     ReadWrite.ref.child(MainActivity.rn).child("Settings").removeValue();
+                    new Handler().postDelayed(buttonEnabled,Integer.parseInt(start) - MainActivity.getToday() + MainActivity.timeLag);
                 }
             }
         });
     }
+    @SuppressLint("SetTextI18n")
+    private final Runnable timerReset= () -> {
+        TextView tv1 = findViewById(R.id.tvTime);
+        tv1.setText("00:00:00");
+    };
     private final Runnable startTimer= () -> {
         stopwatch();
         TimerStart();
     };
-    @SuppressLint("SetTextI18n")
     private final Runnable endTimer= () -> {
         TimerStop();
-        TextView tv1 = findViewById(R.id.tvTime);
-        tv1.setText("00:00:00");
+        new Handler().postDelayed(timerReset,1000);
+    };
+    private final Runnable buttonEnabled= () -> {
+        Button bStart = findViewById(R.id.bStart);
+        bStart.setEnabled(true);
     };
     private Timer timer;
     private final Handler handler=new Handler(Looper.getMainLooper());
