@@ -40,7 +40,17 @@ import java.util.Timer;
 import java.util.TimerTask;
 
 public class HostActivity extends AppCompatActivity implements View.OnClickListener {
+
+    //画面遷移の状態を格納する変数
     boolean endFlag = false;
+
+    //画面遷移の状態を格納する変数
+    static boolean flag = true;
+
+    //動画/静止画モードを格納する変数
+    boolean videoMode = false;
+
+    //タイトルバーの生成
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         MenuInflater inflater = getMenuInflater();
@@ -48,6 +58,7 @@ public class HostActivity extends AppCompatActivity implements View.OnClickListe
         return true;
     }
 
+    //設定（歯車）ボタンが押されたときの動作
     @SuppressLint("NonConstantResourceId")
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
@@ -65,30 +76,48 @@ public class HostActivity extends AppCompatActivity implements View.OnClickListe
         super.onCreate(savedInstanceState);
         setContentView(R.layout.hostactivity);
 
+        //接続台数を表示するTextView
         TextView tvc = findViewById(R.id.tvCount);
+        //ルーム番号を表示するTextView
         TextView textView = findViewById(R.id.tvNumber);
+        //MainActivityで生成したルーム番号をtextViewに表示
         textView.setText(MainActivity.rn);
+        //接続中のデバイス情報を表示するためのTextViewを配置するLinerLayout
         LinearLayout l2 = findViewById(R.id.ll1);
+
+        //カメラマークのImageButton
         ImageButton IBC = findViewById(R.id.imageC);
         IBC.setOnClickListener(this);
+        //ビデオカメラマークのImageButton
         ImageButton IBV = findViewById(R.id.imageV);
         IBV.setOnClickListener(this);
+
+        //撮影時間を表示するTextView
         TextView tv1= findViewById(R.id.tvTime);
 
+        //ImageButtonを静止画モードの状態で初期化
         IBC.setEnabled(false);
         IBV.setEnabled(true);
+        //撮影時間を表示するTextViewを非表示にする
         tv1.setVisibility(View.INVISIBLE);
 
+        //画面遷移の状態を格納する変数の初期化
         endFlag = false;
 
+        //Firebaseの問い合わせ
         DatabaseReference room = ReadWrite.ref.child(MainActivity.rn);
         room.child("devices").addChildEventListener(new ChildEventListener() {
+            //デバイスが追加されたときの動作
             @SuppressLint("SetTextI18n")
             @Override
             public void onChildAdded(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) {
+                //snapshotの内容を文字列型で格納
                 String s = String.valueOf(snapshot.getValue());
+                //文字列のIndexを指定するための変数
                 int start, end;
+                //型番・デバイス番号・メーカー名を格納するための変数
                 String model, deviceNumber, manufacturer;
+                //sに格納された文字列から必要な情報を取り出して変数に格納する処理
                 if (s.contains(", model=")) {
                     start = s.indexOf(", model=") + 8;
                     if ((s.indexOf(", deviceNumber=") - start) < 0 && (s.indexOf(", manufacturer=") - start) < 0) {
@@ -150,13 +179,20 @@ public class HostActivity extends AppCompatActivity implements View.OnClickListe
                         deviceNumber = s.substring(start, end);
                     }
                 }
+                //新たなTextViewを生成
                 TextView tv = new TextView(HostActivity.this);
+                //生成したTextViewのレイアウトの設定
                 tv.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT,
                         LinearLayout.LayoutParams.WRAP_CONTENT));
+                //生成したTextViewに取り出したデバイス情報を格納
                 tv.setText(deviceNumber + " " + manufacturer + " " + model);
+                //生成したTextViewの文字サイズの設定
                 tv.setTextSize(TypedValue.COMPLEX_UNIT_SP, 20);
+                //生成したTextViewにIDを設定
                 tv.setId(getResources().getIdentifier(deviceNumber, "id", "com.example.syncam"));
+                //生成したTextViewを表示
                 l2.addView(tv);
+                //接続台数の表示を増やす
                 tvc.setText((Integer.parseInt(tvc.getText().toString().substring(0, 1)) + 1) + tvc.getText().toString().substring(1, 5));
             }
 
@@ -164,10 +200,13 @@ public class HostActivity extends AppCompatActivity implements View.OnClickListe
             public void onChildChanged(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) {
             }
 
+            //デバイスが削除されたときの動作
             @SuppressLint("SetTextI18n")
             @Override
             public void onChildRemoved(@NonNull DataSnapshot snapshot) {
+                //TextViewを削除
                 l2.removeView(findViewById(getResources().getIdentifier(String.valueOf(snapshot.getKey()).substring(6, 8), "id", "com.example.syncam")));
+                //接続台数の表示を減らす
                 tvc.setText((Integer.parseInt(tvc.getText().toString().substring(0, 1)) - 1) + tvc.getText().toString().substring(1, 5));
             }
 
@@ -179,14 +218,29 @@ public class HostActivity extends AppCompatActivity implements View.OnClickListe
             public void onCancelled(@NonNull DatabaseError error) {
             }
         });
+
+        //撮影ボタンが押されたときの動作
         findViewById(R.id.bStart).setOnClickListener(v -> {
+
+            //共有プリファレンスの準備
             SharedPreferences pref = PreferenceManager.getDefaultSharedPreferences(HostActivity.this);
+            //View型になっている撮影ボタンをButtonにキャストして格納
             Button b = (Button) v;
+            //撮影ボタンの無効化
             b.setEnabled(false);
+            //設定（歯車）ボタンの無効化
             findViewById(R.id.action_button).setEnabled(false);
+            //動画・静止画モードの格納
             boolean record = pref.getBoolean("Syncam-Setting-record", false);
+
+            //撮影ボタンの状態の判定
             if(b.getText().equals("撮影終了")) {
+                //動画撮影終了時の処理
+
+                //撮影終了時間を格納する変数
                 String end;
+
+                //共有プリファレンスからタイマーの設定を取り出してNTPとの差を考慮して撮影終了時間を算出
                 switch (pref.getString("Syncam-Setting-timer","5秒")){
                     case "10秒":
                         end = String.valueOf(MainActivity.getToday() + 10000 - MainActivity.timeLag);
@@ -198,19 +252,40 @@ public class HostActivity extends AppCompatActivity implements View.OnClickListe
                         end = String.valueOf(MainActivity.getToday() + 5000 - MainActivity.timeLag);
                         break;
                 }
+
+                //撮影終了時間をFirebaseに送信
                 ReadWrite.ref.child(MainActivity.rn).child("Settings").setValue(new EndTime(end));
+                //カメラ設定関係をFirebaseから削除
                 ReadWrite.ref.child(MainActivity.rn).child("Settings").removeValue();
+
+                //撮影ボタンの表示を撮影開始に変更
                 b.setText("撮影開始");
+
+                //ストップウォッチの停止処理までのカウントダウンを開始
                 new Handler().postDelayed(endTimer,Integer.parseInt(end) - MainActivity.getToday() + MainActivity.timeLag);
+
+                //ホスト端末での録音が有効な場合、録音の停止までのカウントダウンを開始
                 if(record) {
                     new Handler().postDelayed(funcAs, Integer.parseInt(end) - MainActivity.getToday() + MainActivity.timeLag);
                 }
+
+                //撮影ボタンの有効化までのカウントダウンを開始
                 new Handler().postDelayed(buttonEnabled,Integer.parseInt(end) - MainActivity.getToday() + MainActivity.timeLag);
+                //設定（歯車）ボタンの有効化までのカウントダウンを開始
                 new Handler().postDelayed(settingButtonEnabled,Integer.parseInt(end) - MainActivity.getToday() + MainActivity.timeLag);
+
             }else{
+                //写真撮影・動画撮影開始時の動作
+
+                //画面暗転・動画/静止画モード・撮影開始時間・解像度の設定を格納する変数
                 String dark, video, start, resolution;
+
+                //画面暗転設定を共有プリファレンスから取得して文字列型として格納
                 dark = String.valueOf(pref.getBoolean("Syncam-Setting-dark", true));
+                //動画/静止画モードを文字列型として格納
                 video = String.valueOf(videoMode);
+
+                //共有プリファレンスからタイマーの設定を取り出してNTPとの差を考慮して撮影開始時間を算出
                 switch (pref.getString("Syncam-Setting-timer","5秒")){
                     case "10秒":
                         start = String.valueOf(MainActivity.getToday() + 10000 - MainActivity.timeLag);
@@ -222,47 +297,81 @@ public class HostActivity extends AppCompatActivity implements View.OnClickListe
                         start = String.valueOf(MainActivity.getToday() + 5000 - MainActivity.timeLag);
                         break;
                 }
+
+                //解像度の設定を共有プリファレンスから取り出して格納
                 resolution = pref.getString("Syncam-Setting-resolution", "1080p FHD");
+
+                //カメラ設定と撮影開始時間をFirebaseに送信
                 ReadWrite.SendSettings(dark, video, start, resolution);
+
+                //動画/静止画モードの判定
                 if (videoMode) {
+                    //動画モード時の動作
+
+                    //撮影ボタンの表示を撮影終了に変更
                     b.setText("撮影終了");
+
+                    //ストップウォッチの開始処理までのカウントダウンを開始
                     new Handler().postDelayed(startTimer,Integer.parseInt(start) - MainActivity.getToday() + MainActivity.timeLag);
+
+                    //ホスト端末での録音が有効な場合、録音の開始までのカウントダウンを開始
                     if(record) {
                         new Handler().postDelayed(funcA, Integer.parseInt(start) - MainActivity.getToday() + MainActivity.timeLag);
                     }
+
                 }else{
+                    //静止画モード時の動作
+
+                    //カメラ設定関係をFirebaseから削除
                     ReadWrite.ref.child(MainActivity.rn).child("Settings").removeValue();
+
+                    //設定（歯車）ボタンの有効化までのカウントダウンを開始
                     new Handler().postDelayed(settingButtonEnabled,Integer.parseInt(start) - MainActivity.getToday() + MainActivity.timeLag);
+
                 }
+                //撮影ボタンの有効化までのカウントダウンを開始
                 new Handler().postDelayed(buttonEnabled,Integer.parseInt(start) - MainActivity.getToday() + MainActivity.timeLag);
             }
         });
     }
+
+    //撮影時間を表示するTextViewの初期化
     @SuppressLint("SetTextI18n")
     private final Runnable timerReset= () -> {
         TextView tv1 = findViewById(R.id.tvTime);
         tv1.setText("00:00:00");
     };
+
+    //ストップウォッチの開始
     private final Runnable startTimer= () -> {
         stopwatch();
         TimerStart();
     };
+
+    //ストップウォッチの停止
     private final Runnable endTimer= () -> {
         TimerStop();
         new Handler().postDelayed(timerReset,1000);
     };
+
+    //撮影ボタンの有効化
     private final Runnable buttonEnabled= () -> {
         Button bStart = findViewById(R.id.bStart);
         bStart.setEnabled(true);
     };
+
+    //設定（歯車）ボタンの有効化
     private final Runnable settingButtonEnabled= () -> {
         findViewById(R.id.action_button).setEnabled(true);
     };
+
+    //ストップウォッチ関連の変数
     private Timer timer;
     private final Handler handler=new Handler(Looper.getMainLooper());
     private TextView timerText;
     private long count,delay,period;
 
+    //ストップウォッチの動作
     protected void stopwatch(){
         long nowInmillis=System.currentTimeMillis();
         Date nowDate=new Date(nowInmillis);
@@ -277,6 +386,7 @@ public class HostActivity extends AppCompatActivity implements View.OnClickListe
         timerText.setText(text);
     }
 
+    //ストップウォッチの開始
     void TimerStart(){
         if(null !=timer){
             timer.cancel();
@@ -288,12 +398,15 @@ public class HostActivity extends AppCompatActivity implements View.OnClickListe
 
         count=0;
     }
+
+    //ストップウォッチの終了
     void TimerStop(){
         if(null!=timer){
             timer.cancel();
         }
     }
 
+    //ストップウォッチ
     class CountUpTimerTask extends TimerTask{
         @Override
         public void run(){
@@ -308,28 +421,32 @@ public class HostActivity extends AppCompatActivity implements View.OnClickListe
         }
     }
 
-    static boolean flag = true;
-
+    //画面停止時の動作
     @Override
     protected void onStop() {
         super.onStop();
         if (flag) {
             if(!endFlag) {
+                //Firebaseからルームを削除
                 ReadWrite.ref.child(MainActivity.rn).removeValue();
                 MainActivity.rn = null;
             }
         }
+
+        //録音していた場合、録音停止
         if (recorder != null) {
             recorder.release();
             recorder = null;
         }
     }
 
+    //画面再開時の動作
     @Override
     protected void onRestart() {
         super.onRestart();
         ReadWrite.ref.get().addOnCompleteListener(task -> {
             if (!String.valueOf(Objects.requireNonNull(task.getResult()).getValue()).contains("roomNumber=" + MainActivity.rn)) {
+                //Firebaseからルームが削除されていたときの動作
                 finish();
                 MainActivity.rn = null;
                 endFlag = true;
@@ -337,8 +454,7 @@ public class HostActivity extends AppCompatActivity implements View.OnClickListe
         });
     }
 
-    boolean videoMode = false;
-
+    //ImageButtonを押したときの動作
     @SuppressLint("NonConstantResourceId")
     @Override
     public void onClick(View view) {
@@ -365,6 +481,7 @@ public class HostActivity extends AppCompatActivity implements View.OnClickListe
                 break;
         }
     }
+
     private static File fileName;
     private MediaRecorder recorder = null;
 
