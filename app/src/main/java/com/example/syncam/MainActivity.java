@@ -5,7 +5,6 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.icu.text.SimpleDateFormat;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.Toast;
@@ -29,66 +28,92 @@ import java.util.Random;
 
 public class MainActivity extends AppCompatActivity implements View.OnClickListener {
 
+    //権限
     int REQUEST_CODE_FOR_PERMISSIONS = 1234;
     final String[] REQUIRED_PERMISSIONS = new String[]{"android.permission.CAMERA", "android.permission.WRITE_EXTERNAL_STORAGE", "android.permission.RECORD_AUDIO"};
 
+    //NTPから取得した時刻を格納する変数
     public String ntphh;
     public String ntpmm;
     public String ntpss;
     public String ntpSSS;
 
+    //NTPから取得した時刻と端末の時刻との差をミリ秒単位で保持する変数
     static int timeLag;
+
+    //ホスト側で生成したルーム番号を保持する変数
+    static String rn = null;
+
+    //ゲスト側で入力されたルーム番号を保持する変数
+    static String roomNumber;
+
+    //ゲスト側で生成されたデバイス番号を保持する変数
+    static String deviceNumber;
+
+    //Firebaseとの接続状況を格納する変数
+    boolean connect = false;
 
     @SuppressLint("StaticFieldLeak")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        //Firebaseの準備
         Firebase.setAndroidContext(this);
+
+        //ボタン等の準備
         setContentView(R.layout.activity_main);
         Button btn1 = findViewById(R.id.bJoin);
         btn1.setOnClickListener(this);
         Button btn2 = findViewById(R.id.bSet);
         btn2.setOnClickListener(this);
 
+        //権限のチェック
         if (!checkPermissions()) {
             ActivityCompat.requestPermissions(this, REQUIRED_PERMISSIONS, REQUEST_CODE_FOR_PERMISSIONS);
         }
 
+        //NTPサーバーと端末から時刻を取得して差を算出する
         new NTPTask() {
             @SuppressLint({"StaticFieldLeak", "SetTextI18n"})
             @Override
             protected void onPostExecute(String text) {
                 super.onPostExecute(text);
 
+                //HH:mm:ss:SSSのフォーマットの文字列から数字を取り出す
                 ntphh = text.substring(0, 2);
                 ntpmm = text.substring(3, 5);
                 ntpss = text.substring(6, 8);
                 ntpSSS = text.substring(9, 12);
 
+                //取り出した数字を数値化に型変換
                 int ntptimeh = Integer.parseInt(ntphh);
                 int ntptimem = Integer.parseInt(ntpmm);
                 int ntptimes = Integer.parseInt(ntpss);
                 int ntptimeS = Integer.parseInt(ntpSSS);
 
+                //時間をミリ秒に統一
                 ntptimeh = ntptimeh * 60;
                 ntptimem = ntptimem + ntptimeh;
                 ntptimem = ntptimem * 60;
                 ntptimes = ntptimes + ntptimem;
                 ntptimes = ntptimes * 1000;
                 ntptimeS = ntptimeS + ntptimes;
-                Log.d("ntptime", String.valueOf(ntptimeS) );
-                timeLag = getToday() - ntptimeS;
 
-                Log.d("Lagtime", String.valueOf(timeLag) );
+                //端末の時刻からNTPの時刻を引いて差を算出
+                timeLag = getToday() - ntptimeS;
             }
         }
                 .execute();
     }
 
+    //端末の時刻をミリ秒単位で整数型で取得
     @SuppressLint("NewApi")
     public static int getToday() {
+        //端末の時刻をDate型で取得
         Date date = new Date();
 
+        //文字列型として時・分・秒・ミリ秒の数字部分を抜き出して数値型に変換
         @SuppressLint("SimpleDateFormat") SimpleDateFormat hourformat = new SimpleDateFormat("HH");
         String HHformat=hourformat.format(date);
         int hour=Integer.parseInt(HHformat);
@@ -101,15 +126,16 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         @SuppressLint("SimpleDateFormat") SimpleDateFormat millisecondformat = new SimpleDateFormat("SSS");
         String SSSformat=millisecondformat.format(date);
         int millisecond=Integer.parseInt(SSSformat);
+
+        //時間をミリ秒に統一し、返却
         int phonetimeh = hour * 60;
         int phonetimem = minute + phonetimeh;
         phonetimem = phonetimem * 60;
         int phonetimes = second + phonetimem;
         phonetimes = phonetimes * 1000;
-        int phonetimeS = millisecond + phonetimes;
-        Log.d("phonetime", String.valueOf(phonetimeS) );
-        return phonetimeS;
+        return millisecond + phonetimes;
     }
+
     //判断　↓↓
     private boolean checkPermissions() {
         for (String permission : REQUIRED_PERMISSIONS) {
@@ -120,14 +146,12 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         return true;
     }
     //判断　↑↑
-    static String rn = null;
-    static String roomNumber;
-    static String deviceNumber;
-    boolean connect = false;
 
+    //ボタンを押されたときの動作
     @SuppressLint("NonConstantResourceId")
     @Override
     public void onClick(View view) {
+        //Firebaseへの接続状況をconnectに格納
         DatabaseReference connectedRef = FirebaseDatabase.getInstance().getReference(".info/connected");
         connectedRef.addValueEventListener(new ValueEventListener() {
             @Override
@@ -138,22 +162,33 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             public void onCancelled(@NonNull DatabaseError error) {
             }
         });
+        //Firebaseに接続できているかの判断
         if(connect) {
             if (view.getId() == R.id.bJoin) {
+                //ルーム参加ダイアログの表示
                 DialogFragment dialogFragment = new myDialogFragment();
                 dialogFragment.show(getSupportFragmentManager(), "my_dialog");
             } else if (view.getId() == R.id.bSet) {
+                //ルームの生成
                 Random r = new Random();
+                //0~999999の間で乱数を生成
                 rn = String.valueOf(r.nextInt(1000000));
+                //6桁に満たない場合は6桁になるまで戦闘に0を追加する
                 for (int i = rn.length(); i < 6; i++) {
                     rn = "0" + rn;
                 }
+                //Firebaseへ問い合わせ
                 ReadWrite.ref.get().addOnCompleteListener(task -> {
+                    //生成したルーム番号がFirebaseに存在するかの判断
                     if (String.valueOf(Objects.requireNonNull(task.getResult()).getValue()).contains("roomNumber=" + rn)) {
+                        //番号生成やり直し
                         onClick(findViewById(R.id.bSet));
                     } else {
+                        //画面遷移の状態を保持する変数を初期化
                         HostActivity.flag = true;
+                        //Firebaseに生成したルーム番号を送信
                         ReadWrite.SendRoomNumber(rn);
+                        //ホスト画面に遷移
                         Intent intent = new Intent(MainActivity.this, HostActivity.class);
                         startActivity(intent);
                     }
@@ -165,6 +200,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     }
 }
 
+//ここから下Firebaseに送信するデータと送信機能
+
+//ルーム番号
 class RoomInfo{
     String roomNumber;
     RoomInfo(String s){
@@ -175,6 +213,7 @@ class RoomInfo{
     }
 }
 
+//ゲスト端末のデバイス情報
 class DeviceInfo{
     String deviceNumber;
     String manufacturer;
@@ -195,6 +234,7 @@ class DeviceInfo{
     }
 }
 
+//撮影開始時間とカメラ設定
 class Settings{
     String dark;
     String video;
@@ -220,6 +260,7 @@ class Settings{
     }
 }
 
+//撮影終了時間
 class EndTime{
     String end;
     EndTime(String s){
@@ -230,17 +271,22 @@ class EndTime{
     }
 }
 
+//Firebaseへのデータ送信関係をまとめたやつ
 class ReadWrite extends AppCompatActivity{
+    //Firebaseの準備
     static final FirebaseDatabase database = FirebaseDatabase.getInstance();
     static DatabaseReference ref = database.getReference("room");
+    //ルーム番号を送信
     static void SendRoomNumber(String s){
         ref.child(s).setValue(new RoomInfo(s));
     }
+    //デバイス情報の送信
     static void SendDeviceInfo(String s, String s1, String s2, String s3){
         DatabaseReference room = ref.child(s);
         DatabaseReference devices = room.child("devices");
         devices.child(s1).setValue(new DeviceInfo(s1,s2,s3));
     }
+    //撮影開始時間とカメラ設定の送信
     static void SendSettings(String a,String b,String c,String d){
         DatabaseReference settings = ref.child(MainActivity.rn).child("Settings");
         settings.setValue(new Settings(a, b, c, d));
