@@ -58,8 +58,6 @@ public class GuestActivity extends AppCompatActivity implements ImageAnalysis.An
     private ImageCapture imageCapture;
     private VideoCapture videoCapture;
 
-    int REQUEST_CODE_FOR_PERMISSIONS = 1234;
-    final String[] REQUIRED_PERMISSIONS = new String[]{"android.permission.CAMERA", "android.permission.WRITE_EXTERNAL_STORAGE", "android.permission.RECORD_AUDIO"};
     int count = 0;
     boolean dark;
     int resolutionX = 1920;

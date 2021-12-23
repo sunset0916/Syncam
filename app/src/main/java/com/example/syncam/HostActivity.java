@@ -3,7 +3,9 @@ package com.example.syncam;
 import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.media.MediaRecorder;
 import android.os.Bundle;
+import android.os.Environment;
 import android.os.Handler;
 import android.os.Looper;
 import android.util.TypedValue;
@@ -26,6 +28,8 @@ import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 
+import java.io.File;
+import java.io.IOException;
 import java.sql.Date;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
@@ -174,10 +178,10 @@ public class HostActivity extends AppCompatActivity implements View.OnClickListe
             public void onCancelled(@NonNull DatabaseError error) {
             }
         });
-
         findViewById(R.id.bStart).setOnClickListener(v -> {
             SharedPreferences pref = PreferenceManager.getDefaultSharedPreferences(HostActivity.this);
             Button b = (Button) v;
+            boolean record = pref.getBoolean("Syncam-Setting-record", false);
             if(b.getText().equals("撮影終了")) {
                 String end;
                 switch (pref.getString("Syncam-Setting-timer","5秒")){
@@ -195,6 +199,9 @@ public class HostActivity extends AppCompatActivity implements View.OnClickListe
                 ReadWrite.ref.child(MainActivity.rn).child("Settings").removeValue();
                 b.setText("撮影開始");
                 new Handler().postDelayed(endTimer,Integer.parseInt(end) - MainActivity.getToday() + MainActivity.timeLag);
+                if(record) {
+                    new Handler().postDelayed(funcAs, Integer.parseInt(end) - MainActivity.getToday() + MainActivity.timeLag);
+                }
             }else{
                 String dark, video, start, resolution;
                 dark = String.valueOf(pref.getBoolean("Syncam-Setting-dark", true));
@@ -215,6 +222,9 @@ public class HostActivity extends AppCompatActivity implements View.OnClickListe
                 if (videoMode) {
                     b.setText("撮影終了");
                     new Handler().postDelayed(startTimer,Integer.parseInt(start) - MainActivity.getToday() + MainActivity.timeLag);
+                    if(record) {
+                        new Handler().postDelayed(funcA, Integer.parseInt(start) - MainActivity.getToday() + MainActivity.timeLag);
+                    }
                 }else{
                     ReadWrite.ref.child(MainActivity.rn).child("Settings").removeValue();
                 }
@@ -292,6 +302,10 @@ public class HostActivity extends AppCompatActivity implements View.OnClickListe
                 MainActivity.rn = null;
             }
         }
+        if (recorder != null) {
+            recorder.release();
+            recorder = null;
+        }
     }
 
     @Override
@@ -334,4 +348,51 @@ public class HostActivity extends AppCompatActivity implements View.OnClickListe
                 break;
         }
     }
+    private static File fileName;
+    private MediaRecorder recorder = null;
+
+    private void startRecording() {
+
+        final String SAVE_DIR = "/MUSIC/AUDIO";
+        fileName=new File(Environment.getExternalStorageDirectory().getPath() + SAVE_DIR);
+
+        if (!fileName.exists())
+            fileName.mkdir();
+
+        java.util.Date date = new java.util.Date();
+        String timestamp = String.valueOf(date.getTime());
+        String fileNamePath = fileName.getAbsolutePath() + "/" + android.os.Build.MODEL + "_"  + timestamp + ".wav";
+
+        recorder = new MediaRecorder();
+        recorder.setAudioSource(MediaRecorder.AudioSource.MIC);
+        recorder.setOutputFormat(MediaRecorder.OutputFormat.DEFAULT);
+        recorder.setOutputFile(fileNamePath);
+        recorder.setAudioEncoder(MediaRecorder.AudioEncoder.AMR_NB);
+
+        try { recorder.prepare();
+        } catch (IOException e) {
+        }
+
+        recorder.start();
+    }
+
+    private void stopRecording() {
+        recorder.stop();
+        recorder.release();
+        recorder = null;
+    }
+
+    private final Runnable funcA = new Runnable() {
+        @Override
+        public void run() {
+            startRecording();
+        }
+    };
+
+    private final Runnable funcAs = new Runnable() {
+        @Override
+        public void run() {
+            stopRecording();
+        }
+    };
 }
