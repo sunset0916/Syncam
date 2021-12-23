@@ -183,6 +183,7 @@ public class HostActivity extends AppCompatActivity implements View.OnClickListe
             SharedPreferences pref = PreferenceManager.getDefaultSharedPreferences(HostActivity.this);
             Button b = (Button) v;
             b.setEnabled(false);
+            findViewById(R.id.action_button).setEnabled(false);
             boolean record = pref.getBoolean("Syncam-Setting-record", false);
             if(b.getText().equals("撮影終了")) {
                 String end;
@@ -205,6 +206,7 @@ public class HostActivity extends AppCompatActivity implements View.OnClickListe
                     new Handler().postDelayed(funcAs, Integer.parseInt(end) - MainActivity.getToday() + MainActivity.timeLag);
                 }
                 new Handler().postDelayed(buttonEnabled,Integer.parseInt(end) - MainActivity.getToday() + MainActivity.timeLag);
+                new Handler().postDelayed(settingButtonEnabled,Integer.parseInt(end) - MainActivity.getToday() + MainActivity.timeLag);
             }else{
                 String dark, video, start, resolution;
                 dark = String.valueOf(pref.getBoolean("Syncam-Setting-dark", true));
@@ -228,11 +230,11 @@ public class HostActivity extends AppCompatActivity implements View.OnClickListe
                     if(record) {
                         new Handler().postDelayed(funcA, Integer.parseInt(start) - MainActivity.getToday() + MainActivity.timeLag);
                     }
-                    new Handler().postDelayed(buttonEnabled,Integer.parseInt(start) - MainActivity.getToday() + MainActivity.timeLag);
                 }else{
                     ReadWrite.ref.child(MainActivity.rn).child("Settings").removeValue();
-                    new Handler().postDelayed(buttonEnabled,Integer.parseInt(start) - MainActivity.getToday() + MainActivity.timeLag);
+                    new Handler().postDelayed(settingButtonEnabled,Integer.parseInt(start) - MainActivity.getToday() + MainActivity.timeLag);
                 }
+                new Handler().postDelayed(buttonEnabled,Integer.parseInt(start) - MainActivity.getToday() + MainActivity.timeLag);
             }
         });
     }
@@ -252,6 +254,9 @@ public class HostActivity extends AppCompatActivity implements View.OnClickListe
     private final Runnable buttonEnabled= () -> {
         Button bStart = findViewById(R.id.bStart);
         bStart.setEnabled(true);
+    };
+    private final Runnable settingButtonEnabled= () -> {
+        findViewById(R.id.action_button).setEnabled(true);
     };
     private Timer timer;
     private final Handler handler=new Handler(Looper.getMainLooper());

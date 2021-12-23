@@ -5,6 +5,7 @@
             app:key="Syncam-Setting-dark"
             app:title="ゲスト端末の画面を暗くする"
             app:useSimpleSummaryProvider="true"
+            android:summary="撮影中のバッテリー消費を抑えることができます"
             app:defaultValue="true"/>
         <CheckBoxPreference
             app:key="Syncam-Setting-record"
