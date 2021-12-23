@@ -28,6 +28,15 @@
                 app:layout_constraintTop_toTopOf="parent" />
         </androidx.constraintlayout.widget.ConstraintLayout>
 
+        <TextView
+            android:id="@+id/tvData"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="#000000"
+            android:alpha="0.50"
+            android:text=""
+            android:textColor="@color/white"/>
+
     </FrameLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -17,6 +17,7 @@ import android.util.Size;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.Button;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -66,6 +67,7 @@ public class GuestActivity extends AppCompatActivity implements ImageAnalysis.An
     int endTime;
     boolean videoMode;
 
+    @SuppressLint("SetTextI18n")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -207,6 +209,8 @@ public class GuestActivity extends AppCompatActivity implements ImageAnalysis.An
                 }, getExecutor());
             }
         }));
+        TextView textView=findViewById(R.id.tvData);
+        textView.setText(roomNumber+" "+deviceNumber.substring(6,8)+" "+android.os.Build.MANUFACTURER+" "+android.os.Build.MODEL);
 
     }
 
