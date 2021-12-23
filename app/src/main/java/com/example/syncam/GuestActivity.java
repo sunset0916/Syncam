@@ -209,9 +209,6 @@ public class GuestActivity extends AppCompatActivity implements ImageAnalysis.An
                 }, getExecutor());
             }
         }));
-        TextView textView=findViewById(R.id.tvData);
-        textView.setText(roomNumber+" "+deviceNumber.substring(6,8)+" "+android.os.Build.MANUFACTURER+" "+android.os.Build.MODEL);
-
     }
 
     @Override
@@ -231,7 +228,7 @@ public class GuestActivity extends AppCompatActivity implements ImageAnalysis.An
         return ContextCompat.getMainExecutor(this);
     }
 
-    @SuppressLint("RestrictedApi")
+    @SuppressLint({"RestrictedApi", "SetTextI18n"})
     private void startCameraX(ProcessCameraProvider cameraProvider) {
         cameraProvider.unbindAll();
         CameraSelector cameraSelector = new CameraSelector.Builder()
@@ -260,10 +257,13 @@ public class GuestActivity extends AppCompatActivity implements ImageAnalysis.An
 
         //bind to lifecycle:
         cameraProvider.bindToLifecycle((LifecycleOwner) this, cameraSelector, preview, imageCapture);
+        TextView textView=findViewById(R.id.tvData);
+        textView.setText(roomNumber+" "+deviceNumber.substring(6,8)+" "+android.os.Build.MANUFACTURER+" "+android.os.Build.MODEL);
+
 
     }
 
-    @SuppressLint("RestrictedApi")
+    @SuppressLint({"RestrictedApi", "SetTextI18n"})
     private void startCameraXv(ProcessCameraProvider cameraProvider) {
         cameraProvider.unbindAll();
         CameraSelector cameraSelector = new CameraSelector.Builder()
@@ -298,6 +298,9 @@ public class GuestActivity extends AppCompatActivity implements ImageAnalysis.An
 
         //bind to lifecycle:
         cameraProvider.bindToLifecycle((LifecycleOwner) this, cameraSelector, preview, videoCapture);
+        TextView textView=findViewById(R.id.tvData);
+        textView.setText(roomNumber+" "+deviceNumber.substring(6,8)+" "+android.os.Build.MANUFACTURER+" "+android.os.Build.MODEL);
+
 
     }
 
