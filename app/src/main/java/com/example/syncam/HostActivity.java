@@ -4,6 +4,7 @@ import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.media.MediaRecorder;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
 import android.os.Handler;
@@ -364,8 +365,13 @@ public class HostActivity extends AppCompatActivity implements View.OnClickListe
 
     private void startRecording() {
 
-        final String SAVE_DIR = "/MUSIC/AUDIO";
-        fileName=new File(Environment.getExternalStorageDirectory().getPath() + SAVE_DIR);
+        int apiInt = Build.VERSION.SDK_INT;
+        if (apiInt <= 29) {
+            final String SAVE_DIR = "/MUSIC/AUDIO";
+            fileName=new File(Environment.getExternalStorageDirectory().getPath() + SAVE_DIR);
+        } else {
+            fileName = new File(getExternalFilesDir(Environment.DIRECTORY_MUSIC) + "/");
+        }
 
         if (!fileName.exists())
             fileName.mkdir();
