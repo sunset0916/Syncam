@@ -49,21 +49,32 @@ import java.util.concurrent.Executor;
 
 public class GuestActivity extends AppCompatActivity implements ImageAnalysis.Analyzer {
 
+    //デバイス番号を格納する変数
     String deviceNumber;
+    //ルーム番号を格納する変数
     String roomNumber;
+    //デバイス情報を格納するFirebaseのノード
     DatabaseReference devices;
+
     private ListenableFuture<ProcessCameraProvider> cameraProviderFuture;
 
     PreviewView previewView;
     private ImageCapture imageCapture;
     private VideoCapture videoCapture;
 
+    //カウンター
     int count = 0;
+    //画面を暗くするかどうかの設定
     boolean dark;
+    //横の解像度
     int resolutionX = 1920;
+    //縦の解像度
     int resolutionY = 1080;
+    //撮影開始時間
     int startTime;
+    //撮影終了時間
     int endTime;
+    //撮影モード（動画・静止画）
     boolean videoMode;
 
     @SuppressLint("SetTextI18n")
@@ -72,10 +83,15 @@ public class GuestActivity extends AppCompatActivity implements ImageAnalysis.An
         super.onCreate(savedInstanceState);
         setTheme(R.style.AppTheme_NoTitleBar);
         setContentView(R.layout.activity_guest);
+
+        //ルーム番号とデバイス番号をMainActivityに保存した変数から読み込む
         roomNumber = MainActivity.roomNumber;
         deviceNumber = MainActivity.deviceNumber;
+
+        //デバイス情報を格納するFirebaseの場所を代入
         devices = ReadWrite.ref.child(roomNumber).child("devices");
-        Log.d("variable", roomNumber + deviceNumber);
+
+        //Firebase上のルームが変更されたことを検知するリスナー
         ReadWrite.ref.addChildEventListener(new ChildEventListener() {
             @Override
             public void onChildAdded(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) {
@@ -85,6 +101,7 @@ public class GuestActivity extends AppCompatActivity implements ImageAnalysis.An
             public void onChildChanged(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) {
             }
 
+            //参加しているルームが削除されたときの動作
             @Override
             public void onChildRemoved(@NonNull DataSnapshot snapshot) {
                 if (Objects.requireNonNull(snapshot.getKey()).equals(roomNumber)) {
@@ -101,14 +118,18 @@ public class GuestActivity extends AppCompatActivity implements ImageAnalysis.An
             }
         });
 
+        //Firebase上の設定関連の変更を検知するリスナー
         ReadWrite.ref.child(roomNumber).child("Settings").addChildEventListener(new ChildEventListener() {
             @SuppressLint("RestrictedApi")
             @Override
             public void onChildAdded(@NonNull DataSnapshot snapshot, @Nullable @org.jetbrains.annotations.Nullable String previousChildName) {
+                //受け取った情報をSwitch文で処理
                 switch (Objects.requireNonNull(snapshot.getKey())) {
+                    //画面を暗くするかの設定
                     case "dark":
                         dark = Boolean.parseBoolean(String.valueOf(snapshot.getValue()));
                         break;
+                    //解像度の設定
                     case "resolution":
                         switch (String.valueOf(snapshot.getValue())) {
                             case "720p HD":
@@ -125,23 +146,34 @@ public class GuestActivity extends AppCompatActivity implements ImageAnalysis.An
                                 break;
                         }
                         break;
+                    //撮影開始時間
                     case "start":
                         startTime = Integer.parseInt((String) Objects.requireNonNull(snapshot.getValue()));
                         break;
+                    //動画・静止画モードの設定
                     case "video":
                         videoMode = Boolean.parseBoolean(String.valueOf(snapshot.getValue()));
                         break;
+                    //撮影終了
                     case "end":
                         endTime = Integer.parseInt((String) Objects.requireNonNull(snapshot.getValue()));
+                        //NTPサーバーとの差を考慮して撮影終了時間を算出
                         int i = endTime - MainActivity.getToday() + MainActivity.timeLag;
+                        //撮影終了時間になったら撮影終了する
                         new Handler().postDelayed(funcVe, i);
+                        //カウンターのリセット
                         count = 0;
                 }
                 count++;
+                //撮影開始処理
                 if (count == 4) {
+                    //NTPサーバーとの差を考慮して撮影開始時間を算出
                     int i = startTime - MainActivity.getToday() + MainActivity.timeLag;
+                    //撮影モードの判定
                     if (videoMode) {
+                        //撮影開始までのカウントダウンを開始
                         new Handler().postDelayed(funcV, i);
+                        //動画モードでカメラを起動
                         previewView.post((Runnable) (new Runnable() {
                             public final void run() {
                                 cameraProviderFuture.addListener(() -> {
@@ -155,7 +187,9 @@ public class GuestActivity extends AppCompatActivity implements ImageAnalysis.An
                             }
                         }));
                     } else {
+                        //撮影開始までのカウントダウンを開始
                         new Handler().postDelayed(funcC, i);
+                        //静止画モードでカメラを起動
                         previewView.post((Runnable) (new Runnable() {
                             public final void run() {
                                 cameraProviderFuture.addListener(() -> {
@@ -210,12 +244,14 @@ public class GuestActivity extends AppCompatActivity implements ImageAnalysis.An
         }));
     }
 
+    //画面停止時にFirebaseからデバイス情報を削除
     @Override
     protected void onStop() {
         super.onStop();
         devices.child(deviceNumber).removeValue();
     }
 
+    //再開時にMainActivityに戻る
     @Override
     protected void onRestart() {
         super.onRestart();
@@ -462,18 +498,23 @@ public class GuestActivity extends AppCompatActivity implements ImageAnalysis.An
     }
     //バー消去　↑↑
 
+    //写真撮影
     private final Runnable funcC = new Runnable() {
         @Override
         public void run() {
             capturePhoto();
         }
     };
+
+    //動画撮影開始
     private final Runnable funcV = new Runnable() {
         @Override
         public void run() {
             recordVideo();
         }
     };
+
+    //動画撮影終了
     private final Runnable funcVe = new Runnable() {
         @SuppressLint("RestrictedApi")
         @Override
