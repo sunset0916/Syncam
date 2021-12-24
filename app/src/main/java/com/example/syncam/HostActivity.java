@@ -50,8 +50,6 @@ public class HostActivity extends AppCompatActivity implements View.OnClickListe
     //動画/静止画モードを格納する変数
     boolean videoMode = false;
 
-    //録音ファイル変数
-    private static File fileName;
     //レコーダー変数
     private MediaRecorder recorder = null;
 
@@ -366,9 +364,7 @@ public class HostActivity extends AppCompatActivity implements View.OnClickListe
     };
 
     //設定（歯車）ボタンの有効化
-    private final Runnable settingButtonEnabled = () -> {
-        findViewById(R.id.action_button).setEnabled(true);
-    };
+    private final Runnable settingButtonEnabled = () -> findViewById(R.id.action_button).setEnabled(true);
 
     //ストップウォッチ関連の変数
     private Timer timer;
@@ -492,6 +488,8 @@ public class HostActivity extends AppCompatActivity implements View.OnClickListe
 
         //APIによってフォルダの変更
         int apiInt = Build.VERSION.SDK_INT;
+        //録音ファイル変数
+        File fileName;
         if (apiInt <= 29) {
             final String SAVE_DIR = "/MUSIC/AUDIO";
             fileName = new File(Environment.getExternalStorageDirectory().getPath() + SAVE_DIR);
@@ -531,18 +529,8 @@ public class HostActivity extends AppCompatActivity implements View.OnClickListe
 
 
     //録音開始ハンドラー変数
-    private final Runnable funcA = new Runnable() {
-        @Override
-        public void run() {
-            startRecording();
-        }
-    };
+    private final Runnable funcA = this::startRecording;
 
     //録音停止ハンドラー変数
-    private final Runnable funcAs = new Runnable() {
-        @Override
-        public void run() {
-            stopRecording();
-        }
-    };
+    private final Runnable funcAs = this::stopRecording;
 }
