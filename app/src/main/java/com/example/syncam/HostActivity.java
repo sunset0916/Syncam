@@ -361,9 +361,7 @@ public class HostActivity extends AppCompatActivity implements View.OnClickListe
     };
 
     //設定（歯車）ボタンの有効化
-    private final Runnable settingButtonEnabled= () -> {
-        findViewById(R.id.action_button).setEnabled(true);
-    };
+    private final Runnable settingButtonEnabled= () -> findViewById(R.id.action_button).setEnabled(true);
 
     //ストップウォッチ関連の変数
     private Timer timer;
@@ -482,15 +480,15 @@ public class HostActivity extends AppCompatActivity implements View.OnClickListe
         }
     }
 
-    private static File fileName;
     private MediaRecorder recorder = null;
 
     private void startRecording() {
 
         int apiInt = Build.VERSION.SDK_INT;
+        File fileName;
         if (apiInt <= 29) {
             final String SAVE_DIR = "/MUSIC/AUDIO";
-            fileName=new File(Environment.getExternalStorageDirectory().getPath() + SAVE_DIR);
+            fileName =new File(Environment.getExternalStorageDirectory().getPath() + SAVE_DIR);
         } else {
             fileName = new File(getExternalFilesDir(Environment.DIRECTORY_MUSIC) + "/");
         }
@@ -509,7 +507,7 @@ public class HostActivity extends AppCompatActivity implements View.OnClickListe
         recorder.setAudioEncoder(MediaRecorder.AudioEncoder.AMR_NB);
 
         try { recorder.prepare();
-        } catch (IOException e) {
+        } catch (IOException ignored) {
         }
 
         recorder.start();
@@ -521,17 +519,7 @@ public class HostActivity extends AppCompatActivity implements View.OnClickListe
         recorder = null;
     }
 
-    private final Runnable funcA = new Runnable() {
-        @Override
-        public void run() {
-            startRecording();
-        }
-    };
+    private final Runnable funcA = this::startRecording;
 
-    private final Runnable funcAs = new Runnable() {
-        @Override
-        public void run() {
-            stopRecording();
-        }
-    };
+    private final Runnable funcAs = this::stopRecording;
 }
