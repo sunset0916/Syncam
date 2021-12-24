@@ -127,7 +127,7 @@ public class GuestActivity extends AppCompatActivity implements ImageAnalysis.An
                 switch (Objects.requireNonNull(snapshot.getKey())) {
                     //画面を暗くするかの設定
                     case "dark":
-                        dark = Boolean.parseBoolean(String.valueOf(snapshot.getValue()));
+                        dark = String.valueOf(snapshot.getValue()).equals("true");
                         break;
                     //解像度の設定
                     case "resolution":
@@ -152,7 +152,7 @@ public class GuestActivity extends AppCompatActivity implements ImageAnalysis.An
                         break;
                     //動画・静止画モードの設定
                     case "video":
-                        videoMode = Boolean.parseBoolean(String.valueOf(snapshot.getValue()));
+                        videoMode = String.valueOf(snapshot.getValue()).equals("true");
                         break;
                     //撮影終了
                     case "end":
@@ -161,8 +161,6 @@ public class GuestActivity extends AppCompatActivity implements ImageAnalysis.An
                         int i = endTime - MainActivity.getToday() + MainActivity.timeLag;
                         //撮影終了時間になったら撮影終了する
                         new Handler().postDelayed(funcVe, i);
-                        //カウンターのリセット
-                        count = 0;
                 }
                 count++;
                 //撮影開始処理
@@ -202,7 +200,6 @@ public class GuestActivity extends AppCompatActivity implements ImageAnalysis.An
                                 }, getExecutor());
                             }
                         }));
-                        count = 0;
                     }
                 }
             }
@@ -293,7 +290,7 @@ public class GuestActivity extends AppCompatActivity implements ImageAnalysis.An
         //bind to lifecycle:
         cameraProvider.bindToLifecycle((LifecycleOwner) this, cameraSelector, preview, imageCapture);
         TextView textView=findViewById(R.id.tvData);
-        textView.setText(roomNumber+" "+deviceNumber.substring(6,8)+" "+android.os.Build.MANUFACTURER+" "+android.os.Build.MODEL);
+        textView.setText("　　" +roomNumber+" "+deviceNumber.substring(6,8)+" "+android.os.Build.MANUFACTURER+" "+android.os.Build.MODEL);
 
 
     }
@@ -334,7 +331,7 @@ public class GuestActivity extends AppCompatActivity implements ImageAnalysis.An
         //bind to lifecycle:
         cameraProvider.bindToLifecycle((LifecycleOwner) this, cameraSelector, preview, videoCapture);
         TextView textView=findViewById(R.id.tvData);
-        textView.setText(roomNumber+" "+deviceNumber.substring(6,8)+" "+android.os.Build.MANUFACTURER+" "+android.os.Build.MODEL);
+        textView.setText("　　" +roomNumber+" "+deviceNumber.substring(6,8)+" "+android.os.Build.MANUFACTURER+" "+android.os.Build.MODEL);
 
 
     }
@@ -502,7 +499,10 @@ public class GuestActivity extends AppCompatActivity implements ImageAnalysis.An
     private final Runnable funcC = new Runnable() {
         @Override
         public void run() {
+            //写真撮影
             capturePhoto();
+            //カウンターのリセット
+            count = 0;
         }
     };
 
@@ -510,7 +510,10 @@ public class GuestActivity extends AppCompatActivity implements ImageAnalysis.An
     private final Runnable funcV = new Runnable() {
         @Override
         public void run() {
+            //動画撮影開始
             recordVideo();
+            //カウンターのリセット
+            count = 0;
         }
     };
 
@@ -519,7 +522,10 @@ public class GuestActivity extends AppCompatActivity implements ImageAnalysis.An
         @SuppressLint("RestrictedApi")
         @Override
         public void run() {
+            //動画撮影終了
             videoCapture.stopRecording();
+            //カウンターのリセット
+            count = 0;
         }
     };
 }
