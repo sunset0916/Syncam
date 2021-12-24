@@ -50,6 +50,11 @@ public class HostActivity extends AppCompatActivity implements View.OnClickListe
     //動画/静止画モードを格納する変数
     boolean videoMode = false;
 
+    //録音ファイル変数
+    private static File fileName;
+    //レコーダー変数
+    private MediaRecorder recorder = null;
+
     //タイトルバーの生成
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -93,7 +98,7 @@ public class HostActivity extends AppCompatActivity implements View.OnClickListe
         IBV.setOnClickListener(this);
 
         //撮影時間を表示するTextView
-        TextView tv1= findViewById(R.id.tvTime);
+        TextView tv1 = findViewById(R.id.tvTime);
 
         //ImageButtonを静止画モードの状態で初期化
         IBC.setEnabled(false);
@@ -234,14 +239,14 @@ public class HostActivity extends AppCompatActivity implements View.OnClickListe
             boolean record = pref.getBoolean("Syncam-Setting-record", false);
 
             //撮影ボタンの状態の判定
-            if(b.getText().equals("撮影終了")) {
+            if (b.getText().equals("撮影終了")) {
                 //動画撮影終了時の処理
 
                 //撮影終了時間を格納する変数
                 String end;
 
                 //共有プリファレンスからタイマーの設定を取り出してNTPとの差を考慮して撮影終了時間を算出
-                switch (pref.getString("Syncam-Setting-timer","5秒")){
+                switch (pref.getString("Syncam-Setting-timer", "5秒")) {
                     case "10秒":
                         end = String.valueOf(MainActivity.getToday() + 10000 - MainActivity.timeLag);
                         break;
@@ -262,19 +267,19 @@ public class HostActivity extends AppCompatActivity implements View.OnClickListe
                 b.setText("撮影開始");
 
                 //ストップウォッチの停止処理までのカウントダウンを開始
-                new Handler().postDelayed(endTimer,Integer.parseInt(end) - MainActivity.getToday() + MainActivity.timeLag);
+                new Handler().postDelayed(endTimer, Integer.parseInt(end) - MainActivity.getToday() + MainActivity.timeLag);
 
                 //ホスト端末での録音が有効な場合、録音の停止までのカウントダウンを開始
-                if(record) {
+                if (record) {
                     new Handler().postDelayed(funcAs, Integer.parseInt(end) - MainActivity.getToday() + MainActivity.timeLag);
                 }
 
                 //撮影ボタンの有効化までのカウントダウンを開始
-                new Handler().postDelayed(buttonEnabled,Integer.parseInt(end) - MainActivity.getToday() + MainActivity.timeLag);
+                new Handler().postDelayed(buttonEnabled, Integer.parseInt(end) - MainActivity.getToday() + MainActivity.timeLag);
                 //設定（歯車）ボタンの有効化までのカウントダウンを開始
-                new Handler().postDelayed(settingButtonEnabled,Integer.parseInt(end) - MainActivity.getToday() + MainActivity.timeLag);
+                new Handler().postDelayed(settingButtonEnabled, Integer.parseInt(end) - MainActivity.getToday() + MainActivity.timeLag);
 
-            }else{
+            } else {
                 //写真撮影・動画撮影開始時の動作
 
                 //画面暗転・動画/静止画モード・撮影開始時間・解像度の設定を格納する変数
@@ -286,7 +291,7 @@ public class HostActivity extends AppCompatActivity implements View.OnClickListe
                 video = String.valueOf(videoMode);
 
                 //共有プリファレンスからタイマーの設定を取り出してNTPとの差を考慮して撮影開始時間を算出
-                switch (pref.getString("Syncam-Setting-timer","5秒")){
+                switch (pref.getString("Syncam-Setting-timer", "5秒")) {
                     case "10秒":
                         start = String.valueOf(MainActivity.getToday() + 10000 - MainActivity.timeLag);
                         break;
@@ -312,111 +317,111 @@ public class HostActivity extends AppCompatActivity implements View.OnClickListe
                     b.setText("撮影終了");
 
                     //ストップウォッチの開始処理までのカウントダウンを開始
-                    new Handler().postDelayed(startTimer,Integer.parseInt(start) - MainActivity.getToday() + MainActivity.timeLag);
+                    new Handler().postDelayed(startTimer, Integer.parseInt(start) - MainActivity.getToday() + MainActivity.timeLag);
 
                     //ホスト端末での録音が有効な場合、録音の開始までのカウントダウンを開始
-                    if(record) {
+                    if (record) {
                         new Handler().postDelayed(funcA, Integer.parseInt(start) - MainActivity.getToday() + MainActivity.timeLag);
                     }
 
-                }else{
+                } else {
                     //静止画モード時の動作
 
                     //カメラ設定関係をFirebaseから削除
                     ReadWrite.ref.child(MainActivity.rn).child("Settings").removeValue();
 
                     //設定（歯車）ボタンの有効化までのカウントダウンを開始
-                    new Handler().postDelayed(settingButtonEnabled,Integer.parseInt(start) - MainActivity.getToday() + MainActivity.timeLag);
+                    new Handler().postDelayed(settingButtonEnabled, Integer.parseInt(start) - MainActivity.getToday() + MainActivity.timeLag);
 
                 }
                 //撮影ボタンの有効化までのカウントダウンを開始
-                new Handler().postDelayed(buttonEnabled,Integer.parseInt(start) - MainActivity.getToday() + MainActivity.timeLag);
+                new Handler().postDelayed(buttonEnabled, Integer.parseInt(start) - MainActivity.getToday() + MainActivity.timeLag);
             }
         });
     }
 
     //撮影時間を表示するTextViewの初期化
     @SuppressLint("SetTextI18n")
-    private final Runnable timerReset= () -> {
+    private final Runnable timerReset = () -> {
         TextView tv1 = findViewById(R.id.tvTime);
         tv1.setText("00:00:00");
     };
 
     //ストップウォッチの開始
-    private final Runnable startTimer= () -> {
+    private final Runnable startTimer = () -> {
         stopwatch();
         TimerStart();
     };
 
     //ストップウォッチの停止
-    private final Runnable endTimer= () -> {
+    private final Runnable endTimer = () -> {
         TimerStop();
-        new Handler().postDelayed(timerReset,1000);
+        new Handler().postDelayed(timerReset, 1000);
     };
 
     //撮影ボタンの有効化
-    private final Runnable buttonEnabled= () -> {
+    private final Runnable buttonEnabled = () -> {
         Button bStart = findViewById(R.id.bStart);
         bStart.setEnabled(true);
     };
 
     //設定（歯車）ボタンの有効化
-    private final Runnable settingButtonEnabled= () -> {
+    private final Runnable settingButtonEnabled = () -> {
         findViewById(R.id.action_button).setEnabled(true);
     };
 
     //ストップウォッチ関連の変数
     private Timer timer;
-    private final Handler handler=new Handler(Looper.getMainLooper());
+    private final Handler handler = new Handler(Looper.getMainLooper());
     private TextView timerText;
-    private long count,delay,period;
+    private long count, delay, period;
 
     //ストップウォッチの動作
-    protected void stopwatch(){
-        long nowInmillis=System.currentTimeMillis();
-        Date nowDate=new Date(nowInmillis);
+    protected void stopwatch() {
+        long nowInmillis = System.currentTimeMillis();
+        Date nowDate = new Date(nowInmillis);
 
         @SuppressLint("SimpleDateFormat") DateFormat format = new SimpleDateFormat("HH:mm:ss");
         String text = format.format(nowDate);
 
-        delay=0;
-        period=10;
+        delay = 0;
+        period = 10;
 
-        timerText=findViewById(R.id.tvTime);
+        timerText = findViewById(R.id.tvTime);
         timerText.setText(text);
     }
 
     //ストップウォッチの開始
-    void TimerStart(){
-        if(null !=timer){
+    void TimerStart() {
+        if (null != timer) {
             timer.cancel();
         }
-        timer=new Timer();
+        timer = new Timer();
         CountUpTimerTask timerTask = new CountUpTimerTask();
 
-        timer.schedule(timerTask,delay,period);
+        timer.schedule(timerTask, delay, period);
 
-        count=0;
+        count = 0;
     }
 
     //ストップウォッチの終了
-    void TimerStop(){
-        if(null!=timer){
+    void TimerStop() {
+        if (null != timer) {
             timer.cancel();
         }
     }
 
     //ストップウォッチ
-    class CountUpTimerTask extends TimerTask{
+    class CountUpTimerTask extends TimerTask {
         @Override
-        public void run(){
+        public void run() {
             handler.post(() -> {
                 count++;
-                long hh=count/100/60/60;
-                long mm=count/100/60%60;
-                long ss=count/100%60;
+                long hh = count / 100 / 60 / 60;
+                long mm = count / 100 / 60 % 60;
+                long ss = count / 100 % 60;
                 timerText.setText(
-                        String.format(Locale.US,"%1$02d:%2$02d:%3$02d",hh,mm,ss));
+                        String.format(Locale.US, "%1$02d:%2$02d:%3$02d", hh, mm, ss));
             });
         }
     }
@@ -426,7 +431,7 @@ public class HostActivity extends AppCompatActivity implements View.OnClickListe
     protected void onStop() {
         super.onStop();
         if (flag) {
-            if(!endFlag) {
+            if (!endFlag) {
                 //Firebaseからルームを削除
                 ReadWrite.ref.child(MainActivity.rn).removeValue();
                 MainActivity.rn = null;
@@ -462,7 +467,7 @@ public class HostActivity extends AppCompatActivity implements View.OnClickListe
         IBC.setOnClickListener(this);
         ImageButton IBV = findViewById(R.id.imageV);
         IBV.setOnClickListener(this);
-        TextView tv1= findViewById(R.id.tvTime);
+        TextView tv1 = findViewById(R.id.tvTime);
         Button bStart = findViewById(R.id.bStart);
         switch (view.getId()) {
             case R.id.imageC:
@@ -482,15 +487,14 @@ public class HostActivity extends AppCompatActivity implements View.OnClickListe
         }
     }
 
-    private static File fileName;
-    private MediaRecorder recorder = null;
-
+    //録音動作
     private void startRecording() {
 
+        //APIによってフォルダの変更
         int apiInt = Build.VERSION.SDK_INT;
         if (apiInt <= 29) {
             final String SAVE_DIR = "/MUSIC/AUDIO";
-            fileName=new File(Environment.getExternalStorageDirectory().getPath() + SAVE_DIR);
+            fileName = new File(Environment.getExternalStorageDirectory().getPath() + SAVE_DIR);
         } else {
             fileName = new File(getExternalFilesDir(Environment.DIRECTORY_MUSIC) + "/");
         }
@@ -498,29 +502,35 @@ public class HostActivity extends AppCompatActivity implements View.OnClickListe
         if (!fileName.exists())
             fileName.mkdir();
 
+        //ファイル名作成
         java.util.Date date = new java.util.Date();
         String timestamp = String.valueOf(date.getTime());
-        String fileNamePath = fileName.getAbsolutePath() + "/" + android.os.Build.MODEL + "_"  + timestamp + ".wav";
-
+        String fileNamePath = fileName.getAbsolutePath() + "/" + android.os.Build.MODEL + "_" + timestamp + ".wav";
+        //フォーマットなどの選択
         recorder = new MediaRecorder();
         recorder.setAudioSource(MediaRecorder.AudioSource.MIC);
         recorder.setOutputFormat(MediaRecorder.OutputFormat.DEFAULT);
         recorder.setOutputFile(fileNamePath);
         recorder.setAudioEncoder(MediaRecorder.AudioEncoder.AMR_NB);
-
-        try { recorder.prepare();
+        //録音準備
+        try {
+            recorder.prepare();
         } catch (IOException e) {
+            e.printStackTrace();
         }
-
+        //録音開始
         recorder.start();
     }
 
+    //録音停止メソッド
     private void stopRecording() {
         recorder.stop();
         recorder.release();
         recorder = null;
     }
 
+
+    //録音開始ハンドラー変数
     private final Runnable funcA = new Runnable() {
         @Override
         public void run() {
@@ -528,6 +538,7 @@ public class HostActivity extends AppCompatActivity implements View.OnClickListe
         }
     };
 
+    //録音停止ハンドラー変数
     private final Runnable funcAs = new Runnable() {
         @Override
         public void run() {
