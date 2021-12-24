@@ -33,6 +33,7 @@ import androidx.camera.lifecycle.ProcessCameraProvider;
 import androidx.camera.view.PreviewView;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
+import androidx.lifecycle.LifecycleOwner;
 
 import com.google.common.util.concurrent.ListenableFuture;
 import com.google.firebase.database.ChildEventListener;
@@ -57,6 +58,7 @@ public class GuestActivity extends AppCompatActivity implements ImageAnalysis.An
 
     private ListenableFuture<ProcessCameraProvider> cameraProviderFuture;
 
+    //VIEW変数
     PreviewView previewView;
     private ImageCapture imageCapture;
     private VideoCapture videoCapture;
@@ -171,26 +173,34 @@ public class GuestActivity extends AppCompatActivity implements ImageAnalysis.An
                         //撮影開始までのカウントダウンを開始
                         new Handler().postDelayed(funcV, i);
                         //動画モードでカメラを起動
-                        previewView.post(() -> cameraProviderFuture.addListener(() -> {
-                            try {
-                                ProcessCameraProvider cameraProvider = cameraProviderFuture.get();
-                                startCameraXv(cameraProvider);
-                            } catch (ExecutionException | InterruptedException e) {
-                                e.printStackTrace();
+                        previewView.post((Runnable) (new Runnable() {
+                            public final void run() {
+                                cameraProviderFuture.addListener(() -> {
+                                    try {
+                                        ProcessCameraProvider cameraProvider = cameraProviderFuture.get();
+                                        startCameraXv(cameraProvider);
+                                    } catch (ExecutionException | InterruptedException e) {
+                                        e.printStackTrace();
+                                    }
+                                }, getExecutor());
                             }
-                        }, getExecutor()));
+                        }));
                     } else {
                         //撮影開始までのカウントダウンを開始
                         new Handler().postDelayed(funcC, i);
                         //静止画モードでカメラを起動
-                        previewView.post(() -> cameraProviderFuture.addListener(() -> {
-                            try {
-                                ProcessCameraProvider cameraProvider = cameraProviderFuture.get();
-                                startCameraX(cameraProvider);
-                            } catch (ExecutionException | InterruptedException e) {
-                                e.printStackTrace();
+                        previewView.post((Runnable) (new Runnable() {
+                            public final void run() {
+                                cameraProviderFuture.addListener(() -> {
+                                    try {
+                                        ProcessCameraProvider cameraProvider = cameraProviderFuture.get();
+                                        startCameraX(cameraProvider);
+                                    } catch (ExecutionException | InterruptedException e) {
+                                        e.printStackTrace();
+                                    }
+                                }, getExecutor());
                             }
-                        }, getExecutor()));
+                        }));
                     }
                 }
             }
@@ -212,20 +222,26 @@ public class GuestActivity extends AppCompatActivity implements ImageAnalysis.An
             }
         });
 
+        //下のバー消去
         immersiveMode();
 
         previewView = findViewById(R.id.previewView);
 
         cameraProviderFuture = ProcessCameraProvider.getInstance(this);
 
-        previewView.post(() -> cameraProviderFuture.addListener(() -> {
-            try {
-                ProcessCameraProvider cameraProvider = cameraProviderFuture.get();
-                startCameraX(cameraProvider);
-            } catch (ExecutionException | InterruptedException e) {
-                e.printStackTrace();
+        //静止画画面作成
+        previewView.post((Runnable) (new Runnable() {
+            public final void run() {
+                cameraProviderFuture.addListener(() -> {
+                    try {
+                        ProcessCameraProvider cameraProvider = cameraProviderFuture.get();
+                        startCameraX(cameraProvider);
+                    } catch (ExecutionException | InterruptedException e) {
+                        e.printStackTrace();
+                    }
+                }, getExecutor());
             }
-        }, getExecutor()));
+        }));
     }
 
     //画面停止時にFirebaseからデバイス情報を削除
@@ -242,11 +258,13 @@ public class GuestActivity extends AppCompatActivity implements ImageAnalysis.An
         finish();
     }
 
-    //画面出力　↓↓
+    //画面出力　
     Executor getExecutor() {
         return ContextCompat.getMainExecutor(this);
     }
 
+
+    //静止画画面作成
     @SuppressLint({"RestrictedApi", "SetTextI18n"})
     private void startCameraX(ProcessCameraProvider cameraProvider) {
         cameraProvider.unbindAll();
@@ -275,13 +293,15 @@ public class GuestActivity extends AppCompatActivity implements ImageAnalysis.An
         imageAnalysis.setAnalyzer(getExecutor(), this);
 
         //bind to lifecycle:
-        cameraProvider.bindToLifecycle(this, cameraSelector, preview, imageCapture);
+        cameraProvider.bindToLifecycle((LifecycleOwner) this, cameraSelector, preview, imageCapture);
         TextView textView=findViewById(R.id.tvData);
         textView.setText("　　" +roomNumber+" "+deviceNumber.substring(6,8)+" "+android.os.Build.MANUFACTURER+" "+android.os.Build.MODEL);
 
 
     }
 
+
+    //動画画面作成
     @SuppressLint({"RestrictedApi", "SetTextI18n"})
     private void startCameraXv(ProcessCameraProvider cameraProvider) {
         cameraProvider.unbindAll();
@@ -316,26 +336,27 @@ public class GuestActivity extends AppCompatActivity implements ImageAnalysis.An
         imageAnalysis.setAnalyzer(getExecutor(), this);
 
         //bind to lifecycle:
-        cameraProvider.bindToLifecycle(this, cameraSelector, preview, videoCapture);
+        cameraProvider.bindToLifecycle((LifecycleOwner) this, cameraSelector, preview, videoCapture);
         TextView textView=findViewById(R.id.tvData);
+        //ゲスト画面上に情報を表示
         textView.setText("　　" +roomNumber+" "+deviceNumber.substring(6,8)+" "+android.os.Build.MANUFACTURER+" "+android.os.Build.MODEL);
 
 
     }
-
-
     @Override
     public void analyze(@NonNull ImageProxy image) {
         // image processing here for the current frame
         Log.d("TAG", "analyze: got the frame at: " + image.getImageInfo().getTimestamp());
         image.close();
     }
-    //画面出力　↑↑
 
-    //動画保存　↓↓
+
+    //動画保存メソッド
     @SuppressLint("RestrictedApi")
     private void recordVideo() {
 
+
+        //画面を暗くする
         if (dark) {
             WindowManager.LayoutParams lp = getWindow().getAttributes();
             lp.screenBrightness = 0.01F;
@@ -344,6 +365,8 @@ public class GuestActivity extends AppCompatActivity implements ImageAnalysis.An
 
         File movieDir;
 
+
+        //APIによってフォルダの変更
         if (videoCapture != null) {
             int apiInt = Build.VERSION.SDK_INT;
             if (apiInt <= 29) {
@@ -356,10 +379,14 @@ public class GuestActivity extends AppCompatActivity implements ImageAnalysis.An
             if (!movieDir.exists())
                 movieDir.mkdir();
 
+
+            //ファイル名作成
             Date date = new Date();
             String timestamp = String.valueOf(date.getTime());
             String vidFilePath = movieDir.getAbsolutePath() + "/" + android.os.Build.MODEL + "_" + timestamp + ".mp4";
             File vidFile = new File(vidFilePath);
+            String AttachName = vidFilePath;
+            //保存
             try {
                 if (ActivityCompat.checkSelfPermission(this, Manifest.permission.RECORD_AUDIO) != PackageManager.PERMISSION_GRANTED) {
                     return;
@@ -393,20 +420,23 @@ public class GuestActivity extends AppCompatActivity implements ImageAnalysis.An
             } catch (Exception e) {
                 e.printStackTrace();
             }
+
+            //フォト内に表示
             ContentValues values = new ContentValues();
             ContentResolver contentResolver = getContentResolver();
             values.put("image/mp4", MIME_TYPE);
             values.put(MediaStore.Video.Media.TITLE, vidFilePath);
-            values.put("_data", vidFilePath);
+            values.put("_data", AttachName);
             contentResolver.insert(MediaStore.Video.Media.EXTERNAL_CONTENT_URI, values);
         }
 
     }
-    //動画保存　↑↑
 
-    //画像保存　↓↓
+
+    //画像保存メソッド
     private void capturePhoto() {
         File photoDir;
+        //APIによってフォルダの変更
         int apiInt = Build.VERSION.SDK_INT;
         if (apiInt <= 29) {
             final String SAVE_DIR = "/DCIM/SYNCAM";
@@ -416,12 +446,15 @@ public class GuestActivity extends AppCompatActivity implements ImageAnalysis.An
         }
         if (!photoDir.exists())
             photoDir.mkdir();
-
+        //ファイル名作成
         Date date = new Date();
         String timestamp = String.valueOf(date.getTime());
         String photoFilePath = photoDir.getAbsolutePath() + "/" + android.os.Build.MODEL + "_" + timestamp + ".jpg";
         File photoFile = new File(photoFilePath);
+        String AttachName = photoFilePath;
 
+
+        //保存
         imageCapture.takePicture(
                 new ImageCapture.OutputFileOptions.Builder(photoFile).build(),
                 getExecutor(),
@@ -437,17 +470,18 @@ public class GuestActivity extends AppCompatActivity implements ImageAnalysis.An
                     }
                 }
         );
+        //フォト内に表示&フォーマットなどの選択
         ContentValues values = new ContentValues();
         ContentResolver contentResolver = getContentResolver();
         values.put(MIME_TYPE, "image/jpeg");
         values.put(MediaStore.Images.Media.TITLE, photoFilePath);
-        values.put("_data", photoFilePath);
+        values.put("_data", AttachName);
         contentResolver.insert(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, values);
 
     }
-    //画像保存　↑↑
 
-    //バー消去　↓↓
+
+    //下のバー消去メソッド
     private void immersiveMode() {
         View decorView = getWindow().getDecorView();
         decorView.setSystemUiVisibility(
@@ -457,35 +491,49 @@ public class GuestActivity extends AppCompatActivity implements ImageAnalysis.An
         );
         Handler h = new Handler();
         decorView.setOnSystemUiVisibilityChangeListener
-                (visibility -> {
-                    // Note that system bars will only be "visible" if none of the
-                    // LOW_PROFILE, HIDE_NAVIGATION, or FULLSCREEN flags are set.
-                    if ((visibility & View.SYSTEM_UI_FLAG_FULLSCREEN) == 0) {
-                        Log.d("debug", "The system bars are visible");
+                (new View.OnSystemUiVisibilityChangeListener() {
+                    @Override
+                    public void onSystemUiVisibilityChange(int visibility) {
+                        // Note that system bars will only be "visible" if none of the
+                        // LOW_PROFILE, HIDE_NAVIGATION, or FULLSCREEN flags are set.
+                        if ((visibility & View.SYSTEM_UI_FLAG_FULLSCREEN) == 0) {
+                            Log.d("debug", "The system bars are visible");
+                            //3秒でもう一度下のバー消去
+                            h.postDelayed(new Runnable() {
+                                @Override
+                                public void run() {
+                                    immersiveMode();
+                                }
+                            }, 3 * 1000);
 
-                        h.postDelayed(this::immersiveMode, 3 * 1000);
-
-                    } else {
-                        Log.d("debug", "The system bars are NOT visible");
+                        } else {
+                            Log.d("debug", "The system bars are NOT visible");
+                        }
                     }
                 });
     }
-    //バー消去　↑↑
+
 
     //写真撮影
-    private final Runnable funcC = () -> {
-        //写真撮影
-        capturePhoto();
-        //カウンターのリセット
-        count = 0;
+    private final Runnable funcC = new Runnable() {
+        @Override
+        public void run() {
+            //写真撮影
+            capturePhoto();
+            //カウンターのリセット
+            count = 0;
+        }
     };
 
     //動画撮影開始
-    private final Runnable funcV = () -> {
-        //動画撮影開始
-        recordVideo();
-        //カウンターのリセット
-        count = 0;
+    private final Runnable funcV = new Runnable() {
+        @Override
+        public void run() {
+            //動画撮影開始
+            recordVideo();
+            //カウンターのリセット
+            count = 0;
+        }
     };
 
     //動画撮影終了

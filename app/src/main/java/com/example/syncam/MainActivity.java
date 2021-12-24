@@ -28,7 +28,7 @@ import java.util.Random;
 
 public class MainActivity extends AppCompatActivity implements View.OnClickListener {
 
-    //権限
+    //権限の変数
     int REQUEST_CODE_FOR_PERMISSIONS = 1234;
     final String[] REQUIRED_PERMISSIONS = new String[]{"android.permission.CAMERA", "android.permission.WRITE_EXTERNAL_STORAGE", "android.permission.RECORD_AUDIO"};
 
@@ -68,7 +68,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         Button btn2 = findViewById(R.id.bSet);
         btn2.setOnClickListener(this);
 
-        //権限のチェック
+        //権限取得
         if (!checkPermissions()) {
             ActivityCompat.requestPermissions(this, REQUIRED_PERMISSIONS, REQUEST_CODE_FOR_PERMISSIONS);
         }
@@ -136,7 +136,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         return millisecond + phonetimes;
     }
 
-    //判断　↓↓
+    //権限取得メソッド
     private boolean checkPermissions() {
         for (String permission : REQUIRED_PERMISSIONS) {
             if (ContextCompat.checkSelfPermission(this, permission) != PackageManager.PERMISSION_GRANTED) {
@@ -145,7 +145,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         }
         return true;
     }
-    //判断　↑↑
+
 
     //ボタンを押されたときの動作
     @SuppressLint("NonConstantResourceId")
