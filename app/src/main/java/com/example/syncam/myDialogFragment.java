@@ -81,6 +81,7 @@ public class myDialogFragment extends DialogFragment {
                 }))
                 .setView(editText)
                 .setNegativeButton("キャンセル",null);
+        this.setCancelable(false);
         return builder.create();
     }
 }

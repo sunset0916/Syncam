@@ -21,6 +21,7 @@ import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.preference.PreferenceManager;
 
@@ -52,6 +53,9 @@ public class HostActivity extends AppCompatActivity implements View.OnClickListe
 
     //レコーダー変数
     private MediaRecorder recorder = null;
+
+    //終了確認ダイアログ
+    AlertDialog alertDialog;
 
     //タイトルバーの生成
     @Override
@@ -448,11 +452,36 @@ public class HostActivity extends AppCompatActivity implements View.OnClickListe
         ReadWrite.ref.get().addOnCompleteListener(task -> {
             if (!String.valueOf(Objects.requireNonNull(task.getResult()).getValue()).contains("roomNumber=" + MainActivity.rn)) {
                 //Firebaseからルームが削除されていたときの動作
-                finish();
                 MainActivity.rn = null;
                 endFlag = true;
+                finish();
             }
         });
+    }
+
+    //画面終了前の動作
+    @Override
+    public void finish(){
+        if(!endFlag) {
+            //終了確認ダイアログを表示
+            alertDialog = new AlertDialog.Builder(HostActivity.this)
+                    .setCancelable(false)
+                    .setTitle("確認")
+                    .setMessage("退出するとルームが削除されます。" + "\n" + "退出してよろしいですか？")
+                    .setPositiveButton("はい", (dialogInterface, i) -> {
+                        //HostActivityの終了
+                        ActivityEnd();
+                    })
+                    .setNegativeButton("いいえ",null)
+                    .show();
+        }else{
+            ActivityEnd();
+        }
+    }
+
+    //finish()の代わりにsuper.finish()を呼び出すメソッド
+    public void ActivityEnd(){
+        super.finish();
     }
 
     //ImageButtonを押したときの動作
@@ -526,7 +555,6 @@ public class HostActivity extends AppCompatActivity implements View.OnClickListe
         recorder.release();
         recorder = null;
     }
-
 
     //録音開始ハンドラー変数
     private final Runnable funcA = this::startRecording;
