@@ -250,7 +250,6 @@ public class GuestActivity extends AppCompatActivity implements ImageAnalysis.An
         return ContextCompat.getMainExecutor(this);
     }
 
-
     //静止画画面作成
     @SuppressLint({"RestrictedApi", "SetTextI18n"})
     private void startCameraX(ProcessCameraProvider cameraProvider) {
@@ -287,7 +286,6 @@ public class GuestActivity extends AppCompatActivity implements ImageAnalysis.An
 
     }
 
-
     //動画画面作成
     @SuppressLint({"RestrictedApi", "SetTextI18n"})
     private void startCameraXv(ProcessCameraProvider cameraProvider) {
@@ -302,13 +300,11 @@ public class GuestActivity extends AppCompatActivity implements ImageAnalysis.An
                 .build();
         preview.setSurfaceProvider(previewView.getSurfaceProvider());
 
-
         // Image capture use case
         imageCapture = new ImageCapture.Builder()
                 .setCaptureMode(ImageCapture.CAPTURE_MODE_MINIMIZE_LATENCY)
                 .setTargetResolution(new Size(resolutionX, resolutionY))
                 .build();
-
 
         // Video capture use case
         videoCapture = new VideoCapture.Builder()
@@ -327,8 +323,6 @@ public class GuestActivity extends AppCompatActivity implements ImageAnalysis.An
         TextView textView=findViewById(R.id.tvData);
         //ゲスト画面上に情報を表示
         textView.setText("　　" +roomNumber+" "+deviceNumber.substring(6,8)+" "+android.os.Build.MANUFACTURER+" "+android.os.Build.MODEL);
-
-
     }
     @Override
     public void analyze(@NonNull ImageProxy image) {
@@ -337,11 +331,9 @@ public class GuestActivity extends AppCompatActivity implements ImageAnalysis.An
         image.close();
     }
 
-
     //動画保存メソッド
     @SuppressLint("RestrictedApi")
     private void recordVideo() {
-
 
         //画面を暗くする
         if (dark) {
@@ -351,7 +343,6 @@ public class GuestActivity extends AppCompatActivity implements ImageAnalysis.An
         }
 
         File movieDir;
-
 
         //APIによってフォルダの変更
         if (videoCapture != null) {
@@ -365,7 +356,6 @@ public class GuestActivity extends AppCompatActivity implements ImageAnalysis.An
 
             if (!movieDir.exists())
                 movieDir.mkdir();
-
 
             //ファイル名作成
             Date date = new Date();
@@ -415,9 +405,7 @@ public class GuestActivity extends AppCompatActivity implements ImageAnalysis.An
             values.put("_data", vidFilePath);
             contentResolver.insert(MediaStore.Video.Media.EXTERNAL_CONTENT_URI, values);
         }
-
     }
-
 
     //画像保存メソッド
     private void capturePhoto() {
@@ -437,7 +425,6 @@ public class GuestActivity extends AppCompatActivity implements ImageAnalysis.An
         String timestamp = String.valueOf(date.getTime());
         String photoFilePath = photoDir.getAbsolutePath() + "/" + android.os.Build.MODEL + "_" + timestamp + ".jpg";
         File photoFile = new File(photoFilePath);
-
 
         //保存
         imageCapture.takePicture(
@@ -462,9 +449,7 @@ public class GuestActivity extends AppCompatActivity implements ImageAnalysis.An
         values.put(MediaStore.Images.Media.TITLE, photoFilePath);
         values.put("_data", photoFilePath);
         contentResolver.insert(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, values);
-
     }
-
 
     //下のバー消去メソッド
     private void immersiveMode() {
@@ -489,7 +474,6 @@ public class GuestActivity extends AppCompatActivity implements ImageAnalysis.An
                     }
                 });
     }
-
 
     //写真撮影
     private final Runnable funcC = () -> {

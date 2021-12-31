@@ -1,15 +1,19 @@
 package com.example.syncam;
 
 import android.annotation.SuppressLint;
+import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.icu.text.SimpleDateFormat;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
@@ -53,6 +57,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     //Firebaseとの接続状況を格納する変数
     boolean connect = false;
 
+    //ネット未接続時のダイアログ
+    AlertDialog alertDialog;
+
     @SuppressLint("StaticFieldLeak")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -73,38 +80,53 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             ActivityCompat.requestPermissions(this, REQUIRED_PERMISSIONS, REQUEST_CODE_FOR_PERMISSIONS);
         }
 
-        //NTPサーバーと端末から時刻を取得して差を算出する
-        new NTPTask() {
-            @SuppressLint({"StaticFieldLeak", "SetTextI18n"})
-            @Override
-            protected void onPostExecute(String text) {
-                super.onPostExecute(text);
+        //インターネット接続の有無を取得
+        ConnectivityManager cm = (ConnectivityManager)this.getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo activeNetwork = cm.getActiveNetworkInfo();
+        boolean isConnected = activeNetwork != null && activeNetwork.isConnectedOrConnecting();
 
-                //HH:mm:ss:SSSのフォーマットの文字列から数字を取り出す
-                ntphh = text.substring(0, 2);
-                ntpmm = text.substring(3, 5);
-                ntpss = text.substring(6, 8);
-                ntpSSS = text.substring(9, 12);
+        if(isConnected) {
+            //NTPサーバーと端末から時刻を取得して差を算出する
+            new NTPTask() {
+                @SuppressLint({"StaticFieldLeak", "SetTextI18n"})
+                @Override
+                protected void onPostExecute(String text) {
+                    super.onPostExecute(text);
 
-                //取り出した数字を数値化に型変換
-                int ntptimeh = Integer.parseInt(ntphh);
-                int ntptimem = Integer.parseInt(ntpmm);
-                int ntptimes = Integer.parseInt(ntpss);
-                int ntptimeS = Integer.parseInt(ntpSSS);
+                    //HH:mm:ss:SSSのフォーマットの文字列から数字を取り出す
+                    ntphh = text.substring(0, 2);
+                    ntpmm = text.substring(3, 5);
+                    ntpss = text.substring(6, 8);
+                    ntpSSS = text.substring(9, 12);
 
-                //時間をミリ秒に統一
-                ntptimeh = ntptimeh * 60;
-                ntptimem = ntptimem + ntptimeh;
-                ntptimem = ntptimem * 60;
-                ntptimes = ntptimes + ntptimem;
-                ntptimes = ntptimes * 1000;
-                ntptimeS = ntptimeS + ntptimes;
+                    //取り出した数字を数値化に型変換
+                    int ntptimeh = Integer.parseInt(ntphh);
+                    int ntptimem = Integer.parseInt(ntpmm);
+                    int ntptimes = Integer.parseInt(ntpss);
+                    int ntptimeS = Integer.parseInt(ntpSSS);
 
-                //端末の時刻からNTPの時刻を引いて差を算出
-                timeLag = getToday() - ntptimeS;
+                    //時間をミリ秒に統一
+                    ntptimeh = ntptimeh * 60;
+                    ntptimem = ntptimem + ntptimeh;
+                    ntptimem = ntptimem * 60;
+                    ntptimes = ntptimes + ntptimem;
+                    ntptimes = ntptimes * 1000;
+                    ntptimeS = ntptimeS + ntptimes;
+
+                    //端末の時刻からNTPの時刻を引いて差を算出
+                    timeLag = getToday() - ntptimeS;
+                }
             }
+                    .execute();
+        }else{
+            //ネットに接続していない場合、ダイアログを出して終了
+            alertDialog = new AlertDialog.Builder(MainActivity.this)
+                    .setCancelable(false)
+                    .setTitle("起動できません")
+                    .setMessage("インターネット接続がありません。" + "\n" + "インターネットに接続してからやり直してください。")
+                    .setPositiveButton("終了", (dialogInterface, i) -> finish())
+                    .show();
         }
-                .execute();
     }
 
     //端末の時刻をミリ秒単位で整数型で取得
@@ -145,7 +167,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         }
         return true;
     }
-
 
     //ボタンを押されたときの動作
     @SuppressLint("NonConstantResourceId")
