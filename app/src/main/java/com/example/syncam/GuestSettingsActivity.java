@@ -18,22 +18,23 @@ public class GuestSettingsActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.settings_activity);
+
+        //設定画面の準備
         if (savedInstanceState == null) {
             getSupportFragmentManager()
                     .beginTransaction()
                     .replace(R.id.settings, new SettingsFragment())
                     .commit();
         }
-        ActionBar actionBar = getSupportActionBar();
-        if (actionBar != null) {
-            actionBar.setDisplayHomeAsUpEnabled(true);
-        }
     }
 
+    //設定画面の項目の読み取り・反映
     public static class SettingsFragment extends PreferenceFragmentCompat {
         @Override
         public void onCreatePreferences(Bundle savedInstanceState, String rootKey) {
             setPreferencesFromResource(R.xml.guest_preferences, rootKey);
+
+            //EditTextPreferenceのEditText部分を取り出して入力制限を設定
             EditTextPreference editTextPreference = findPreference("Syncam-Setting-CameraLag");
             editTextPreference.setOnBindEditTextListener(new EditTextPreference.OnBindEditTextListener() {
                 @Override
