@@ -1,35 +1,28 @@
-<PreferenceScreen xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:android="http://schemas.android.com/apk/res/android">
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
     <PreferenceCategory app:title="撮影環境設定">
         <CheckBoxPreference
-            app:key="Syncam-Setting-dark"
-            app:title="ゲスト端末の画面を暗くする"
-            app:useSimpleSummaryProvider="true"
-            android:summary="撮影中のバッテリー消費を抑えることができます"
-            app:defaultValue="true"/>
-        <CheckBoxPreference
+            android:defaultValue="false"
             app:key="Syncam-Setting-record"
             app:title="ホスト端末での録音"
-            app:useSimpleSummaryProvider="true"
-            android:defaultValue="false"/>
-    </PreferenceCategory>
-    <PreferenceCategory app:title="詳細設定">
+            app:useSimpleSummaryProvider="true" />
         <ListPreference
-            android:negativeButtonText="キャンセル"
-            app:entries="@array/entries"
-            app:entryValues="@array/entryValues"
-            app:key="Syncam-Setting-resolution"
-            app:title="解像度"
-            app:useSimpleSummaryProvider="true"
-            android:defaultValue="1080p FHD"/>
-        <ListPreference
+            android:defaultValue="5秒"
             android:negativeButtonText="キャンセル"
             app:entries="@array/entries2"
             app:entryValues="@array/entryValues2"
             app:key="Syncam-Setting-timer"
             app:title="タイマー"
-            app:useSimpleSummaryProvider="true"
-            android:defaultValue="5秒"/>
+            app:useSimpleSummaryProvider="true" />
     </PreferenceCategory>
-
+    <PreferenceCategory app:title="詳細設定">
+        <ListPreference
+            android:defaultValue="1080p FHD"
+            android:negativeButtonText="キャンセル"
+            app:entries="@array/entries"
+            app:entryValues="@array/entryValues"
+            app:key="Syncam-Setting-resolution"
+            app:title="解像度"
+            app:useSimpleSummaryProvider="true" />
+    </PreferenceCategory>
 </PreferenceScreen>

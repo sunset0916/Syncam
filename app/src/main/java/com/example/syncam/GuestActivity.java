@@ -6,6 +6,7 @@ import android.Manifest;
 import android.annotation.SuppressLint;
 import android.content.ContentResolver;
 import android.content.ContentValues;
+import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.os.Build;
 import android.os.Bundle;
@@ -33,6 +34,7 @@ import androidx.camera.lifecycle.ProcessCameraProvider;
 import androidx.camera.view.PreviewView;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
+import androidx.preference.PreferenceManager;
 
 import com.google.common.util.concurrent.ListenableFuture;
 import com.google.firebase.database.ChildEventListener;
@@ -54,6 +56,8 @@ public class GuestActivity extends AppCompatActivity implements ImageAnalysis.An
     String roomNumber;
     //デバイス情報を格納するFirebaseのノード
     DatabaseReference devices;
+    //共有プリファレンス
+    SharedPreferences sharedPreferences;
 
     private ListenableFuture<ProcessCameraProvider> cameraProviderFuture;
 
@@ -76,6 +80,8 @@ public class GuestActivity extends AppCompatActivity implements ImageAnalysis.An
     int endTime;
     //撮影モード（動画・静止画）
     boolean videoMode;
+    //端末固有のラグを修正する設定
+    int deviceCameraLag;
 
     @SuppressLint("SetTextI18n")
     @Override
@@ -87,6 +93,9 @@ public class GuestActivity extends AppCompatActivity implements ImageAnalysis.An
         //ルーム番号とデバイス番号をMainActivityに保存した変数から読み込む
         roomNumber = MainActivity.roomNumber;
         deviceNumber = MainActivity.deviceNumber;
+
+        //画面が暗くなるか否かの設定を取得
+        dark = getDarkSetting();
 
         //デバイス情報を格納するFirebaseの場所を代入
         devices = ReadWrite.ref.child(roomNumber).child("devices");
@@ -125,10 +134,6 @@ public class GuestActivity extends AppCompatActivity implements ImageAnalysis.An
             public void onChildAdded(@NonNull DataSnapshot snapshot, @Nullable @org.jetbrains.annotations.Nullable String previousChildName) {
                 //受け取った情報をSwitch文で処理
                 switch (Objects.requireNonNull(snapshot.getKey())) {
-                    //画面を暗くするかの設定
-                    case "dark":
-                        dark = String.valueOf(snapshot.getValue()).equals("true");
-                        break;
                     //解像度の設定
                     case "resolution":
                         switch (String.valueOf(snapshot.getValue())) {
@@ -158,15 +163,15 @@ public class GuestActivity extends AppCompatActivity implements ImageAnalysis.An
                     case "end":
                         endTime = Integer.parseInt((String) Objects.requireNonNull(snapshot.getValue()));
                         //NTPサーバーとの差を考慮して撮影終了時間を算出
-                        int i = endTime - MainActivity.getToday() + MainActivity.timeLag;
+                        int i = endTime - MainActivity.getToday() + MainActivity.timeLag - deviceCameraLag;
                         //撮影終了時間になったら撮影終了する
                         new Handler().postDelayed(funcVe, i);
                 }
                 count++;
                 //撮影開始処理
-                if (count == 4) {
+                if (count == 3) {
                     //NTPサーバーとの差を考慮して撮影開始時間を算出
-                    int i = startTime - MainActivity.getToday() + MainActivity.timeLag;
+                    int i = startTime - MainActivity.getToday() + MainActivity.timeLag - deviceCameraLag;
                     //撮影モードの判定
                     if (videoMode) {
                         //撮影開始までのカウントダウンを開始
@@ -282,8 +287,6 @@ public class GuestActivity extends AppCompatActivity implements ImageAnalysis.An
         cameraProvider.bindToLifecycle(this, cameraSelector, preview, imageCapture);
         TextView textView=findViewById(R.id.tvData);
         textView.setText("　　" +roomNumber+" "+deviceNumber.substring(6,8)+" "+android.os.Build.MANUFACTURER+" "+android.os.Build.MODEL);
-
-
     }
 
     //動画画面作成
@@ -502,4 +505,14 @@ public class GuestActivity extends AppCompatActivity implements ImageAnalysis.An
             count = 0;
         }
     };
+
+    //画面が暗くなるか否かの設定と端末のラグ修正設定を取得
+    boolean getDarkSetting(){
+        //共有プリファレンスの準備
+        sharedPreferences = PreferenceManager.getDefaultSharedPreferences(GuestActivity.this);
+        //端末固有のラグを修正する設定を取得
+        deviceCameraLag = Integer.parseInt(sharedPreferences.getString("Syncam-Setting-CameraLag","0"));
+        //画面を暗くする設定値の返却
+        return sharedPreferences.getBoolean("Syncam-Setting-dark", true);
+    }
 }

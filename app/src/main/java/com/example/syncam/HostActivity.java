@@ -285,10 +285,8 @@ public class HostActivity extends AppCompatActivity implements View.OnClickListe
                 //写真撮影・動画撮影開始時の動作
 
                 //画面暗転・動画/静止画モード・撮影開始時間・解像度の設定を格納する変数
-                String dark, video, start, resolution;
+                String video, start, resolution;
 
-                //画面暗転設定を共有プリファレンスから取得して文字列型として格納
-                dark = String.valueOf(pref.getBoolean("Syncam-Setting-dark", true));
                 //動画/静止画モードを文字列型として格納
                 video = String.valueOf(videoMode);
 
@@ -309,7 +307,7 @@ public class HostActivity extends AppCompatActivity implements View.OnClickListe
                 resolution = pref.getString("Syncam-Setting-resolution", "1080p FHD");
 
                 //カメラ設定と撮影開始時間をFirebaseに送信
-                ReadWrite.SendSettings(dark, video, start, resolution);
+                ReadWrite.SendSettings(video, start, resolution);
 
                 //動画/静止画モードの判定
                 if (videoMode) {

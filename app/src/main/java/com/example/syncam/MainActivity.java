@@ -8,6 +8,9 @@ import android.icu.text.SimpleDateFormat;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.Bundle;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.Toast;
@@ -59,6 +62,25 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     //ネット未接続時のダイアログ
     AlertDialog alertDialog;
+
+    //タイトルバーの生成
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        MenuInflater inflater = getMenuInflater();
+        inflater.inflate(R.menu.setting, menu);
+        return true;
+    }
+
+    //設定（歯車）ボタンが押されたときの動作
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        if (item.getItemId() == R.id.action_button) {
+            Intent intent = new Intent(MainActivity.this, GuestSettingsActivity.class);
+            startActivity(intent);
+            return true;
+        }
+        return super.onOptionsItemSelected(item);
+    }
 
     @SuppressLint("StaticFieldLeak")
     @Override
@@ -257,18 +279,13 @@ class DeviceInfo{
 
 //撮影開始時間とカメラ設定
 class Settings{
-    String dark;
     String video;
     String start;
     String resolution;
-    Settings(String a,String b,String c,String d){
-        dark = a;
-        video = b;
-        start = c;
-        resolution = d;
-    }
-    public String getDark() {
-        return dark;
+    Settings(String a,String b,String c){
+        video = a;
+        start = b;
+        resolution = c;
     }
     public String getVideo() {
         return video;
@@ -308,8 +325,8 @@ class ReadWrite extends AppCompatActivity{
         devices.child(s1).setValue(new DeviceInfo(s1,s2,s3));
     }
     //撮影開始時間とカメラ設定の送信
-    static void SendSettings(String a,String b,String c,String d){
+    static void SendSettings(String a,String b,String c){
         DatabaseReference settings = ref.child(MainActivity.rn).child("Settings");
-        settings.setValue(new Settings(a, b, c, d));
+        settings.setValue(new Settings(a, b, c));
     }
 }

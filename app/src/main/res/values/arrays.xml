@@ -4,7 +4,6 @@
         <item>1080p FHD</item>
         <item>2160p 4K</item>
     </string-array>
-
     <string-array name="entryValues">
         <item>720p HD</item>
         <item>1080p FHD</item>
@@ -15,7 +14,6 @@
         <item>10秒</item>
         <item>15秒</item>
     </string-array>
-
     <string-array name="entryValues2">
         <item>5秒</item>
         <item>10秒</item>

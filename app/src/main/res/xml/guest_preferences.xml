@@ -1,0 +1,18 @@
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+    <PreferenceCategory app:title="撮影環境設定">
+        <CheckBoxPreference
+            android:summary="撮影中のバッテリー消費を抑えることができます"
+            app:defaultValue="true"
+            app:key="Syncam-Setting-dark"
+            app:title="ゲスト端末の画面を暗くする"
+            app:useSimpleSummaryProvider="true" />
+    </PreferenceCategory>
+    <PreferenceCategory app:title="高度な設定">
+        <EditTextPreference
+            app:defaultValue="0"
+            app:key="Syncam-Setting-CameraLag"
+            app:title="端末固有のラグの修正"
+            app:useSimpleSummaryProvider="true" />
+    </PreferenceCategory>
+</PreferenceScreen>
