@@ -237,7 +237,13 @@ public class HostActivity extends AppCompatActivity implements View.OnClickListe
             b.setEnabled(false);
             //設定（歯車）ボタンの無効化
             findViewById(R.id.action_button).setEnabled(false);
-            //動画・静止画モードの格納
+            //ImageButtonの無効化
+            if(videoMode){
+                findViewById(R.id.imageC).setEnabled(false);
+            }else{
+                findViewById(R.id.imageV).setEnabled(false);
+            }
+            //録音機能の有効無効を格納
             boolean record = pref.getBoolean("Syncam-Setting-record", false);
 
             //撮影ボタンの状態の判定
@@ -365,8 +371,15 @@ public class HostActivity extends AppCompatActivity implements View.OnClickListe
         bStart.setEnabled(true);
     };
 
-    //設定（歯車）ボタンの有効化
-    private final Runnable settingButtonEnabled = () -> findViewById(R.id.action_button).setEnabled(true);
+    //設定（歯車）ボタンとImageButtonの有効化
+    private final Runnable settingButtonEnabled = () -> {
+        findViewById(R.id.action_button).setEnabled(true);
+        if(videoMode){
+            findViewById(R.id.imageC).setEnabled(true);
+        }else{
+            findViewById(R.id.imageV).setEnabled(true);
+        }
+    };
 
     //ストップウォッチ関連の変数
     private Timer timer;
