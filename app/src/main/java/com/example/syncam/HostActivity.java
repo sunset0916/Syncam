@@ -80,7 +80,7 @@ public class HostActivity extends AppCompatActivity implements View.OnClickListe
             new Handler().postDelayed(() -> {
                 findViewById(R.id.action_button).setEnabled(true);
                 findViewById(R.id.bStart).setEnabled(true);
-            },500);
+            }, 500);
             return true;
         }
         return super.onOptionsItemSelected(item);
@@ -247,9 +247,9 @@ public class HostActivity extends AppCompatActivity implements View.OnClickListe
             //設定（歯車）ボタンの無効化
             findViewById(R.id.action_button).setEnabled(false);
             //ImageButtonの無効化
-            if(videoMode){
+            if (videoMode) {
                 findViewById(R.id.imageC).setEnabled(false);
-            }else{
+            } else {
                 findViewById(R.id.imageV).setEnabled(false);
             }
             //録音機能の有効無効を格納
@@ -383,9 +383,9 @@ public class HostActivity extends AppCompatActivity implements View.OnClickListe
     //設定（歯車）ボタンとImageButtonの有効化
     private final Runnable settingButtonEnabled = () -> {
         findViewById(R.id.action_button).setEnabled(true);
-        if(videoMode){
+        if (videoMode) {
             findViewById(R.id.imageC).setEnabled(true);
-        }else{
+        } else {
             findViewById(R.id.imageV).setEnabled(true);
         }
     };
@@ -481,8 +481,8 @@ public class HostActivity extends AppCompatActivity implements View.OnClickListe
 
     //画面終了前の動作
     @Override
-    public void finish(){
-        if(!endFlag) {
+    public void finish() {
+        if (!endFlag) {
             //終了確認ダイアログを表示
             alertDialog = new AlertDialog.Builder(HostActivity.this)
                     .setCancelable(false)
@@ -492,15 +492,15 @@ public class HostActivity extends AppCompatActivity implements View.OnClickListe
                         //HostActivityの終了
                         ActivityEnd();
                     })
-                    .setNegativeButton("いいえ",null)
+                    .setNegativeButton("いいえ", null)
                     .show();
-        }else{
+        } else {
             ActivityEnd();
         }
     }
 
     //finish()の代わりにsuper.finish()を呼び出すメソッド
-    public void ActivityEnd(){
+    public void ActivityEnd() {
         super.finish();
     }
 

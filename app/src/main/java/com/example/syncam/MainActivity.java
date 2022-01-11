@@ -89,7 +89,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 findViewById(R.id.bSet).setEnabled(true);
                 findViewById(R.id.bJoin).setEnabled(true);
                 findViewById(R.id.action_button).setEnabled(true);
-            },500);
+            }, 500);
             return true;
         }
         return super.onOptionsItemSelected(item);
@@ -120,11 +120,11 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         }
 
         //インターネット接続の有無を取得
-        ConnectivityManager cm = (ConnectivityManager)this.getSystemService(Context.CONNECTIVITY_SERVICE);
+        ConnectivityManager cm = (ConnectivityManager) this.getSystemService(Context.CONNECTIVITY_SERVICE);
         NetworkInfo activeNetwork = cm.getActiveNetworkInfo();
         boolean isConnected = activeNetwork != null && activeNetwork.isConnectedOrConnecting();
 
-        if(isConnected) {
+        if (isConnected) {
             //NTPサーバーと端末から時刻を取得して差を算出する
             new NTPTask() {
                 @SuppressLint({"StaticFieldLeak", "SetTextI18n"})
@@ -157,7 +157,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 }
             }
                     .execute();
-        }else{
+        } else {
             //ネットに接続していない場合、ダイアログを出して終了
             alertDialog = new AlertDialog.Builder(MainActivity.this)
                     .setCancelable(false)
@@ -173,6 +173,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 connect = snapshot.getValue(Boolean.class);
             }
+
             @Override
             public void onCancelled(@NonNull DatabaseError error) {
             }
@@ -187,17 +188,17 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
         //文字列型として時・分・秒・ミリ秒の数字部分を抜き出して数値型に変換
         @SuppressLint("SimpleDateFormat") SimpleDateFormat hourformat = new SimpleDateFormat("HH");
-        String HHformat=hourformat.format(date);
-        int hour=Integer.parseInt(HHformat);
+        String HHformat = hourformat.format(date);
+        int hour = Integer.parseInt(HHformat);
         @SuppressLint("SimpleDateFormat") SimpleDateFormat minuteformat = new SimpleDateFormat("mm");
-        String mmformat=minuteformat.format(date);
-        int minute=Integer.parseInt(mmformat);
+        String mmformat = minuteformat.format(date);
+        int minute = Integer.parseInt(mmformat);
         @SuppressLint("SimpleDateFormat") SimpleDateFormat secondformat = new SimpleDateFormat("ss");
-        String ssformat=secondformat.format(date);
-        int second=Integer.parseInt(ssformat);
+        String ssformat = secondformat.format(date);
+        int second = Integer.parseInt(ssformat);
         @SuppressLint("SimpleDateFormat") SimpleDateFormat millisecondformat = new SimpleDateFormat("SSS");
-        String SSSformat=millisecondformat.format(date);
-        int millisecond=Integer.parseInt(SSSformat);
+        String SSSformat = millisecondformat.format(date);
+        int millisecond = Integer.parseInt(SSSformat);
 
         //時間をミリ秒に統一し、返却
         int phonetimeh = hour * 60;
@@ -233,12 +234,13 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 connect = snapshot.getValue(Boolean.class);
             }
+
             @Override
             public void onCancelled(@NonNull DatabaseError error) {
             }
         });
         //Firebaseに接続できているかの判断
-        if(connect) {
+        if (connect) {
             //サーバーメンテナンス中かどうか確認
             DatabaseReference status = FirebaseDatabase.getInstance().getReference("status");
             status.child("active").get().addOnCompleteListener(task -> {
@@ -248,9 +250,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                             .setCancelable(false)
                             .setTitle("サーバーメンテナンス")
                             .setMessage(task1.getResult().getValue().toString())
-                            .setPositiveButton("OK",null)
+                            .setPositiveButton("OK", null)
                             .show());
-                }else{
+                } else {
                     //メンテナンス中でない場合の処理
                     if (view.getId() == R.id.bJoin) {
                         //ルーム参加ダイアログの表示
@@ -284,102 +286,116 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                     }
                 }
             });
-        }else{
-            Toast.makeText(MainActivity.this,"データベースに接続できませんでした",Toast.LENGTH_SHORT).show();
+        } else {
+            Toast.makeText(MainActivity.this, "データベースに接続できませんでした", Toast.LENGTH_SHORT).show();
         }
-
         //2秒後にボタン有効化
         new Handler().postDelayed(() -> {
             findViewById(R.id.bSet).setEnabled(true);
             findViewById(R.id.bJoin).setEnabled(true);
             findViewById(R.id.action_button).setEnabled(true);
-        },2000);
+        }, 2000);
     }
 }
 
 //ここから下Firebaseに送信するデータと送信機能
 
 //ルーム番号
-class RoomInfo{
+class RoomInfo {
     String roomNumber;
-    RoomInfo(String s){
+
+    RoomInfo(String s) {
         roomNumber = s;
     }
+
     public String getRoomNumber() {
         return roomNumber;
     }
 }
 
 //ゲスト端末のデバイス情報
-class DeviceInfo{
+class DeviceInfo {
     String deviceNumber;
     String manufacturer;
     String model;
-    DeviceInfo(String s1,String s2,String s3){
+
+    DeviceInfo(String s1, String s2, String s3) {
         deviceNumber = s1;
         manufacturer = s2;
         model = s3;
     }
-    public String getDeviceNumber(){
+
+    public String getDeviceNumber() {
         return deviceNumber;
     }
-    public String getManufacturer(){
+
+    public String getManufacturer() {
         return manufacturer;
     }
-    public String getModel(){
+
+    public String getModel() {
         return model;
     }
 }
 
 //撮影開始時間とカメラ設定
-class Settings{
+class Settings {
     String video;
     String start;
     String resolution;
-    Settings(String a,String b,String c){
+
+    Settings(String a, String b, String c) {
         video = a;
         start = b;
         resolution = c;
     }
+
     public String getVideo() {
         return video;
     }
+
     public String getStart() {
         return start;
     }
+
     public String getResolution() {
         return resolution;
     }
 }
 
 //撮影終了時間
-class EndTime{
+class EndTime {
     String end;
-    EndTime(String s){
+
+    EndTime(String s) {
         end = s;
     }
+
     public String getEnd() {
         return end;
     }
 }
 
 //Firebaseへのデータ送信関係をまとめたやつ
-class ReadWrite extends AppCompatActivity{
+class ReadWrite extends AppCompatActivity {
     //Firebaseの準備
     static final FirebaseDatabase database = FirebaseDatabase.getInstance();
     static DatabaseReference ref = database.getReference("room");
+
     //ルーム番号を送信
-    static void SendRoomNumber(String s){
+    static void SendRoomNumber(String s) {
         ref.child(s).setValue(new RoomInfo(s));
     }
+
     //デバイス情報の送信
-    static void SendDeviceInfo(String s, String s1, String s2, String s3){
+    static void SendDeviceInfo(String s, String s1, String s2, String s3) {
         DatabaseReference room = ref.child(s);
         DatabaseReference devices = room.child("devices");
-        devices.child(s1).setValue(new DeviceInfo(s1,s2,s3));
+        devices.child(s1).setValue(new DeviceInfo(s1, s2, s3));
     }
+
     //撮影開始時間とカメラ設定の送信
-    static void SendSettings(String a,String b,String c){
+    static void SendSettings(String a, String b, String c) {
         DatabaseReference settings = ref.child(MainActivity.rn).child("Settings");
         settings.setValue(new Settings(a, b, c));
     }

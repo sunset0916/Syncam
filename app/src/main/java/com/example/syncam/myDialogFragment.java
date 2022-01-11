@@ -28,9 +28,9 @@ public class myDialogFragment extends DialogFragment {
 
     @NonNull
     @Override
-    public Dialog onCreateDialog(Bundle savedInstanceState){
+    public Dialog onCreateDialog(Bundle savedInstanceState) {
         //EditTextの生成
-        EditText editText =new EditText(getActivity());
+        EditText editText = new EditText(getActivity());
         //入力できる文字を数字に限定
         editText.setInputType(InputType.TYPE_CLASS_NUMBER);
         //ダイアログ生成
@@ -39,7 +39,7 @@ public class myDialogFragment extends DialogFragment {
                 //OKを選択したときの動作,Firebaseへの問い合わせ
                 .setPositiveButton("OK", (dialog, which) -> ReadWrite.ref.get().addOnCompleteListener(task -> {
                     //入力されたルーム番号とFirebase上にあるルーム番号を照らし合わせる
-                    if(String.valueOf(Objects.requireNonNull(task.getResult()).getValue()).contains("roomNumber=" + editText.getText()) && editText.getText().toString().length() == 6){
+                    if (String.valueOf(Objects.requireNonNull(task.getResult()).getValue()).contains("roomNumber=" + editText.getText()) && editText.getText().toString().length() == 6) {
                         //読み取り・書き込み場所の指定
                         DatabaseReference room = ReadWrite.ref.child(String.valueOf(editText.getText()));
                         DatabaseReference devices = room.child("devices");
@@ -47,40 +47,40 @@ public class myDialogFragment extends DialogFragment {
                         devices.get().addOnCompleteListener(task1 -> {
                             String s1 = "device11";
                             //デバイス番号の割当（プログラム上で10台に制限中）
-                            for(int i = 1; i < 12; i++){
-                                if(String.valueOf(i).length() == 1){
+                            for (int i = 1; i < 12; i++) {
+                                if (String.valueOf(i).length() == 1) {
                                     s1 = "device" + "0" + i;
-                                }else{
+                                } else {
                                     s1 = "device" + i;
                                 }
                                 //同一のデバイス番号がFirebase上に存在するかの確認
-                                if(String.valueOf(Objects.requireNonNull(task1.getResult()).getValue()).contains(s1)) {
+                                if (String.valueOf(Objects.requireNonNull(task1.getResult()).getValue()).contains(s1)) {
                                     s1 = "device11";
-                                }else{
+                                } else {
                                     break;
                                 }
                             }
                             //接続デバイスが10台を超えていないかの判断
-                            if(!s1.equals("device11")){
+                            if (!s1.equals("device11")) {
                                 String s = String.valueOf(editText.getText());
                                 //Firebaseにデバイス情報を送信
-                                ReadWrite.SendDeviceInfo(s,s1,android.os.Build.MANUFACTURER,android.os.Build.MODEL);
+                                ReadWrite.SendDeviceInfo(s, s1, android.os.Build.MANUFACTURER, android.os.Build.MODEL);
                                 //グローバル変数にルーム番号・デバイス番号を代入
                                 MainActivity.roomNumber = editText.getText().toString();
                                 MainActivity.deviceNumber = s1;
                                 //ゲスト画面に遷移
-                                Intent intent = new Intent(activity,GuestActivity.class);
+                                Intent intent = new Intent(activity, GuestActivity.class);
                                 activity.startActivity(intent);
-                            }else{
-                                Toast.makeText(activity,"ルームの最大接続台数に達しています",Toast.LENGTH_SHORT).show();
+                            } else {
+                                Toast.makeText(activity, "ルームの最大接続台数に達しています", Toast.LENGTH_SHORT).show();
                             }
                         });
-                    }else{
-                        Toast.makeText(activity,"指定したルームは見つかりませんでした",Toast.LENGTH_SHORT).show();
+                    } else {
+                        Toast.makeText(activity, "指定したルームは見つかりませんでした", Toast.LENGTH_SHORT).show();
                     }
                 }))
                 .setView(editText)
-                .setNegativeButton("キャンセル",null);
+                .setNegativeButton("キャンセル", null);
         this.setCancelable(false);
         return builder.create();
     }

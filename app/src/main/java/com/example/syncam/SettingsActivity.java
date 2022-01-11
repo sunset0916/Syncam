@@ -48,8 +48,8 @@ public class SettingsActivity extends AppCompatActivity {
     @Override
     protected void onStop() {
         super.onStop();
-        if(!HostActivity.flag){
-            if(!endFlag) {
+        if (!HostActivity.flag) {
+            if (!endFlag) {
                 //◁ボタン以外押下時とonRestartからのfinish()以外のonStop()時にFirebaseからルームを削除する動作
                 ReadWrite.ref.child(MainActivity.rn).removeValue();
                 MainActivity.rn = null;

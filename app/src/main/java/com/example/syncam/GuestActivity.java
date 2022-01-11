@@ -285,8 +285,8 @@ public class GuestActivity extends AppCompatActivity implements ImageAnalysis.An
 
         //bind to lifecycle:
         cameraProvider.bindToLifecycle(this, cameraSelector, preview, imageCapture);
-        TextView textView=findViewById(R.id.tvData);
-        textView.setText("　　" +roomNumber+" "+deviceNumber.substring(6,8)+" "+android.os.Build.MANUFACTURER+" "+android.os.Build.MODEL);
+        TextView textView = findViewById(R.id.tvData);
+        textView.setText("　　" + roomNumber + " " + deviceNumber.substring(6, 8) + " " + android.os.Build.MANUFACTURER + " " + android.os.Build.MODEL);
     }
 
     //動画画面作成
@@ -323,10 +323,11 @@ public class GuestActivity extends AppCompatActivity implements ImageAnalysis.An
 
         //bind to lifecycle:
         cameraProvider.bindToLifecycle(this, cameraSelector, preview, videoCapture);
-        TextView textView=findViewById(R.id.tvData);
+        TextView textView = findViewById(R.id.tvData);
         //ゲスト画面上に情報を表示
-        textView.setText("　　" +roomNumber+" "+deviceNumber.substring(6,8)+" "+android.os.Build.MANUFACTURER+" "+android.os.Build.MODEL);
+        textView.setText("　　" + roomNumber + " " + deviceNumber.substring(6, 8) + " " + android.os.Build.MANUFACTURER + " " + android.os.Build.MODEL);
     }
+
     @Override
     public void analyze(@NonNull ImageProxy image) {
         // image processing here for the current frame
@@ -507,11 +508,11 @@ public class GuestActivity extends AppCompatActivity implements ImageAnalysis.An
     };
 
     //画面が暗くなるか否かの設定と端末のラグ修正設定を取得
-    boolean getDarkSetting(){
+    boolean getDarkSetting() {
         //共有プリファレンスの準備
         sharedPreferences = PreferenceManager.getDefaultSharedPreferences(GuestActivity.this);
         //端末固有のラグを修正する設定を取得
-        deviceCameraLag = Integer.parseInt(sharedPreferences.getString("Syncam-Setting-CameraLag","0"));
+        deviceCameraLag = Integer.parseInt(sharedPreferences.getString("Syncam-Setting-CameraLag", "0"));
         //画面を暗くする設定値の返却
         return sharedPreferences.getBoolean("Syncam-Setting-dark", true);
     }
