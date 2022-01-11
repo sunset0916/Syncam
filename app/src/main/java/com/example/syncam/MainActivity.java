@@ -8,6 +8,7 @@ import android.icu.text.SimpleDateFormat;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.Bundle;
+import android.os.Handler;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -76,8 +77,19 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         if (item.getItemId() == R.id.action_button) {
+            //連打防止の為全ボタン無効化
+            findViewById(R.id.bSet).setEnabled(false);
+            findViewById(R.id.bJoin).setEnabled(false);
+            findViewById(R.id.action_button).setEnabled(false);
+            //設定画面に遷移
             Intent intent = new Intent(MainActivity.this, GuestSettingsActivity.class);
             startActivity(intent);
+            //0.5秒後にボタン有効化
+            new Handler().postDelayed(() -> {
+                findViewById(R.id.bSet).setEnabled(true);
+                findViewById(R.id.bJoin).setEnabled(true);
+                findViewById(R.id.action_button).setEnabled(true);
+            },500);
             return true;
         }
         return super.onOptionsItemSelected(item);
@@ -210,6 +222,10 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     @SuppressLint("NonConstantResourceId")
     @Override
     public void onClick(View view) {
+        //連打防止の為全ボタン無効化
+        findViewById(R.id.bSet).setEnabled(false);
+        findViewById(R.id.bJoin).setEnabled(false);
+        findViewById(R.id.action_button).setEnabled(false);
         //Firebaseへの接続状況をconnectに格納
         DatabaseReference connectedRef = FirebaseDatabase.getInstance().getReference(".info/connected");
         connectedRef.addValueEventListener(new ValueEventListener() {
@@ -271,6 +287,13 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         }else{
             Toast.makeText(MainActivity.this,"データベースに接続できませんでした",Toast.LENGTH_SHORT).show();
         }
+
+        //2秒後にボタン有効化
+        new Handler().postDelayed(() -> {
+            findViewById(R.id.bSet).setEnabled(true);
+            findViewById(R.id.bJoin).setEnabled(true);
+            findViewById(R.id.action_button).setEnabled(true);
+        },2000);
     }
 }
 

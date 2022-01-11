@@ -70,9 +70,17 @@ public class HostActivity extends AppCompatActivity implements View.OnClickListe
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         if (item.getItemId() == R.id.action_button) {
+            //連打防止の為ボタン無効化
+            findViewById(R.id.action_button).setEnabled(false);
+            findViewById(R.id.bStart).setEnabled(false);
             flag = false;
             Intent intent = new Intent(HostActivity.this, SettingsActivity.class);
             startActivity(intent);
+            //0.5秒後にボタン有効化
+            new Handler().postDelayed(() -> {
+                findViewById(R.id.action_button).setEnabled(true);
+                findViewById(R.id.bStart).setEnabled(true);
+            },500);
             return true;
         }
         return super.onOptionsItemSelected(item);
