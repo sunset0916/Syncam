@@ -59,7 +59,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     static String deviceNumber;
 
     //Firebaseとの接続状況を格納する変数
-    boolean connect = false;
+    boolean connect;
 
     //ネット未接続時のダイアログ
     AlertDialog alertDialog;
@@ -154,6 +154,17 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                     .setPositiveButton("終了", (dialogInterface, i) -> finish())
                     .show();
         }
+        //一回問い合わせておかないとボタン押したときに接続できていない扱いになるので何もしないけど問い合わせ
+        DatabaseReference connectedRef = FirebaseDatabase.getInstance().getReference(".info/connected");
+        connectedRef.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                connect = snapshot.getValue(Boolean.class);
+            }
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+            }
+        });
     }
 
     //端末の時刻をミリ秒単位で整数型で取得
@@ -212,36 +223,51 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         });
         //Firebaseに接続できているかの判断
         if(connect) {
-            if (view.getId() == R.id.bJoin) {
-                //ルーム参加ダイアログの表示
-                DialogFragment dialogFragment = new myDialogFragment();
-                dialogFragment.show(getSupportFragmentManager(), "my_dialog");
-            } else if (view.getId() == R.id.bSet) {
-                //ルームの生成
-                Random r = new Random();
-                //0~999999の間で乱数を生成
-                rn = String.valueOf(r.nextInt(1000000));
-                //6桁に満たない場合は6桁になるまで戦闘に0を追加する
-                for (int i = rn.length(); i < 6; i++) {
-                    rn = "0" + rn;
-                }
-                //Firebaseへ問い合わせ
-                ReadWrite.ref.get().addOnCompleteListener(task -> {
-                    //生成したルーム番号がFirebaseに存在するかの判断
-                    if (String.valueOf(Objects.requireNonNull(task.getResult()).getValue()).contains("roomNumber=" + rn)) {
-                        //番号生成やり直し
-                        onClick(findViewById(R.id.bSet));
-                    } else {
-                        //画面遷移の状態を保持する変数を初期化
-                        HostActivity.flag = true;
-                        //Firebaseに生成したルーム番号を送信
-                        ReadWrite.SendRoomNumber(rn);
-                        //ホスト画面に遷移
-                        Intent intent = new Intent(MainActivity.this, HostActivity.class);
-                        startActivity(intent);
+            //サーバーメンテナンス中かどうか確認
+            DatabaseReference status = FirebaseDatabase.getInstance().getReference("status");
+            status.child("active").get().addOnCompleteListener(task -> {
+                if (task.getResult().getValue().toString().equals("false")) {
+                    //メンテナンス中の場合ダイアログを出す
+                    status.child("info").get().addOnCompleteListener(task1 -> alertDialog = new AlertDialog.Builder(MainActivity.this)
+                            .setCancelable(false)
+                            .setTitle("サーバーメンテナンス")
+                            .setMessage(task1.getResult().getValue().toString())
+                            .setPositiveButton("OK",null)
+                            .show());
+                }else{
+                    //メンテナンス中でない場合の処理
+                    if (view.getId() == R.id.bJoin) {
+                        //ルーム参加ダイアログの表示
+                        DialogFragment dialogFragment = new myDialogFragment();
+                        dialogFragment.show(getSupportFragmentManager(), "my_dialog");
+                    } else if (view.getId() == R.id.bSet) {
+                        //ルームの生成
+                        Random r = new Random();
+                        //0~999999の間で乱数を生成
+                        rn = String.valueOf(r.nextInt(1000000));
+                        //6桁に満たない場合は6桁になるまで戦闘に0を追加する
+                        for (int i = rn.length(); i < 6; i++) {
+                            rn = "0" + rn;
+                        }
+                        //Firebaseへ問い合わせ
+                        ReadWrite.ref.get().addOnCompleteListener(task2 -> {
+                            //生成したルーム番号がFirebaseに存在するかの判断
+                            if (String.valueOf(Objects.requireNonNull(task2.getResult()).getValue()).contains("roomNumber=" + rn)) {
+                                //番号生成やり直し
+                                onClick(findViewById(R.id.bSet));
+                            } else {
+                                //画面遷移の状態を保持する変数を初期化
+                                HostActivity.flag = true;
+                                //Firebaseに生成したルーム番号を送信
+                                ReadWrite.SendRoomNumber(rn);
+                                //ホスト画面に遷移
+                                Intent intent = new Intent(MainActivity.this, HostActivity.class);
+                                startActivity(intent);
+                            }
+                        });
                     }
-                });
-            }
+                }
+            });
         }else{
             Toast.makeText(MainActivity.this,"データベースに接続できませんでした",Toast.LENGTH_SHORT).show();
         }

@@ -12,7 +12,8 @@
         <EditTextPreference
             app:defaultValue="0"
             app:key="Syncam-Setting-CameraLag"
-            app:title="端末固有のラグの修正"
-            app:useSimpleSummaryProvider="true" />
+            app:title="端末固有のラグの修正(ミリ秒)"
+            app:useSimpleSummaryProvider="false"
+            android:summary="撮影時の誤差を手動で修正できます\n詳しくはストアページを参照してください" />
     </PreferenceCategory>
 </PreferenceScreen>
