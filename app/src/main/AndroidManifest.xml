@@ -40,6 +40,7 @@
             tools:ignore="LockedOrientationActivity" />
         <activity
             android:name=".MainActivity"
+            android:theme="@style/AppTheme.Splash"
             android:screenOrientation="portrait"
             tools:ignore="IntentFilterExportedReceiver,LockedOrientationActivity">
             <intent-filter>

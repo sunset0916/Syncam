@@ -88,7 +88,7 @@ public class HostActivity extends AppCompatActivity implements View.OnClickListe
         //ルーム番号を表示するTextView
         TextView textView = findViewById(R.id.tvNumber);
         //MainActivityで生成したルーム番号をtextViewに表示
-        textView.setText(MainActivity.rn);
+        textView.setText("ルームID："+MainActivity.rn);
         //接続中のデバイス情報を表示するためのTextViewを配置するLinerLayout
         LinearLayout l2 = findViewById(R.id.ll1);
 

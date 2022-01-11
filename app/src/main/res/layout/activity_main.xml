@@ -15,8 +15,9 @@
     <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:textColor="@color/black"
         android:text="ホスト"
-        android:textSize="50dp"
+        android:textSize="38dp"
         android:id="@+id/tvHost"
         android:layout_weight="1"
         tools:ignore="HardcodedText,SpUsage,UnusedAttribute" />
@@ -38,11 +39,12 @@
 
     <TextView
         android:id="@+id/tvGuest"
+        android:textColor="@color/black"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_weight="1"
         android:text="ゲスト"
-        android:textSize="50dp"
+        android:textSize="38dp"
         tools:ignore="HardcodedText,SpUsage,UnusedAttribute" />
     <Button
         android:layout_width="match_parent"

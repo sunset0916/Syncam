@@ -11,33 +11,36 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_weight="1"
-        android:orientation="horizontal"
-        android:weightSum="2">
+        android:orientation="horizontal">
 
         <LinearLayout
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="horizontal"
+            android:weightSum="8"
             tools:ignore="UselessParent">
 
-            <TextView
-                android:id="@+id/tv1"
+            <LinearLayout
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginLeft="30dp"
-                android:layout_weight="1"
-                android:text="ルーム番号"
-                android:textSize="38dp"
-                tools:ignore="HardcodedText,RtlHardcoded,SpUsage" />
+                android:layout_weight="1.5"
+                tools:ignore="UselessLeaf" />
 
             <TextView
                 android:id="@+id/tvNumber"
+                android:textColor="@color/black"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:text="000000"
+                android:layout_weight="5"
+                android:text="ルームID：000000"
                 android:textSize="38dp"
                 tools:ignore="HardcodedText,SpUsage" />
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1.5"
+                tools:ignore="UselessLeaf" />
         </LinearLayout>
     </LinearLayout>
 
@@ -54,6 +57,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginLeft="30dp"
+            android:textColor="@color/black"
             android:text="0台接続中"
             tools:ignore="HardcodedText,RtlHardcoded" />
 
@@ -104,18 +108,33 @@
         </LinearLayout>
 
         <LinearLayout
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:weightSum="8"
             android:orientation="horizontal">
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1.5"
+                tools:ignore="UselessLeaf" />
 
             <Button
                 android:id="@+id/bStart"
+                android:backgroundTint="#800000"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_weight="0.3"
+                android:layout_weight="5"
                 android:text="　撮影　"
                 android:textSize="55sp"
                 tools:ignore="HardcodedText,InefficientWeight" />
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1.5"
+                tools:ignore="UselessLeaf" />
+
         </LinearLayout>
     </LinearLayout>
 </LinearLayout>

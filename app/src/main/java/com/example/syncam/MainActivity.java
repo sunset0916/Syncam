@@ -18,6 +18,7 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.app.AppCompatDelegate;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.DialogFragment;
@@ -86,6 +87,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        setTheme(R.style.Theme_Syncam);
 
         //Firebaseの準備
         Firebase.setAndroidContext(this);
@@ -96,6 +98,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         btn1.setOnClickListener(this);
         Button btn2 = findViewById(R.id.bSet);
         btn2.setOnClickListener(this);
+
+        //ダークモード無効
+        AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO);
 
         //権限取得
         if (!checkPermissions()) {
