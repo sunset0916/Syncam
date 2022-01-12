@@ -286,7 +286,7 @@ public class GuestActivity extends AppCompatActivity implements ImageAnalysis.An
         //bind to lifecycle:
         cameraProvider.bindToLifecycle(this, cameraSelector, preview, imageCapture);
         TextView textView = findViewById(R.id.tvData);
-        textView.setText("　　" + roomNumber + " " + deviceNumber.substring(6, 8) + " " + android.os.Build.MANUFACTURER + " " + android.os.Build.MODEL);
+        textView.setText("　" + roomNumber + " " + deviceNumber.substring(6, 8) + " " + android.os.Build.MANUFACTURER + " " + android.os.Build.MODEL);
     }
 
     //動画画面作成
@@ -325,7 +325,7 @@ public class GuestActivity extends AppCompatActivity implements ImageAnalysis.An
         cameraProvider.bindToLifecycle(this, cameraSelector, preview, videoCapture);
         TextView textView = findViewById(R.id.tvData);
         //ゲスト画面上に情報を表示
-        textView.setText("　　" + roomNumber + " " + deviceNumber.substring(6, 8) + " " + android.os.Build.MANUFACTURER + " " + android.os.Build.MODEL);
+        textView.setText("　" + roomNumber + " " + deviceNumber.substring(6, 8) + " " + android.os.Build.MANUFACTURER + " " + android.os.Build.MODEL);
     }
 
     @Override
@@ -387,7 +387,6 @@ public class GuestActivity extends AppCompatActivity implements ImageAnalysis.An
 
                             @Override
                             public void onError(int videoCaptureError, @NonNull String message, @Nullable Throwable cause) {
-                                Toast.makeText(GuestActivity.this, "エラー:" + message, Toast.LENGTH_SHORT).show();
                                 if (dark) {
                                     WindowManager.LayoutParams lp = getWindow().getAttributes();
                                     lp.screenBrightness = 1.0F;
@@ -442,7 +441,6 @@ public class GuestActivity extends AppCompatActivity implements ImageAnalysis.An
 
                     @Override
                     public void onError(@NonNull ImageCaptureException exception) {
-                        Toast.makeText(GuestActivity.this, "エラー" + exception.getMessage(), Toast.LENGTH_SHORT).show();
                     }
                 }
         );
@@ -512,7 +510,11 @@ public class GuestActivity extends AppCompatActivity implements ImageAnalysis.An
         //共有プリファレンスの準備
         sharedPreferences = PreferenceManager.getDefaultSharedPreferences(GuestActivity.this);
         //端末固有のラグを修正する設定を取得
-        deviceCameraLag = Integer.parseInt(sharedPreferences.getString("Syncam-Setting-CameraLag", "0"));
+        if(sharedPreferences.getString("Syncam-Setting-CameraLag", "0").equals("")){
+            deviceCameraLag = 0;
+        }else {
+            deviceCameraLag = Integer.parseInt(sharedPreferences.getString("Syncam-Setting-CameraLag", "0"));
+        }
         //画面を暗くする設定値の返却
         return sharedPreferences.getBoolean("Syncam-Setting-dark", true);
     }

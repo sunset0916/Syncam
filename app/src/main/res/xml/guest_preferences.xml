@@ -14,6 +14,11 @@
             app:key="Syncam-Setting-CameraLag"
             app:title="端末固有のラグの修正(ミリ秒)"
             app:useSimpleSummaryProvider="false"
-            android:summary="撮影時の誤差を手動で修正できます\n詳しくはストアページを参照してください" />
+            android:summary="撮影時の誤差を手動で修正できます\n詳しくはマニュアルを参照してください" />
+    </PreferenceCategory>
+    <PreferenceCategory app:title="ヘルプ">
+        <Preference
+            app:title="保存場所について"
+            android:summary="Android 10以前：\n/DCIM/SYNCAM\n/Music/AUDIO\nAndroid 11以降：\n/Android/data/com.example.syncam"/>
     </PreferenceCategory>
 </PreferenceScreen>

@@ -68,12 +68,13 @@
             android:layout_marginLeft="30dp"
             android:layout_marginRight="30dp"
             android:layout_weight="2.1"
-            tools:ignore="NestedWeights">
+            tools:ignore="NestedWeights,SpeakableTextPresentCheck">
+
             <LinearLayout
+                android:id="@+id/ll1"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:orientation="vertical"
-                android:id="@+id/ll1"/>
+                android:orientation="vertical" />
         </ScrollView>
 
         <LinearLayout
@@ -86,15 +87,16 @@
                 android:id="@+id/imageC"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_marginStart="5dp"
                 android:background="@drawable/ic_baseline_add_a_photo_24"
-                tools:ignore="ContentDescription" />
+                tools:ignore="ContentDescription,SpeakableTextPresentCheck" />
 
             <ImageButton
                 android:id="@+id/imageV"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:background="@drawable/ic_baseline_videocam_24"
-                tools:ignore="ContentDescription" />
+                tools:ignore="ContentDescription,SpeakableTextPresentCheck" />
 
 
             <TextView
@@ -104,6 +106,7 @@
                 android:layout_marginLeft="30dp"
                 android:text="00:00:00"
                 android:textSize="30sp"
+                android:layout_marginTop="12dp"
                 tools:ignore="HardcodedText,RtlHardcoded" />
         </LinearLayout>
 
