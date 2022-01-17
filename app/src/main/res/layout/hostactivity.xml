@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="vertical"
     android:weightSum="8">
 
@@ -130,6 +130,11 @@
                 android:layout_weight="5"
                 android:text="　撮影　"
                 android:textSize="55sp"
+                style="@style/Widget.MaterialComponents.Button.OutlinedButton"
+                app:cornerRadius="10dp"
+                app:strokeColor="@color/silver"
+                app:strokeWidth="3dp"
+                android:textColor="@color/white"
                 tools:ignore="HardcodedText,InefficientWeight" />
 
             <LinearLayout

@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:weightSum="8"
     android:orientation="vertical"
     tools:context=".MainActivity">
@@ -30,6 +30,12 @@
         android:text="ルーム作成"
         android:layout_weight="1"
         android:id="@+id/bSet"
+        style="@style/Widget.MaterialComponents.Button.OutlinedButton.Icon"
+        app:cornerRadius="15dp"
+        app:strokeColor="@color/silver"
+        app:strokeWidth="4dp"
+        app:backgroundTint="@color/black"
+        android:textColor="@color/white"
         tools:ignore="HardcodedText,SpUsage" />
     <LinearLayout
         android:layout_width="wrap_content"
@@ -55,5 +61,11 @@
         android:layout_marginRight="30dp"
         android:layout_weight="1"
         android:id="@+id/bJoin"
+        style="@style/Widget.MaterialComponents.Button.OutlinedButton"
+        app:cornerRadius="15dp"
+        app:strokeColor="@color/silver"
+        app:strokeWidth="4dp"
+        app:backgroundTint="@color/black"
+        android:textColor="@color/white"
         tools:ignore="HardcodedText,SpUsage,UnusedAttribute" />
 </LinearLayout>
