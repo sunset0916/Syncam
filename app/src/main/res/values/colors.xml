@@ -9,5 +9,7 @@
     <color name="white">#FFFFFFFF</color>
     <color name="edo">#745399</color>
     <color name="midnight">#191970</color>
+    <color name="silver">#c0c0c0</color>
+
 
 </resources>
