@@ -209,7 +209,11 @@ public class HostActivity extends AppCompatActivity implements View.OnClickListe
                 //生成したTextViewを表示
                 l2.addView(tv);
                 //接続台数の表示を増やす
-                tvc.setText((Integer.parseInt(tvc.getText().toString().substring(0, 1)) + 1) + tvc.getText().toString().substring(1, 5));
+                if(tvc.getText().toString().length() == 5) {
+                    tvc.setText((Integer.parseInt(tvc.getText().toString().substring(0, 1)) + 1) + tvc.getText().toString().substring(1, 5));
+                }else{
+                    tvc.setText((Integer.parseInt(tvc.getText().toString().substring(0, 2)) + 1) + tvc.getText().toString().substring(2, 6));
+                }
             }
 
             @Override
@@ -223,7 +227,11 @@ public class HostActivity extends AppCompatActivity implements View.OnClickListe
                 //TextViewを削除
                 l2.removeView(findViewById(getResources().getIdentifier(String.valueOf(snapshot.getKey()).substring(6, 8), "id", "com.example.syncam")));
                 //接続台数の表示を減らす
-                tvc.setText((Integer.parseInt(tvc.getText().toString().substring(0, 1)) - 1) + tvc.getText().toString().substring(1, 5));
+                if(tvc.getText().toString().length() == 5) {
+                    tvc.setText((Integer.parseInt(tvc.getText().toString().substring(0, 1)) - 1) + tvc.getText().toString().substring(1, 5));
+                }else{
+                    tvc.setText((Integer.parseInt(tvc.getText().toString().substring(0, 2)) - 1) + tvc.getText().toString().substring(2, 6));
+                }
             }
 
             @Override
