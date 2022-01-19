@@ -5,6 +5,7 @@ import android.app.Dialog;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.text.InputFilter;
 import android.text.InputType;
 import android.widget.EditText;
 import android.widget.Toast;
@@ -33,6 +34,7 @@ public class myDialogFragment extends DialogFragment {
         EditText editText = new EditText(getActivity());
         //入力できる文字を数字に限定
         editText.setInputType(InputType.TYPE_CLASS_NUMBER);
+        editText.setFilters(new InputFilter[] {new InputFilter.LengthFilter(6)});
         //ダイアログ生成
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
         builder.setTitle("ルーム参加")
