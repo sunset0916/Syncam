@@ -1,6 +1,7 @@
 package com.example.syncam;
 
 import android.os.Bundle;
+import android.text.InputFilter;
 import android.text.InputType;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -31,7 +32,10 @@ public class GuestSettingsActivity extends AppCompatActivity {
 
             //EditTextPreferenceのEditText部分を取り出して入力制限を設定
             EditTextPreference editTextPreference = findPreference("Syncam-Setting-CameraLag");
-            editTextPreference.setOnBindEditTextListener(editText -> editText.setInputType(InputType.TYPE_CLASS_NUMBER));
+            editTextPreference.setOnBindEditTextListener(editText -> {
+                editText.setInputType(InputType.TYPE_CLASS_NUMBER);
+                editText.setFilters(new InputFilter[] {new InputFilter.LengthFilter(3)});
+            });
         }
     }
 }
