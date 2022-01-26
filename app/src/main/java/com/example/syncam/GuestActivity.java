@@ -8,6 +8,7 @@ import android.content.ContentResolver;
 import android.content.ContentValues;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
+import android.graphics.Point;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
@@ -15,7 +16,9 @@ import android.os.Handler;
 import android.provider.MediaStore;
 import android.util.Log;
 import android.util.Size;
+import android.view.Display;
 import android.view.View;
+import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -89,6 +92,17 @@ public class GuestActivity extends AppCompatActivity implements ImageAnalysis.An
         super.onCreate(savedInstanceState);
         setTheme(R.style.AppTheme_NoTitleBar);
         setContentView(R.layout.activity_guest);
+
+        Point pt = getRealDisplaySize();
+        int totalMargin = pt.x - ((pt.y / 9) * 16);
+        if(totalMargin != 0){
+            int startMargin = totalMargin / 2 - MainActivity.statusBarHeight;
+            previewView = findViewById(R.id.previewView);
+            ViewGroup.LayoutParams lp = previewView.getLayoutParams();
+            ViewGroup.MarginLayoutParams mlp = (ViewGroup.MarginLayoutParams) lp;
+            mlp.setMarginStart(startMargin);
+            previewView.setLayoutParams(mlp);
+        }
 
         //ルーム番号とデバイス番号をMainActivityに保存した変数から読み込む
         roomNumber = MainActivity.roomNumber;
@@ -517,5 +531,13 @@ public class GuestActivity extends AppCompatActivity implements ImageAnalysis.An
         }
         //画面を暗くする設定値の返却
         return sharedPreferences.getBoolean("Syncam-Setting-dark", true);
+    }
+
+    //ディスプレイ解像度を取得
+    public Point getRealDisplaySize(){
+        Display display = GuestActivity.this.getWindowManager().getDefaultDisplay();
+        Point point = new Point();
+        display.getRealSize(point);
+        return point;
     }
 }

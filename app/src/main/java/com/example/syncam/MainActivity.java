@@ -4,6 +4,7 @@ import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.graphics.Rect;
 import android.icu.text.SimpleDateFormat;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
@@ -13,6 +14,7 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.Window;
 import android.widget.Button;
 import android.widget.Toast;
 
@@ -46,6 +48,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     public String ntpmm;
     public String ntpss;
     public String ntpSSS;
+
+    //StatusBarの高さ
+    static int statusBarHeight;
 
     //NTPから取得した時刻と端末の時刻との差をミリ秒単位で保持する変数
     static int timeLag;
@@ -255,6 +260,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 } else {
                     //メンテナンス中でない場合の処理
                     if (view.getId() == R.id.bJoin) {
+                        //StatusBarの高さ取得
+                        statusBarHeight = getStatusBarHeight();
                         //ルーム参加ダイアログの表示
                         DialogFragment dialogFragment = new myDialogFragment();
                         dialogFragment.show(getSupportFragmentManager(), "my_dialog");
@@ -295,6 +302,14 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             findViewById(R.id.bJoin).setEnabled(true);
             findViewById(R.id.action_button).setEnabled(true);
         }, 2000);
+    }
+
+    //StatusBarの高さ取得
+    public int getStatusBarHeight(){
+        final Rect rect = new Rect();
+        Window window = MainActivity.this.getWindow();
+        window.getDecorView().getWindowVisibleDisplayFrame(rect);
+        return rect.top;
     }
 }
 
