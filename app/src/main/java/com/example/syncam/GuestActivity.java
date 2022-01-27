@@ -35,6 +35,7 @@ import androidx.camera.core.Preview;
 import androidx.camera.core.VideoCapture;
 import androidx.camera.lifecycle.ProcessCameraProvider;
 import androidx.camera.view.PreviewView;
+import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.preference.PreferenceManager;
@@ -93,14 +94,24 @@ public class GuestActivity extends AppCompatActivity implements ImageAnalysis.An
         setTheme(R.style.AppTheme_NoTitleBar);
         setContentView(R.layout.activity_guest);
 
+        //PreviewViewの位置を画面中央に調整
+        previewView = findViewById(R.id.previewView);
         Point pt = getRealDisplaySize();
         int totalMargin = pt.x - ((pt.y / 9) * 16);
-        if(totalMargin != 0){
+        //16:9より長い画面の場合（ノッチあり前提）
+        if(totalMargin > 0){
             int startMargin = totalMargin / 2 - MainActivity.statusBarHeight;
-            previewView = findViewById(R.id.previewView);
             ViewGroup.LayoutParams lp = previewView.getLayoutParams();
             ViewGroup.MarginLayoutParams mlp = (ViewGroup.MarginLayoutParams) lp;
             mlp.setMarginStart(startMargin);
+            previewView.setLayoutParams(mlp);
+        }
+        //16:9より正方形に近い画面の場合（タブレット等）
+        if(totalMargin < 0){
+            ViewGroup.LayoutParams lp = previewView.getLayoutParams();
+            ViewGroup.MarginLayoutParams mlp = (ViewGroup.MarginLayoutParams) lp;
+            totalMargin = pt.y - ((pt.x / 16) * 9);
+            mlp.setMargins(0,totalMargin / 2,0,totalMargin / 2);
             previewView.setLayoutParams(mlp);
         }
 

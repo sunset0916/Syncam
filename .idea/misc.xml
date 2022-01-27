@@ -6,6 +6,7 @@
         <entry key="app/src/main/res/drawable/ic_baseline_add_a_photo_24.xml" value="0.2984375" />
         <entry key="app/src/main/res/drawable/ic_baseline_settings_24.xml" value="0.17222222222222222" />
         <entry key="app/src/main/res/drawable/ic_baseline_videocam_24.xml" value="0.17222222222222222" />
+        <entry key="app/src/main/res/layout-land/activity_guest.xml" value="0.23854166666666668" />
         <entry key="app/src/main/res/layout/activity_guest.xml" value="0.17617753623188406" />
         <entry key="app/src/main/res/layout/activity_main.xml" value="0.21557971014492755" />
         <entry key="app/src/main/res/layout/hostactivity.xml" value="0.18115942028985507" />
