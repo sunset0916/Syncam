@@ -23,6 +23,10 @@
         android:theme="@style/Theme.Syncam"
         tools:ignore="AllowBackup">
         <activity
+            android:name=".ManualActivity"
+            android:label="詳細設定マニュアル"
+            android:exported="false" />
+        <activity
             android:name=".GuestSettingsActivity"
             android:exported="false"
             android:label="@string/title_activity_guest_settings" />
@@ -40,8 +44,8 @@
             tools:ignore="LockedOrientationActivity" />
         <activity
             android:name=".MainActivity"
-            android:theme="@style/AppTheme.Splash"
             android:screenOrientation="portrait"
+            android:theme="@style/AppTheme.Splash"
             tools:ignore="IntentFilterExportedReceiver,LockedOrientationActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
