@@ -34,6 +34,7 @@ public class myDialogFragment extends DialogFragment {
         EditText editText = new EditText(getActivity());
         //入力できる文字を数字に限定
         editText.setInputType(InputType.TYPE_CLASS_NUMBER);
+        //入力可能文字数を6文字に制限
         editText.setFilters(new InputFilter[] {new InputFilter.LengthFilter(6)});
         //ダイアログ生成
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
@@ -83,6 +84,7 @@ public class myDialogFragment extends DialogFragment {
                 }))
                 .setView(editText)
                 .setNegativeButton("キャンセル", null);
+        //ダイアログ外を触っても反応しないように設定
         this.setCancelable(false);
         return builder.create();
     }

@@ -11,7 +11,6 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.preference.EditTextPreference;
 import androidx.preference.Preference;
 import androidx.preference.PreferenceFragmentCompat;
-import androidx.preference.PreferenceScreen;
 
 public class GuestSettingsActivity extends AppCompatActivity {
 
@@ -45,10 +44,12 @@ public class GuestSettingsActivity extends AppCompatActivity {
         public void onCreatePreferences(Bundle savedInstanceState, String rootKey) {
             setPreferencesFromResource(R.xml.guest_preferences, rootKey);
 
-            //EditTextPreferenceのEditText部分を取り出して入力制限を設定
+            //EditTextPreferenceのEditText部分を取り出す
             EditTextPreference editTextPreference = findPreference("Syncam-Setting-CameraLag");
             editTextPreference.setOnBindEditTextListener(editText -> {
+                //入力できる文字を数字に限定
                 editText.setInputType(InputType.TYPE_CLASS_NUMBER);
+                //入力可能文字数を6文字に制限
                 editText.setFilters(new InputFilter[] {new InputFilter.LengthFilter(3)});
             });
 

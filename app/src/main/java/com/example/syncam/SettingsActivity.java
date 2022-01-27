@@ -57,6 +57,7 @@ public class SettingsActivity extends AppCompatActivity {
         }
     }
 
+    //画面再開時の動作
     @Override
     protected void onRestart() {
         super.onRestart();

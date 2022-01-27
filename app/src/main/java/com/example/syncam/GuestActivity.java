@@ -94,11 +94,15 @@ public class GuestActivity extends AppCompatActivity implements ImageAnalysis.An
         setContentView(R.layout.activity_guest);
 
         //PreviewViewの位置を画面中央に調整
+        //PreviewViewの結びつけ
         previewView = findViewById(R.id.previewView);
+        //ハードウェアの画面解像度を取得
         Point pt = getRealDisplaySize();
+        //PreviewViewを表示した余りを取得（長い画面では＋、正方形に近い画面は−、16:9の画面では0）
         int totalMargin = pt.x - ((pt.y / 9) * 16);
         //16:9より長い画面の場合（ノッチあり前提）
         if(totalMargin > 0){
+            //画面の余りの部分の半分からノッチ(StatusBar)部分を引いてそれを左側のMarginとして設定する
             int startMargin = totalMargin / 2 - MainActivity.statusBarHeight;
             ViewGroup.LayoutParams lp = previewView.getLayoutParams();
             ViewGroup.MarginLayoutParams mlp = (ViewGroup.MarginLayoutParams) lp;
@@ -107,6 +111,7 @@ public class GuestActivity extends AppCompatActivity implements ImageAnalysis.An
         }
         //16:9より正方形に近い画面の場合（タブレット等）
         if(totalMargin < 0){
+            //画面の余りの部分を半分にして上と下のMarginとして設定する
             ViewGroup.LayoutParams lp = previewView.getLayoutParams();
             ViewGroup.MarginLayoutParams mlp = (ViewGroup.MarginLayoutParams) lp;
             totalMargin = pt.y - ((pt.x / 16) * 9);

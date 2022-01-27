@@ -73,7 +73,9 @@ public class HostActivity extends AppCompatActivity implements View.OnClickListe
             //連打防止の為ボタン無効化
             findViewById(R.id.action_button).setEnabled(false);
             findViewById(R.id.bStart).setEnabled(false);
+            //画面遷移の状態を保存
             flag = false;
+            //設定画面に移動
             Intent intent = new Intent(HostActivity.this, SettingsActivity.class);
             startActivity(intent);
             //0.5秒後にボタン有効化
@@ -198,8 +200,7 @@ public class HostActivity extends AppCompatActivity implements View.OnClickListe
                 //新たなTextViewを生成
                 TextView tv = new TextView(HostActivity.this);
                 //生成したTextViewのレイアウトの設定
-                tv.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT,
-                        LinearLayout.LayoutParams.WRAP_CONTENT));
+                tv.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT,LinearLayout.LayoutParams.WRAP_CONTENT));
                 //生成したTextViewに取り出したデバイス情報を格納
                 tv.setText(deviceNumber + " " + manufacturer + " " + model);
                 //生成したTextViewの文字サイズの設定
@@ -503,6 +504,7 @@ public class HostActivity extends AppCompatActivity implements View.OnClickListe
                     .setNegativeButton("いいえ", null)
                     .show();
         } else {
+             //Activityの終了
             ActivityEnd();
         }
     }
@@ -543,7 +545,7 @@ public class HostActivity extends AppCompatActivity implements View.OnClickListe
     //録音動作
     private void startRecording() {
 
-        //APIによってフォルダの変更
+        //APIレベルによってフォルダの変更
         int apiInt = Build.VERSION.SDK_INT;
         //録音ファイル変数
         File fileName;
