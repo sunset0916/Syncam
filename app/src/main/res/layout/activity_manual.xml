@@ -15,9 +15,21 @@
         android:textSize="32sp"
         tools:ignore="HardcodedText" />
     <TextView
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="\n\n  NTPでは埋められないラグが気になったら\n  これを見て設定しよう！"
+        android:text="\n\n  タイマーでは埋められないラグが気になったら\n  これを見て設定しよう！\n\n"
+        android:textSize="16sp"
+        tools:ignore="HardcodedText" />
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text=" 手順①"
+        android:textSize="24sp"
+        tools:ignore="HardcodedText" />
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="\n  Syncamを起動した端末とストップウォッチを\n  写真のように配置します。\n"
         android:textSize="16sp"
         tools:ignore="HardcodedText" />
 </LinearLayout>
