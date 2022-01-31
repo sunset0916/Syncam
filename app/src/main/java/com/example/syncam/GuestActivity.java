@@ -294,6 +294,7 @@ public class GuestActivity extends AppCompatActivity implements ImageAnalysis.An
 
         // preview
         Preview preview = new Preview.Builder()
+                //ここにアスペクト比解像度
                 .setTargetResolution(new Size(resolutionX, resolutionY))
                 .build();
         preview.setSurfaceProvider(previewView.getSurfaceProvider());
@@ -302,6 +303,7 @@ public class GuestActivity extends AppCompatActivity implements ImageAnalysis.An
         // Image capture use case
         imageCapture = new ImageCapture.Builder()
                 .setCaptureMode(ImageCapture.CAPTURE_MODE_MINIMIZE_LATENCY)
+                //ここにアスペクト比解像度
                 .setTargetResolution(new Size(resolutionX, resolutionY))
                 .build();
 
@@ -328,6 +330,7 @@ public class GuestActivity extends AppCompatActivity implements ImageAnalysis.An
 
         // preview
         Preview preview = new Preview.Builder()
+                //ここにアスペクト比解像度
                 .setTargetResolution(new Size(resolutionX, resolutionY))
                 .build();
         preview.setSurfaceProvider(previewView.getSurfaceProvider());
@@ -335,6 +338,7 @@ public class GuestActivity extends AppCompatActivity implements ImageAnalysis.An
         // Image capture use case
         imageCapture = new ImageCapture.Builder()
                 .setCaptureMode(ImageCapture.CAPTURE_MODE_MINIMIZE_LATENCY)
+                //ここにアスペクト比解像度
                 .setTargetResolution(new Size(resolutionX, resolutionY))
                 .build();
 
@@ -387,8 +391,7 @@ public class GuestActivity extends AppCompatActivity implements ImageAnalysis.An
                 movieDir = new File(getExternalFilesDir(Environment.DIRECTORY_MOVIES) + "/");
             }
 
-            if (!movieDir.exists())
-                movieDir.mkdir();
+            if (!movieDir.exists()) movieDir.mkdir();
 
             //ファイル名作成
             Date date = new Date();

@@ -99,7 +99,7 @@ public class HostActivity extends AppCompatActivity implements View.OnClickListe
         //ルーム番号を表示するTextView
         TextView textView = findViewById(R.id.tvNumber);
         //MainActivityで生成したルーム番号をtextViewに表示
-        textView.setText("ルームID：" + MainActivity.rn);
+        textView.setText("ルーム：" + MainActivity.rn);
         //接続中のデバイス情報を表示するためのTextViewを配置するLinerLayout
         LinearLayout l2 = findViewById(R.id.ll1);
 
@@ -202,7 +202,7 @@ public class HostActivity extends AppCompatActivity implements View.OnClickListe
                 //生成したTextViewのレイアウトの設定
                 tv.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT,LinearLayout.LayoutParams.WRAP_CONTENT));
                 //生成したTextViewに取り出したデバイス情報を格納
-                tv.setText(deviceNumber + " " + manufacturer + " " + model);
+                tv.setText("  "+deviceNumber + " " + manufacturer + " " + model);
                 //生成したTextViewの文字サイズの設定
                 tv.setTextSize(TypedValue.COMPLEX_UNIT_SP, 20);
                 //生成したTextViewにIDを設定
@@ -515,7 +515,7 @@ public class HostActivity extends AppCompatActivity implements View.OnClickListe
     }
 
     //ImageButtonを押したときの動作
-    @SuppressLint("NonConstantResourceId")
+    @SuppressLint({"NonConstantResourceId", "UseCompatLoadingForColorStateLists"})
     @Override
     public void onClick(View view) {
         ImageButton IBC = findViewById(R.id.imageC);
@@ -529,15 +529,21 @@ public class HostActivity extends AppCompatActivity implements View.OnClickListe
                 IBC.setEnabled(false);
                 IBV.setEnabled(true);
                 videoMode = false;
+                bStart.setBackgroundTintList(getResources().getColorStateList(R.color.darkBlue));
                 bStart.setText("　撮影　");
                 tv1.setVisibility(View.INVISIBLE);
+                IBC.setBackgroundTintList(getResources().getColorStateList(R.color.midnight));
+                IBV.setBackgroundTintList(getResources().getColorStateList(R.color.gray));
                 break;
             case R.id.imageV:
                 IBC.setEnabled(true);
                 IBV.setEnabled(false);
+                bStart.setBackgroundTintList(getResources().getColorStateList(R.color.red));
                 videoMode = true;
                 bStart.setText("撮影開始");
                 tv1.setVisibility(View.VISIBLE);
+                IBV.setBackgroundTintList(getResources().getColorStateList(R.color.darkRed));
+                IBC.setBackgroundTintList(getResources().getColorStateList(R.color.gray));
                 break;
         }
     }

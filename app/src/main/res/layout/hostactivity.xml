@@ -33,8 +33,9 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_weight="5"
-                android:text="ルームID：000000"
+                android:text="ルーム：000000"
                 android:textSize="38dp"
+                android:gravity="center_horizontal"
                 tools:ignore="HardcodedText,SpUsage" />
 
             <LinearLayout
@@ -62,13 +63,20 @@
             android:text="0台接続中"
             tools:ignore="HardcodedText,RtlHardcoded" />
 
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="0.1"
+            tools:ignore="NestedWeights,UselessLeaf" />
+
         <ScrollView
             android:id="@+id/scrollView"
             android:layout_width="match_parent"
             android:layout_height="300dp"
             android:layout_marginLeft="30dp"
             android:layout_marginRight="30dp"
-            android:layout_weight="2.1"
+            android:layout_weight="2"
+            android:background="@drawable/stroke"
             tools:ignore="NestedWeights,SpeakableTextPresentCheck">
 
             <LinearLayout
@@ -90,6 +98,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginStart="5dp"
                 android:background="@drawable/ic_baseline_add_a_photo_24"
+                android:backgroundTint="#191970"
                 tools:ignore="ContentDescription,SpeakableTextPresentCheck" />
 
             <ImageButton
@@ -97,6 +106,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:background="@drawable/ic_baseline_videocam_24"
+                android:backgroundTint="#808080"
                 tools:ignore="ContentDescription,SpeakableTextPresentCheck" />
 
 
@@ -125,7 +135,7 @@
 
             <Button
                 android:id="@+id/bStart"
-                android:backgroundTint="#800000"
+                android:backgroundTint="#00008B"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_weight="5"
