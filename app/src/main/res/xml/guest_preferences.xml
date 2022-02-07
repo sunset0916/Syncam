@@ -2,7 +2,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
     <PreferenceCategory app:title="撮影環境設定">
         <CheckBoxPreference
-            android:summary="撮影中のバッテリー消費を抑えることができます"
+            android:summary="バッテリーの消費を抑えます"
             app:defaultValue="true"
             app:key="Syncam-Setting-dark"
             app:title="ゲスト端末の画面を暗くする"
@@ -14,7 +14,7 @@
             app:key="Syncam-Setting-CameraLag"
             app:title="端末固有のラグの修正(ミリ秒)"
             app:useSimpleSummaryProvider="false"
-            android:summary="撮影時の誤差を手動で修正できます\n詳しくは詳細設定マニュアルを参照してください" />
+            android:summary="詳細設定マニュアルを参照" />
     </PreferenceCategory>
     <PreferenceCategory app:title="ヘルプ">
         <Preference
@@ -22,6 +22,6 @@
             android:key="MANUAL" />
         <Preference
             app:title="保存場所について"
-            android:summary="Android 10以前：\n　/DCIM/SYNCAM\n　/Music/AUDIO\nAndroid 11以降：\n　/Android/data/com.example.syncam"/>
+            android:summary="\n　Android 10以前：\n　　/DCIM/SYNCAM\n　　/Music/AUDIO\n　Android 11以降：\n　　/Android/data/com.example.syncam"/>
     </PreferenceCategory>
 </PreferenceScreen>
