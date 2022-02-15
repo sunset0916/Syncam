@@ -270,7 +270,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                         Random r = new Random();
                         //0~999999の間で乱数を生成
                         rn = String.valueOf(r.nextInt(1000000));
-                        //6桁に満たない場合は6桁になるまで戦闘に0を追加する
+                        //6桁に満たない場合は6桁になるまで先頭に0を追加する
                         for (int i = rn.length(); i < 6; i++) {
                             rn = "0" + rn;
                         }

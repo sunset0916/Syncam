@@ -14,7 +14,6 @@ import android.os.Bundle;
 import android.os.Environment;
 import android.os.Handler;
 import android.provider.MediaStore;
-import android.util.Log;
 import android.util.Size;
 import android.view.Display;
 import android.view.View;
@@ -363,8 +362,6 @@ public class GuestActivity extends AppCompatActivity implements ImageAnalysis.An
 
     @Override
     public void analyze(@NonNull ImageProxy image) {
-        // image processing here for the current frame
-        Log.d("TAG", "analyze: got the frame at: " + image.getImageInfo().getTimestamp());
         image.close();
     }
 
@@ -381,7 +378,7 @@ public class GuestActivity extends AppCompatActivity implements ImageAnalysis.An
 
         File movieDir;
 
-        //APIによってフォルダの変更
+        //API Levelによってフォルダの変更
         if (videoCapture != null) {
             int apiInt = Build.VERSION.SDK_INT;
             if (apiInt <= 29) {
@@ -432,7 +429,7 @@ public class GuestActivity extends AppCompatActivity implements ImageAnalysis.An
                 e.printStackTrace();
             }
 
-            //フォト内に表示
+            //フォト内に表示&フォーマットなどの選択
             ContentValues values = new ContentValues();
             ContentResolver contentResolver = getContentResolver();
             values.put("image/mp4", MIME_TYPE);
@@ -445,7 +442,7 @@ public class GuestActivity extends AppCompatActivity implements ImageAnalysis.An
     //画像保存メソッド
     private void capturePhoto() {
         File photoDir;
-        //APIによってフォルダの変更
+        //API Levelによってフォルダの変更
         int apiInt = Build.VERSION.SDK_INT;
         if (apiInt <= 29) {
             final String SAVE_DIR = "/DCIM/SYNCAM";
@@ -496,15 +493,9 @@ public class GuestActivity extends AppCompatActivity implements ImageAnalysis.An
         Handler h = new Handler();
         decorView.setOnSystemUiVisibilityChangeListener
                 (visibility -> {
-                    // Note that system bars will only be "visible" if none of the
-                    // LOW_PROFILE, HIDE_NAVIGATION, or FULLSCREEN flags are set.
                     if ((visibility & View.SYSTEM_UI_FLAG_FULLSCREEN) == 0) {
-                        Log.d("debug", "The system bars are visible");
                         //3秒でもう一度下のバー消去
                         h.postDelayed(this::immersiveMode, 3 * 1000);
-
-                    } else {
-                        Log.d("debug", "The system bars are NOT visible");
                     }
                 });
     }

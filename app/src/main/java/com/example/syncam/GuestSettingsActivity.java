@@ -2,6 +2,7 @@ package com.example.syncam;
 
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.text.InputFilter;
 import android.text.InputType;
@@ -11,6 +12,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.preference.EditTextPreference;
 import androidx.preference.Preference;
 import androidx.preference.PreferenceFragmentCompat;
+import androidx.preference.PreferenceManager;
 
 public class GuestSettingsActivity extends AppCompatActivity {
 
@@ -49,8 +51,17 @@ public class GuestSettingsActivity extends AppCompatActivity {
             editTextPreference.setOnBindEditTextListener(editText -> {
                 //入力できる文字を数字に限定
                 editText.setInputType(InputType.TYPE_CLASS_NUMBER);
-                //入力可能文字数を6文字に制限
+                //入力可能文字数を3文字に制限
                 editText.setFilters(new InputFilter[] {new InputFilter.LengthFilter(3)});
+                //001等が入力されていた際に正しい数値へ変更
+                String cameraLag;
+                SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(activity);
+                if(sp.getString("Syncam-Setting-CameraLag", "0").equals("")){
+                    cameraLag = "0";
+                }else{
+                    cameraLag = sp.getString("Syncam-Setting-CameraLag", "0");
+                }
+                editText.setText(String.valueOf(Integer.parseInt(cameraLag)));
             });
 
             //「詳細設定マニュアル」ボタンを押されたときの動作
