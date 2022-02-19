@@ -1,35 +1,124 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:orientation="vertical"
-    tools:context=".ManualActivity">
+    android:layout_height="match_parent">
 
-    <TextView
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="〜詳細設定マニュアル〜"
-        android:gravity="center_horizontal"
-        android:textSize="32sp"
-        tools:ignore="HardcodedText" />
-    <TextView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="\n\n  タイマーでは埋められないラグが気になったら\n  これを見て設定しよう！\n\n"
-        android:textSize="16sp"
-        tools:ignore="HardcodedText" />
-    <TextView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text=" 手順①"
-        android:textSize="24sp"
-        tools:ignore="HardcodedText" />
-    <TextView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="\n  Syncamを起動した端末とストップウォッチを\n  写真のように配置します。\n"
-        android:textSize="16sp"
-        tools:ignore="HardcodedText" />
-</LinearLayout>
+        android:orientation="vertical"
+        tools:context=".ManualActivity">
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center_horizontal"
+            android:text="〜詳細設定マニュアル〜"
+            android:textSize="32sp"
+            tools:ignore="HardcodedText" />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="\n\n タイマーでは埋められないラグが気になったら\n これを見て設定しよう！\n\n"
+            android:textSize="16sp"
+            tools:ignore="HardcodedText" />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text=" 手順①"
+            android:textSize="24sp"
+            tools:ignore="HardcodedText" />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="\n  Syncamを起動した端末とストップウォッチを\n  写真のように配置します。\n"
+            android:textSize="16sp"
+            tools:ignore="HardcodedText" />
+
+        <ImageView
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:adjustViewBounds="true"
+            android:layout_marginHorizontal="12sp"
+            android:scaleType="fitCenter"
+            android:id="@+id/iView1"
+            android:contentDescription="img_manual_1"
+            tools:ignore="HardcodedText" />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="\n 手順②"
+            android:textSize="24sp"
+            tools:ignore="HardcodedText" />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="\n  ストップウォッチと撮影を同時に開始します。\n  写真モードでタイマー5秒がおすすめです。\n"
+            android:textSize="16sp"
+            tools:ignore="HardcodedText" />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="\n 手順③"
+            android:textSize="24sp"
+            tools:ignore="HardcodedText" />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="\n  3〜5回ほど撮影して、写っている時間の\n  平均値を取り、タイマーの時間を引きます。\n"
+            android:textSize="16sp"
+            tools:ignore="HardcodedText" />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="   例\n\n   5.28 + 5.25 + 5.27 + 5.30 + 5.27 ÷ 5 = 5.274\n\n   5.274 - 5.000 = 0.274         ラグは274ミリ秒"
+            tools:ignore="HardcodedText" />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="\n 手順④"
+            android:textSize="24sp"
+            tools:ignore="HardcodedText" />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="\n  設定画面の&quot;端末固有ラグの修正(ミリ秒)&quot;に\n  算出した値をミリ秒単位で入力します。\n"
+            android:textSize="16sp"
+            tools:ignore="HardcodedText" />
+
+        <ImageView
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:adjustViewBounds="true"
+            android:layout_marginHorizontal="48sp"
+            android:scaleType="fitCenter"
+            android:id="@+id/iView2"
+            android:contentDescription="img_manual_2"
+            tools:ignore="HardcodedText" />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="\n 調整のコツ"
+            android:textSize="24sp"
+            tools:ignore="HardcodedText" />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="\n  計測・設定・撮影までを同じルームで行うと\n  ラグを最小限に抑えることができるぞ！！\n"
+            android:textSize="16sp"
+            tools:ignore="HardcodedText" />
+    </LinearLayout>
+</ScrollView>
