@@ -99,10 +99,10 @@ public class GuestActivity extends AppCompatActivity implements ImageAnalysis.An
         Point pt = getRealDisplaySize();
         //PreviewViewを表示した余りを取得（長い画面では＋、正方形に近い画面は−、16:9の画面では0）
         int totalMargin = pt.x - ((pt.y / 9) * 16);
-        //16:9より長い画面の場合（ノッチあり前提）
+        //16:9より長い画面の場合（最近のスマホ等）
         if(totalMargin > 0){
-            //画面の余りの部分の半分からノッチ(StatusBar)部分を引いてそれを左側のMarginとして設定する
-            int startMargin = totalMargin / 2 - MainActivity.statusBarHeight;
+            //画面の余りの部分の半分を左側のMarginとして設定する
+            int startMargin = totalMargin / 2;
             ViewGroup.LayoutParams lp = previewView.getLayoutParams();
             ViewGroup.MarginLayoutParams mlp = (ViewGroup.MarginLayoutParams) lp;
             mlp.setMarginStart(startMargin);
@@ -316,7 +316,7 @@ public class GuestActivity extends AppCompatActivity implements ImageAnalysis.An
         //bind to lifecycle:
         cameraProvider.bindToLifecycle(this, cameraSelector, preview, imageCapture);
         TextView textView = findViewById(R.id.tvData);
-        textView.setText("　" + roomNumber + " " + deviceNumber.substring(6, 8) + " " + android.os.Build.MANUFACTURER + " " + android.os.Build.MODEL);
+        textView.setText("　　　" + roomNumber + " " + deviceNumber.substring(6, 8) + " " + android.os.Build.MANUFACTURER + " " + android.os.Build.MODEL);
     }
 
     //動画画面作成
@@ -357,7 +357,7 @@ public class GuestActivity extends AppCompatActivity implements ImageAnalysis.An
         cameraProvider.bindToLifecycle(this, cameraSelector, preview, videoCapture);
         TextView textView = findViewById(R.id.tvData);
         //ゲスト画面上に情報を表示
-        textView.setText("　" + roomNumber + " " + deviceNumber.substring(6, 8) + " " + android.os.Build.MANUFACTURER + " " + android.os.Build.MODEL);
+        textView.setText("　　　" + roomNumber + " " + deviceNumber.substring(6, 8) + " " + android.os.Build.MANUFACTURER + " " + android.os.Build.MODEL);
     }
 
     @Override
