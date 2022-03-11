@@ -17,20 +17,30 @@
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
+        android:largeHeap="true"
         android:requestLegacyExternalStorage="true"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.Syncam"
-        android:largeHeap="true"
         tools:ignore="AllowBackup">
         <activity
+            android:name=".StorageLocationActivity"
+            android:exported="false"
+            android:label="保存場所について"
+            android:screenOrientation="portrait"
+            tools:ignore="LockedOrientationActivity" />
+        <activity
             android:name=".ManualActivity"
+            android:exported="false"
             android:label="詳細設定マニュアル"
-            android:exported="false" />
+            android:screenOrientation="portrait"
+            tools:ignore="LockedOrientationActivity" />
         <activity
             android:name=".GuestSettingsActivity"
             android:exported="false"
-            android:label="@string/title_activity_guest_settings" />
+            android:label="@string/title_activity_guest_settings"
+            android:screenOrientation="portrait"
+            tools:ignore="LockedOrientationActivity" />
         <activity
             android:name=".GuestActivity"
             android:screenOrientation="landscape" />
@@ -50,7 +60,6 @@
             tools:ignore="IntentFilterExportedReceiver,LockedOrientationActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>

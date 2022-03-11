@@ -1,0 +1,156 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:layout_gravity="center_horizontal"
+        tools:ignore="HardcodedText">
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="〜保存場所について〜"
+            android:textSize="32sp"
+            android:layout_marginTop="12sp"
+            android:gravity="center_horizontal"
+            tools:ignore="HardcodedText" />
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="\n\nSyncamは端末のAPIレベル(Androidバージョン)\nによってファイルの保存場所が変わります。"
+            android:textSize="16sp"
+            android:layout_marginStart="8sp"
+            tools:ignore="HardcodedText" />
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="\nAndroid10(API29)以前はDCIMやAUDIOに、\nAndroid11(API30)以降はアプリ固有フォルダ\nに保存されます。\n\n"
+            android:textSize="16sp"
+            android:layout_marginStart="8sp"
+            tools:ignore="HardcodedText" />
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_gravity="center_horizontal">
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="この端末のAPIレベルは"
+                android:textSize="23sp"
+                tools:ignore="HardcodedText" />
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="00"
+                android:textSize="23sp"
+                android:id="@+id/tvAPILevel"
+                tools:ignore="HardcodedText" />
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="です。"
+                android:textSize="23sp"
+                tools:ignore="HardcodedText" />
+        </LinearLayout>
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="\n"
+            android:textSize="12sp"
+            tools:ignore="HardcodedText" />
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_gravity="center_horizontal">
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Androidバージョンは"
+                android:textSize="23sp"
+                tools:ignore="HardcodedText" />
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="0.0.0"
+                android:textSize="23sp"
+                android:id="@+id/tvAndroidVersion"
+                tools:ignore="HardcodedText" />
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="です。"
+                android:textSize="23sp"
+                tools:ignore="HardcodedText" />
+        </LinearLayout>
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="\n"
+            android:textSize="24sp"
+            tools:ignore="HardcodedText" />
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="保存先フォルダは以下のとおりです。"
+            android:textSize="18sp"
+            android:layout_gravity="center_horizontal"
+            tools:ignore="HardcodedText" />
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="\n静止画"
+            android:textSize="16sp"
+            android:layout_marginStart="8sp"
+            tools:ignore="HardcodedText" />
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="/DCIM"
+            android:textSize="13.5sp"
+            android:id="@+id/tvPhotoDirectory"
+            android:layout_marginStart="8sp"
+            tools:ignore="HardcodedText" />
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="\n動画"
+            android:textSize="16sp"
+            android:layout_marginStart="8sp"
+            tools:ignore="HardcodedText" />
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="/DCIM"
+            android:textSize="13.5sp"
+            android:id="@+id/tvMovieDirectory"
+            android:layout_marginStart="8sp"
+            tools:ignore="HardcodedText" />
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="\n音声"
+            android:textSize="16sp"
+            android:layout_marginStart="8sp"
+            tools:ignore="HardcodedText" />
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="/MUSIC/AUDIO"
+            android:textSize="13.5sp"
+            android:id="@+id/tvVoiceDirectory"
+            android:layout_marginStart="8sp"
+            tools:ignore="HardcodedText" />
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="\n\nDCIMに保存されている場合は&quot;Googleフォト&quot;等\nのギャラリー系アプリから\nその他のフォルダの場合は&quot;Files&quot;等のファイル\nマネージャー系アプリから\n保存されたファイルを確認できます。"
+            android:textSize="16sp"
+            android:layout_marginBottom="12sp"
+            tools:ignore="HardcodedText" />
+    </LinearLayout>
+</ScrollView>

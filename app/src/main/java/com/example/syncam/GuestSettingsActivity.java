@@ -65,9 +65,17 @@ public class GuestSettingsActivity extends AppCompatActivity {
             });
 
             //「詳細設定マニュアル」ボタンを押されたときの動作
-            Preference preference = findPreference("MANUAL");
-            preference.setOnPreferenceClickListener(preference1 -> {
+            Preference manualPreference = findPreference("Syncam-Manual");
+            manualPreference.setOnPreferenceClickListener(preference -> {
                 Intent intent = new Intent(activity,ManualActivity.class);
+                activity.startActivity(intent);
+                return true;
+            });
+
+            //「保存場所について」ボタンを押されたときの動作
+            Preference storageLocationPreference = findPreference("Syncam-Storage-Location");
+            storageLocationPreference.setOnPreferenceClickListener(preference -> {
+                Intent intent = new Intent(activity,StorageLocationActivity.class);
                 activity.startActivity(intent);
                 return true;
             });

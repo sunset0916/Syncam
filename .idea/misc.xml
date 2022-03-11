@@ -9,7 +9,8 @@
         <entry key="app/src/main/res/layout-land/activity_guest.xml" value="0.23854166666666668" />
         <entry key="app/src/main/res/layout/activity_guest.xml" value="0.17617753623188406" />
         <entry key="app/src/main/res/layout/activity_main.xml" value="0.21557971014492755" />
-        <entry key="app/src/main/res/layout/activity_manual.xml" value="0.45" />
+        <entry key="app/src/main/res/layout/activity_manual.xml" value="0.2947418212890625" />
+        <entry key="app/src/main/res/layout/activity_storage_location.xml" value="0.17433424098517306" />
         <entry key="app/src/main/res/layout/hostactivity.xml" value="0.18115942028985507" />
         <entry key="app/src/main/res/layout/settings_activity.xml" value="0.18614130434782608" />
         <entry key="app/src/main/res/xml/guest_preferences.xml" value="0.335" />
