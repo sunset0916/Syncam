@@ -23,16 +23,16 @@ public class StorageLocationActivity extends AppCompatActivity {
         tvAPILevel.setText(String.valueOf(Build.VERSION.SDK_INT));
         tvAndroidVersion.setText(String.valueOf(Build.VERSION.RELEASE));
         if(Build.VERSION.SDK_INT < 30){
-            photoDirectory = Environment.getExternalStorageDirectory().getPath() + "/DCIM/SYNCAM";
-            movieDirectory = Environment.getExternalStorageDirectory().getPath() + "/DCIM/SYNCAM";
-            voiceDirectory = Environment.getExternalStorageDirectory().getPath() + "/MUSIC/AUDIO";
+            photoDirectory = "/DCIM/SYNCAM";
+            movieDirectory = "/DCIM/SYNCAM";
+            voiceDirectory = "/MUSIC/AUDIO";
         }else{
-            photoDirectory = String.valueOf(getExternalFilesDir(Environment.DIRECTORY_PICTURES));
-            movieDirectory = String.valueOf(getExternalFilesDir(Environment.DIRECTORY_MOVIES));
-            voiceDirectory = String.valueOf(getExternalFilesDir(Environment.DIRECTORY_MUSIC));
+            photoDirectory = getExternalFilesDir(Environment.DIRECTORY_PICTURES).getPath();
+            movieDirectory = getExternalFilesDir(Environment.DIRECTORY_MOVIES).getPath();
+            voiceDirectory = getExternalFilesDir(Environment.DIRECTORY_MUSIC).getPath();
         }
-        tvPhotoDirectory.setText(photoDirectory.replace("/storage/emulated/0/",""));
-        tvMovieDirectory.setText(movieDirectory.replace("/storage/emulated/0/",""));
-        tvVoiceDirectory.setText(voiceDirectory.replace("/storage/emulated/0/",""));
+        tvPhotoDirectory.setText(photoDirectory.replace(Environment.getExternalStorageDirectory().getPath(),""));
+        tvMovieDirectory.setText(movieDirectory.replace(Environment.getExternalStorageDirectory().getPath(),""));
+        tvVoiceDirectory.setText(voiceDirectory.replace(Environment.getExternalStorageDirectory().getPath(),""));
     }
 }
