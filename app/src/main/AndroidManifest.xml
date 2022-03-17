@@ -22,7 +22,9 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.Syncam"
-        tools:ignore="AllowBackup">
+        android:resizeableActivity="false"
+        tools:ignore="AllowBackup"
+        tools:targetApi="n">
         <activity
             android:name=".StorageLocationActivity"
             android:exported="false"
