@@ -1,9 +1,14 @@
 package com.example.syncam;
 
+import android.content.Context;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.preference.Preference;
 import androidx.preference.PreferenceFragmentCompat;
+import androidx.preference.PreferenceManager;
 
 import java.util.Objects;
 
@@ -31,9 +36,38 @@ public class SettingsActivity extends AppCompatActivity {
 
     //設定画面の項目の読み取り・反映
     public static class SettingsFragment extends PreferenceFragmentCompat {
+        //SettingsActivityのインスタンス化
+        SettingsActivity activity;
+        @Override
+        public void onAttach(@NonNull Context activity) {
+            super.onAttach(activity);
+            this.activity = (SettingsActivity) activity;
+        }
+
         @Override
         public void onCreatePreferences(Bundle savedInstanceState, String rootKey) {
             setPreferencesFromResource(R.xml.root_preferences, rootKey);
+            //今すぐ撮影モードの状態の確認
+            SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(activity);
+            //今すぐ撮影モードが有効な場合、タイマーと解像度の設定を無効化
+            Preference timer = findPreference("Syncam-Setting-timer");
+            Preference resolution = findPreference("Syncam-Setting-resolution");
+            if(sp.getBoolean("Syncam-Setting-quickShot",false)){
+                timer.setEnabled(false);
+                resolution.setEnabled(false);
+            }
+            //今すぐ撮影モードのCheckBoxがタップされたときタイマーと解像度の設定を有効/無効にする
+            Preference quickShot = findPreference("Syncam-Setting-quickShot");
+            quickShot.setOnPreferenceClickListener(preference -> {
+                if(sp.getBoolean("Syncam-Setting-quickShot",false)){
+                    timer.setEnabled(false);
+                    resolution.setEnabled(false);
+                }else{
+                    timer.setEnabled(true);
+                    resolution.setEnabled(true);
+                }
+                return true;
+            });
         }
     }
 

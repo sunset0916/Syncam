@@ -73,9 +73,9 @@ public class GuestActivity extends AppCompatActivity implements ImageAnalysis.An
     //画面を暗くするかどうかの設定
     boolean dark;
     //横の解像度
-    int resolutionX = 1920;
+    int resolutionX = 3840;
     //縦の解像度
-    int resolutionY = 1080;
+    int resolutionY = 2160;
     //撮影開始時間
     int startTime;
     //撮影終了時間
@@ -432,7 +432,7 @@ public class GuestActivity extends AppCompatActivity implements ImageAnalysis.An
             //フォト内に表示&フォーマットなどの選択
             ContentValues values = new ContentValues();
             ContentResolver contentResolver = getContentResolver();
-            values.put("image/mp4", MIME_TYPE);
+            values.put(MIME_TYPE,"video/mp4");
             values.put(MediaStore.Video.Media.TITLE, vidFilePath);
             values.put("_data", vidFilePath);
             contentResolver.insert(MediaStore.Video.Media.EXTERNAL_CONTENT_URI, values);
@@ -506,6 +506,20 @@ public class GuestActivity extends AppCompatActivity implements ImageAnalysis.An
         capturePhoto();
         //カウンターのリセット
         count = 0;
+        //解像度のリセット
+        resolutionX = 3840;
+        resolutionY = 2160;
+        new Handler().postDelayed(() ->{
+            //静止画画面で待機
+            previewView.post(() -> cameraProviderFuture.addListener(() -> {
+                try {
+                    ProcessCameraProvider cameraProvider = cameraProviderFuture.get();
+                    startCameraX(cameraProvider);
+                } catch (ExecutionException | InterruptedException e) {
+                    e.printStackTrace();
+                }
+            }, getExecutor()));
+        },1500);
     };
 
     //動画撮影開始
@@ -525,6 +539,20 @@ public class GuestActivity extends AppCompatActivity implements ImageAnalysis.An
             videoCapture.stopRecording();
             //カウンターのリセット
             count = 0;
+            //解像度のリセット
+            resolutionX = 3840;
+            resolutionY = 2160;
+            new Handler().postDelayed(() ->{
+                //静止画画面で待機
+                previewView.post(() -> cameraProviderFuture.addListener(() -> {
+                    try {
+                        ProcessCameraProvider cameraProvider = cameraProviderFuture.get();
+                        startCameraX(cameraProvider);
+                    } catch (ExecutionException | InterruptedException e) {
+                        e.printStackTrace();
+                    }
+                }, getExecutor()));
+            },1500);
         }
     };
 

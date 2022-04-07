@@ -88,7 +88,7 @@ public class HostActivity extends AppCompatActivity implements View.OnClickListe
         return super.onOptionsItemSelected(item);
     }
 
-    @SuppressLint("SetTextI18n")
+    @SuppressLint({"SetTextI18n", "UseCompatLoadingForColorStateLists"})
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -253,13 +253,16 @@ public class HostActivity extends AppCompatActivity implements View.OnClickListe
             Button b = (Button) v;
             //撮影ボタンの無効化
             b.setEnabled(false);
+            b.setBackgroundTintList(getResources().getColorStateList(R.color.gray));
             //設定（歯車）ボタンの無効化
             findViewById(R.id.action_button).setEnabled(false);
             //ImageButtonの無効化
             if (videoMode) {
                 findViewById(R.id.imageC).setEnabled(false);
+                findViewById(R.id.imageV).setBackgroundTintList(getResources().getColorStateList(R.color.gray));
             } else {
                 findViewById(R.id.imageV).setEnabled(false);
+                findViewById(R.id.imageC).setBackgroundTintList(getResources().getColorStateList(R.color.gray));
             }
             //録音機能の有効無効を格納
             boolean record = pref.getBoolean("Syncam-Setting-record", false);
@@ -301,9 +304,9 @@ public class HostActivity extends AppCompatActivity implements View.OnClickListe
                 }
 
                 //撮影ボタンの有効化までのカウントダウンを開始
-                new Handler().postDelayed(buttonEnabled, Integer.parseInt(end) - MainActivity.getToday() + MainActivity.timeLag);
+                new Handler().postDelayed(buttonEnabled, Integer.parseInt(end) - MainActivity.getToday() + MainActivity.timeLag + 2000);
                 //設定（歯車）ボタンの有効化までのカウントダウンを開始
-                new Handler().postDelayed(settingButtonEnabled, Integer.parseInt(end) - MainActivity.getToday() + MainActivity.timeLag);
+                new Handler().postDelayed(settingButtonEnabled, Integer.parseInt(end) - MainActivity.getToday() + MainActivity.timeLag + 2000);
 
             } else {
                 //写真撮影・動画撮影開始時の動作
@@ -355,11 +358,11 @@ public class HostActivity extends AppCompatActivity implements View.OnClickListe
                     ReadWrite.ref.child(MainActivity.rn).child("Settings").removeValue();
 
                     //設定（歯車）ボタンの有効化までのカウントダウンを開始
-                    new Handler().postDelayed(settingButtonEnabled, Integer.parseInt(start) - MainActivity.getToday() + MainActivity.timeLag);
+                    new Handler().postDelayed(settingButtonEnabled, Integer.parseInt(start) - MainActivity.getToday() + MainActivity.timeLag + 2000);
 
                 }
                 //撮影ボタンの有効化までのカウントダウンを開始
-                new Handler().postDelayed(buttonEnabled, Integer.parseInt(start) - MainActivity.getToday() + MainActivity.timeLag);
+                new Handler().postDelayed(buttonEnabled, Integer.parseInt(start) - MainActivity.getToday() + MainActivity.timeLag + 2000);
             }
         });
     }
@@ -384,18 +387,27 @@ public class HostActivity extends AppCompatActivity implements View.OnClickListe
     };
 
     //撮影ボタンの有効化
+    @SuppressLint("UseCompatLoadingForColorStateLists")
     private final Runnable buttonEnabled = () -> {
         Button bStart = findViewById(R.id.bStart);
         bStart.setEnabled(true);
+        if(videoMode){
+            bStart.setBackgroundTintList(getResources().getColorStateList(R.color.red));
+        }else{
+            bStart.setBackgroundTintList(getResources().getColorStateList(R.color.darkBlue));
+        }
     };
 
     //設定（歯車）ボタンとImageButtonの有効化
+    @SuppressLint("UseCompatLoadingForColorStateLists")
     private final Runnable settingButtonEnabled = () -> {
         findViewById(R.id.action_button).setEnabled(true);
         if (videoMode) {
             findViewById(R.id.imageC).setEnabled(true);
+            findViewById(R.id.imageV).setBackgroundTintList(getResources().getColorStateList(R.color.darkRed));
         } else {
             findViewById(R.id.imageV).setEnabled(true);
+            findViewById(R.id.imageC).setBackgroundTintList(getResources().getColorStateList(R.color.midnight));
         }
     };
 

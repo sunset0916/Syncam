@@ -4,8 +4,11 @@
         <CheckBoxPreference
             android:defaultValue="false"
             app:key="Syncam-Setting-record"
-            app:title="ホスト端末での録音"
-            app:useSimpleSummaryProvider="true" />
+            app:title="ホスト端末での録音"/>
+        <CheckBoxPreference
+            android:defaultValue="false"
+            app:key="Syncam-Setting-quickShot"
+            app:title="今すぐ撮影モード" />
         <ListPreference
             android:defaultValue="5秒"
             android:negativeButtonText="キャンセル"
