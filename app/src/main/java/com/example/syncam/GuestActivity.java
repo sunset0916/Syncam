@@ -154,7 +154,27 @@ public class GuestActivity extends AppCompatActivity implements ImageAnalysis.An
             public void onCancelled(@NonNull DatabaseError error) {
             }
         });
-
+        //今すぐ撮影モード有効時の撮影命令を受け取るリスナー
+        ReadWrite.ref.child(roomNumber).addChildEventListener(new ChildEventListener() {
+            @Override
+            public void onChildAdded(@NonNull DataSnapshot snapshot, @Nullable @org.jetbrains.annotations.Nullable String previousChildName) {
+                if(snapshot.getKey().equals("QuickShot")){
+                    capturePhoto();
+                }
+            }
+            @Override
+            public void onChildChanged(@NonNull DataSnapshot snapshot, @Nullable @org.jetbrains.annotations.Nullable String previousChildName) {
+            }
+            @Override
+            public void onChildRemoved(@NonNull DataSnapshot snapshot) {
+            }
+            @Override
+            public void onChildMoved(@NonNull DataSnapshot snapshot, @Nullable @org.jetbrains.annotations.Nullable String previousChildName) {
+            }
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+            }
+        });
         //Firebase上の設定関連の変更を検知するリスナー
         ReadWrite.ref.child(roomNumber).child("Settings").addChildEventListener(new ChildEventListener() {
             @SuppressLint("RestrictedApi")

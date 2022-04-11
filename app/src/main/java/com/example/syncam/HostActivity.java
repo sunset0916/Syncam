@@ -309,60 +309,67 @@ public class HostActivity extends AppCompatActivity implements View.OnClickListe
                 new Handler().postDelayed(settingButtonEnabled, Integer.parseInt(end) - MainActivity.getToday() + MainActivity.timeLag + 2000);
 
             } else {
-                //写真撮影・動画撮影開始時の動作
+                //今すぐ撮影モードが有効かどうかの判断
+                if(pref.getBoolean("Syncam-Setting-quickShot",false) && !videoMode){
+                    new Handler().postDelayed(buttonEnabled, 2000);
+                    new Handler().postDelayed(settingButtonEnabled, 2000);
+                    ReadWrite.ref.child(MainActivity.rn).child("QuickShot").setValue("Start QuickShotMode");
+                    ReadWrite.ref.child(MainActivity.rn).child("QuickShot").removeValue();
+                }else {
 
-                //画面暗転・動画/静止画モード・撮影開始時間・解像度の設定を格納する変数
-                String video, start, resolution;
+                    //画面暗転・動画/静止画モード・撮影開始時間・解像度の設定を格納する変数
+                    String video, start, resolution;
 
-                //動画/静止画モードを文字列型として格納
-                video = String.valueOf(videoMode);
+                    //動画/静止画モードを文字列型として格納
+                    video = String.valueOf(videoMode);
 
-                //共有プリファレンスからタイマーの設定を取り出してNTPとの差を考慮して撮影開始時間を算出
-                switch (pref.getString("Syncam-Setting-timer", "5秒")) {
-                    case "10秒":
-                        start = String.valueOf(MainActivity.getToday() + 10000 - MainActivity.timeLag);
-                        break;
-                    case "15秒":
-                        start = String.valueOf(MainActivity.getToday() + 15000 - MainActivity.timeLag);
-                        break;
-                    default:
-                        start = String.valueOf(MainActivity.getToday() + 5000 - MainActivity.timeLag);
-                        break;
-                }
-
-                //解像度の設定を共有プリファレンスから取り出して格納
-                resolution = pref.getString("Syncam-Setting-resolution", "1080p FHD");
-
-                //カメラ設定と撮影開始時間をFirebaseに送信
-                ReadWrite.SendSettings(video, start, resolution);
-
-                //動画/静止画モードの判定
-                if (videoMode) {
-                    //動画モード時の動作
-
-                    //撮影ボタンの表示を撮影終了に変更
-                    b.setText("撮影終了");
-
-                    //ストップウォッチの開始処理までのカウントダウンを開始
-                    new Handler().postDelayed(startTimer, Integer.parseInt(start) - MainActivity.getToday() + MainActivity.timeLag);
-
-                    //ホスト端末での録音が有効な場合、録音の開始までのカウントダウンを開始
-                    if (record) {
-                        new Handler().postDelayed(funcA, Integer.parseInt(start) - MainActivity.getToday() + MainActivity.timeLag);
+                    //共有プリファレンスからタイマーの設定を取り出してNTPとの差を考慮して撮影開始時間を算出
+                    switch (pref.getString("Syncam-Setting-timer", "5秒")) {
+                        case "10秒":
+                            start = String.valueOf(MainActivity.getToday() + 10000 - MainActivity.timeLag);
+                            break;
+                        case "15秒":
+                            start = String.valueOf(MainActivity.getToday() + 15000 - MainActivity.timeLag);
+                            break;
+                        default:
+                            start = String.valueOf(MainActivity.getToday() + 5000 - MainActivity.timeLag);
+                            break;
                     }
 
-                } else {
-                    //静止画モード時の動作
+                    //解像度の設定を共有プリファレンスから取り出して格納
+                    resolution = pref.getString("Syncam-Setting-resolution", "1080p FHD");
 
-                    //カメラ設定関係をFirebaseから削除
-                    ReadWrite.ref.child(MainActivity.rn).child("Settings").removeValue();
+                    //カメラ設定と撮影開始時間をFirebaseに送信
+                    ReadWrite.SendSettings(video, start, resolution);
 
-                    //設定（歯車）ボタンの有効化までのカウントダウンを開始
-                    new Handler().postDelayed(settingButtonEnabled, Integer.parseInt(start) - MainActivity.getToday() + MainActivity.timeLag + 2000);
+                    //動画/静止画モードの判定
+                    if (videoMode) {
+                        //動画モード時の動作
 
+                        //撮影ボタンの表示を撮影終了に変更
+                        b.setText("撮影終了");
+
+                        //ストップウォッチの開始処理までのカウントダウンを開始
+                        new Handler().postDelayed(startTimer, Integer.parseInt(start) - MainActivity.getToday() + MainActivity.timeLag);
+
+                        //ホスト端末での録音が有効な場合、録音の開始までのカウントダウンを開始
+                        if (record) {
+                            new Handler().postDelayed(funcA, Integer.parseInt(start) - MainActivity.getToday() + MainActivity.timeLag);
+                        }
+
+                    } else {
+                        //静止画モード時の動作
+
+                        //カメラ設定関係をFirebaseから削除
+                        ReadWrite.ref.child(MainActivity.rn).child("Settings").removeValue();
+
+                        //設定（歯車）ボタンの有効化までのカウントダウンを開始
+                        new Handler().postDelayed(settingButtonEnabled, Integer.parseInt(start) - MainActivity.getToday() + MainActivity.timeLag + 2000);
+
+                    }
+                    //撮影ボタンの有効化までのカウントダウンを開始
+                    new Handler().postDelayed(buttonEnabled, Integer.parseInt(start) - MainActivity.getToday() + MainActivity.timeLag + 2000);
                 }
-                //撮影ボタンの有効化までのカウントダウンを開始
-                new Handler().postDelayed(buttonEnabled, Integer.parseInt(start) - MainActivity.getToday() + MainActivity.timeLag + 2000);
             }
         });
     }
