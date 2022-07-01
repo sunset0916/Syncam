@@ -396,32 +396,41 @@ public class GuestActivity extends AppCompatActivity implements ImageAnalysis.An
             getWindow().setAttributes(lp);
         }
 
-        File movieDir;
+//        File movieDir;
 
         //API Levelによってフォルダの変更
         if (videoCapture != null) {
-            int apiInt = Build.VERSION.SDK_INT;
-            if (apiInt <= 29) {
-                final String SAVE_DIR = "/DCIM/SYNCAM";
-                movieDir = new File(Environment.getExternalStorageDirectory().getPath() + SAVE_DIR);
-            } else {
-                movieDir = new File(getExternalFilesDir(Environment.DIRECTORY_MOVIES) + "/");
-            }
 
-            if (!movieDir.exists()) movieDir.mkdir();
-
-            //ファイル名作成
-            Date date = new Date();
-            String timestamp = String.valueOf(date.getTime());
-            String vidFilePath = movieDir.getAbsolutePath() + "/" + android.os.Build.MODEL + "_" + timestamp + ".mp4";
-            File vidFile = new File(vidFilePath);
+            long timestamp = System.currentTimeMillis();
+            ContentValues contentValues = new ContentValues();
+            contentValues.put(MediaStore.MediaColumns.DISPLAY_NAME, timestamp);
+            contentValues.put(MediaStore.MediaColumns.MIME_TYPE, "video/mp4");
+//            int apiInt = Build.VERSION.SDK_INT;
+//            if (apiInt <= 29) {
+//                final String SAVE_DIR = "/DCIM/SYNCAM";
+//                movieDir = new File(Environment.getExternalStorageDirectory().getPath() + SAVE_DIR);
+//            } else {
+//                movieDir = new File(getExternalFilesDir(Environment.DIRECTORY_MOVIES) + "/");
+//            }
+//
+//            if (!movieDir.exists()) movieDir.mkdir();
+//
+//            //ファイル名作成
+//            Date date = new Date();
+//            String timestamp = String.valueOf(date.getTime());
+//            String vidFilePath = movieDir.getAbsolutePath() + "/" + android.os.Build.MODEL + "_" + timestamp + ".mp4";
+//            File vidFile = new File(vidFilePath);
             //保存
             try {
                 if (ActivityCompat.checkSelfPermission(this, Manifest.permission.RECORD_AUDIO) != PackageManager.PERMISSION_GRANTED) {
                     return;
                 }
                 videoCapture.startRecording(
-                        new VideoCapture.OutputFileOptions.Builder(vidFile).build(),
+                        new VideoCapture.OutputFileOptions.Builder(
+                                getContentResolver(),
+                                MediaStore.Video.Media.EXTERNAL_CONTENT_URI,
+                                contentValues
+                        ).build(),
                         getExecutor(),
                         new VideoCapture.OnVideoSavedCallback() {
                             @Override
@@ -450,37 +459,44 @@ public class GuestActivity extends AppCompatActivity implements ImageAnalysis.An
             }
 
             //フォト内に表示&フォーマットなどの選択
-            ContentValues values = new ContentValues();
-            ContentResolver contentResolver = getContentResolver();
-            values.put(MIME_TYPE,"video/mp4");
-            values.put(MediaStore.Video.Media.TITLE, vidFilePath);
-            values.put("_data", vidFilePath);
-            contentResolver.insert(MediaStore.Video.Media.EXTERNAL_CONTENT_URI, values);
+//            ContentValues values = new ContentValues();
+//            ContentResolver contentResolver = getContentResolver();
+//            values.put(MIME_TYPE,"video/mp4");
+//            values.put(MediaStore.Video.Media.TITLE, vidFilePath);
+//            values.put("_data", vidFilePath);
+//            contentResolver.insert(MediaStore.Video.Media.EXTERNAL_CONTENT_URI, values);
         }
     }
 
     //画像保存メソッド
     private void capturePhoto() {
-        File photoDir;
-        //API Levelによってフォルダの変更
-        int apiInt = Build.VERSION.SDK_INT;
-        if (apiInt <= 29) {
-            final String SAVE_DIR = "/DCIM/SYNCAM";
-            photoDir = new File(Environment.getExternalStorageDirectory().getPath() + SAVE_DIR);
-        } else {
-            photoDir = new File(getExternalFilesDir(Environment.DIRECTORY_PICTURES) + "/");
-        }
-        if (!photoDir.exists())
-            photoDir.mkdir();
-        //ファイル名作成
-        Date date = new Date();
-        String timestamp = String.valueOf(date.getTime());
-        String photoFilePath = photoDir.getAbsolutePath() + "/" + android.os.Build.MODEL + "_" + timestamp + ".jpg";
-        File photoFile = new File(photoFilePath);
+
+        long timestamp = System.currentTimeMillis();
+        ContentValues contentValues = new ContentValues();
+        contentValues.put(MediaStore.MediaColumns.DISPLAY_NAME, timestamp);
+        contentValues.put(MediaStore.MediaColumns.MIME_TYPE, "image/jpeg");
+//        File photoDir;
+//        //API Levelによってフォルダの変更
+//        int apiInt = Build.VERSION.SDK_INT;
+//        if (apiInt <= 29) {
+//            final String SAVE_DIR = "/DCIM/SYNCAM";
+//            photoDir = new File(Environment.getExternalStorageDirectory().getPath() + SAVE_DIR);
+//        } else {
+//            photoDir = new File(getExternalFilesDir(Environment.DIRECTORY_PICTURES) + "/");
+//        }
+//        if (!photoDir.exists())
+//            photoDir.mkdir();
+//        //ファイル名作成
+//        Date date = new Date();
+//        String timestamp = String.valueOf(date.getTime());
+//        String photoFilePath = photoDir.getAbsolutePath() + "/" + android.os.Build.MODEL + "_" + timestamp + ".jpg";
+//        File photoFile = new File(photoFilePath);
 
         //保存
         imageCapture.takePicture(
-                new ImageCapture.OutputFileOptions.Builder(photoFile).build(),
+                new ImageCapture.OutputFileOptions.Builder(getContentResolver(),
+                        MediaStore.Images.Media.EXTERNAL_CONTENT_URI,
+                        contentValues).build(),
                 getExecutor(),
                 new ImageCapture.OnImageSavedCallback() {
                     @Override
@@ -494,12 +510,12 @@ public class GuestActivity extends AppCompatActivity implements ImageAnalysis.An
                 }
         );
         //フォト内に表示&フォーマットなどの選択
-        ContentValues values = new ContentValues();
-        ContentResolver contentResolver = getContentResolver();
-        values.put(MIME_TYPE, "image/jpeg");
-        values.put(MediaStore.Images.Media.TITLE, photoFilePath);
-        values.put("_data", photoFilePath);
-        contentResolver.insert(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, values);
+//        ContentValues values = new ContentValues();
+//        ContentResolver contentResolver = getContentResolver();
+//        values.put(MIME_TYPE, "image/jpeg");
+//        values.put(MediaStore.Images.Media.TITLE, photoFilePath);
+//        values.put("_data", photoFilePath);
+//        contentResolver.insert(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, values);
     }
 
     //下のバー消去メソッド

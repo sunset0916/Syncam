@@ -10,7 +10,9 @@
 
     <uses-permission android:name="android.permission.CAMERA" />
     <uses-permission android:name="android.permission.RECORD_AUDIO" />
-    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+    <uses-permission
+        android:name="android.permission.WRITE_EXTERNAL_STORAGE"
+        android:maxSdkVersion="28" />
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
 
     <application
@@ -18,11 +20,10 @@
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
         android:largeHeap="true"
-        android:requestLegacyExternalStorage="true"
+        android:resizeableActivity="false"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.Syncam"
-        android:resizeableActivity="false"
         tools:ignore="AllowBackup"
         tools:targetApi="n">
         <activity
@@ -45,6 +46,7 @@
             tools:ignore="LockedOrientationActivity" />
         <activity
             android:name=".GuestActivity"
+            android:exported="true"
             android:screenOrientation="landscape" />
         <activity
             android:name=".SettingsActivity"
