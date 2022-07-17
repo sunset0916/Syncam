@@ -27,12 +27,6 @@
         tools:ignore="AllowBackup"
         tools:targetApi="n">
         <activity
-            android:name=".StorageLocationActivity"
-            android:exported="false"
-            android:label="保存場所について"
-            android:screenOrientation="portrait"
-            tools:ignore="LockedOrientationActivity" />
-        <activity
             android:name=".ManualActivity"
             android:exported="false"
             android:label="詳細設定マニュアル"

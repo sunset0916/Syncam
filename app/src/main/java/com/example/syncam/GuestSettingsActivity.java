@@ -52,13 +52,13 @@ public class GuestSettingsActivity extends AppCompatActivity {
                 //入力できる文字を数字に限定
                 editText.setInputType(InputType.TYPE_CLASS_NUMBER);
                 //入力可能文字数を3文字に制限
-                editText.setFilters(new InputFilter[] {new InputFilter.LengthFilter(3)});
+                editText.setFilters(new InputFilter[]{new InputFilter.LengthFilter(3)});
                 //001等が入力されていた際に正しい数値へ変更
                 String cameraLag;
                 SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(activity);
-                if(sp.getString("Syncam-Setting-CameraLag", "0").equals("")){
+                if (sp.getString("Syncam-Setting-CameraLag", "0").equals("")) {
                     cameraLag = "0";
-                }else{
+                } else {
                     cameraLag = sp.getString("Syncam-Setting-CameraLag", "0");
                 }
                 editText.setText(String.valueOf(Integer.parseInt(cameraLag)));
@@ -67,15 +67,7 @@ public class GuestSettingsActivity extends AppCompatActivity {
             //「詳細設定マニュアル」ボタンを押されたときの動作
             Preference manualPreference = findPreference("Syncam-Manual");
             manualPreference.setOnPreferenceClickListener(preference -> {
-                Intent intent = new Intent(activity,ManualActivity.class);
-                activity.startActivity(intent);
-                return true;
-            });
-
-            //「保存場所について」ボタンを押されたときの動作
-            Preference storageLocationPreference = findPreference("Syncam-Storage-Location");
-            storageLocationPreference.setOnPreferenceClickListener(preference -> {
-                Intent intent = new Intent(activity,StorageLocationActivity.class);
+                Intent intent = new Intent(activity, ManualActivity.class);
                 activity.startActivity(intent);
                 return true;
             });

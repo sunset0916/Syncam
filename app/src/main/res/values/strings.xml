@@ -1,6 +1,4 @@
 <resources>
     <string name="app_name">Syncam</string>
-    <string name="title_activity_settings">SettingsActivity</string>
-    <string name="zero">"00:00.0"</string>
     <string name="title_activity_guest_settings">端末設定</string>
 </resources>

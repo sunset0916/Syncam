@@ -18,7 +18,6 @@
         android:textColor="@color/black"
         android:text="ホスト"
         android:textSize="38dp"
-        android:id="@+id/tvHost"
         android:layout_weight="1"
         tools:ignore="HardcodedText,SpUsage,UnusedAttribute" />
     <Button
@@ -44,7 +43,6 @@
         tools:ignore="UselessLeaf" />
 
     <TextView
-        android:id="@+id/tvGuest"
         android:textColor="@color/black"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"

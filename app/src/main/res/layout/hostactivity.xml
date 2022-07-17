@@ -70,7 +70,6 @@
             tools:ignore="NestedWeights,UselessLeaf" />
 
         <ScrollView
-            android:id="@+id/scrollView"
             android:layout_width="match_parent"
             android:layout_height="300dp"
             android:layout_marginLeft="30dp"

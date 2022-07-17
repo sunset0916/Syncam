@@ -243,15 +243,14 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         if (connect) {
             //サーバーメンテナンス中かどうか確認
             DatabaseReference status = FirebaseDatabase.getInstance().getReference("status");
-            status.child("active").get().addOnCompleteListener(task -> {
-                if (task.getResult().getValue().toString().equals("false")) {
-                    //メンテナンス中の場合ダイアログを出す
-                    status.child("info").get().addOnCompleteListener(task1 -> alertDialog = new AlertDialog.Builder(MainActivity.this)
+            status.get().addOnCompleteListener(task -> {
+                if (task.getResult().child("active").getValue().toString().equals("false")) {
+                    alertDialog = new AlertDialog.Builder(MainActivity.this)
                             .setCancelable(false)
                             .setTitle("サーバーメンテナンス")
-                            .setMessage(task1.getResult().getValue().toString())
+                            .setMessage(task.getResult().child("info").getValue().toString())
                             .setPositiveButton("OK", null)
-                            .show());
+                            .show();
                 } else {
                     //メンテナンス中でない場合の処理
                     if (view.getId() == R.id.bJoin) {

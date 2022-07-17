@@ -4,7 +4,7 @@
         <CheckBoxPreference
             android:defaultValue="false"
             app:key="Syncam-Setting-record"
-            app:title="ホスト端末での録音"/>
+            app:title="ホスト端末での録音" />
         <CheckBoxPreference
             android:defaultValue="false"
             app:key="Syncam-Setting-quickShot"

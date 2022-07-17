@@ -38,6 +38,7 @@ public class SettingsActivity extends AppCompatActivity {
     public static class SettingsFragment extends PreferenceFragmentCompat {
         //SettingsActivityのインスタンス化
         SettingsActivity activity;
+
         @Override
         public void onAttach(@NonNull Context activity) {
             super.onAttach(activity);
@@ -52,17 +53,17 @@ public class SettingsActivity extends AppCompatActivity {
             //今すぐ撮影モードが有効な場合、タイマーと解像度の設定を無効化
             Preference timer = findPreference("Syncam-Setting-timer");
             Preference resolution = findPreference("Syncam-Setting-resolution");
-            if(sp.getBoolean("Syncam-Setting-quickShot",false)){
+            if (sp.getBoolean("Syncam-Setting-quickShot", false)) {
                 timer.setEnabled(false);
                 resolution.setEnabled(false);
             }
             //今すぐ撮影モードのCheckBoxがタップされたときタイマーと解像度の設定を有効/無効にする
             Preference quickShot = findPreference("Syncam-Setting-quickShot");
             quickShot.setOnPreferenceClickListener(preference -> {
-                if(sp.getBoolean("Syncam-Setting-quickShot",false)){
+                if (sp.getBoolean("Syncam-Setting-quickShot", false)) {
                     timer.setEnabled(false);
                     resolution.setEnabled(false);
-                }else{
+                } else {
                     timer.setEnabled(true);
                     resolution.setEnabled(true);
                 }

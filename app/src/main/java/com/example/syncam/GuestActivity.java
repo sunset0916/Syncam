@@ -1,17 +1,12 @@
 package com.example.syncam;
 
-import static android.provider.MediaStore.MediaColumns.MIME_TYPE;
-
 import android.Manifest;
 import android.annotation.SuppressLint;
-import android.content.ContentResolver;
 import android.content.ContentValues;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.graphics.Point;
-import android.os.Build;
 import android.os.Bundle;
-import android.os.Environment;
 import android.os.Handler;
 import android.provider.MediaStore;
 import android.util.Size;
@@ -44,8 +39,6 @@ import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 
-import java.io.File;
-import java.util.Date;
 import java.util.Objects;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Executor;
@@ -100,7 +93,7 @@ public class GuestActivity extends AppCompatActivity implements ImageAnalysis.An
         //PreviewViewを表示した余りを取得（長い画面では＋、正方形に近い画面は−、16:9の画面では0）
         int totalMargin = pt.x - ((pt.y / 9) * 16);
         //16:9より長い画面の場合（最近のスマホ等）
-        if(totalMargin > 0){
+        if (totalMargin > 0) {
             //画面の余りの部分の半分を左側のMarginとして設定する
             int startMargin = totalMargin / 2;
             ViewGroup.LayoutParams lp = previewView.getLayoutParams();
@@ -109,12 +102,12 @@ public class GuestActivity extends AppCompatActivity implements ImageAnalysis.An
             previewView.setLayoutParams(mlp);
         }
         //16:9より正方形に近い画面の場合（タブレット等）
-        if(totalMargin < 0){
+        if (totalMargin < 0) {
             //画面の余りの部分を半分にして上と下のMarginとして設定する
             ViewGroup.LayoutParams lp = previewView.getLayoutParams();
             ViewGroup.MarginLayoutParams mlp = (ViewGroup.MarginLayoutParams) lp;
             totalMargin = pt.y - ((pt.x / 16) * 9);
-            mlp.setMargins(0,totalMargin / 2,0,totalMargin / 2);
+            mlp.setMargins(0, totalMargin / 2, 0, totalMargin / 2);
             previewView.setLayoutParams(mlp);
         }
 
@@ -158,19 +151,23 @@ public class GuestActivity extends AppCompatActivity implements ImageAnalysis.An
         ReadWrite.ref.child(roomNumber).addChildEventListener(new ChildEventListener() {
             @Override
             public void onChildAdded(@NonNull DataSnapshot snapshot, @Nullable @org.jetbrains.annotations.Nullable String previousChildName) {
-                if(snapshot.getKey().equals("QuickShot")){
+                if (snapshot.getKey().equals("QuickShot")) {
                     capturePhoto();
                 }
             }
+
             @Override
             public void onChildChanged(@NonNull DataSnapshot snapshot, @Nullable @org.jetbrains.annotations.Nullable String previousChildName) {
             }
+
             @Override
             public void onChildRemoved(@NonNull DataSnapshot snapshot) {
             }
+
             @Override
             public void onChildMoved(@NonNull DataSnapshot snapshot, @Nullable @org.jetbrains.annotations.Nullable String previousChildName) {
             }
+
             @Override
             public void onCancelled(@NonNull DatabaseError error) {
             }
@@ -396,31 +393,11 @@ public class GuestActivity extends AppCompatActivity implements ImageAnalysis.An
             getWindow().setAttributes(lp);
         }
 
-//        File movieDir;
-
-        //API Levelによってフォルダの変更
         if (videoCapture != null) {
-
             long timestamp = System.currentTimeMillis();
             ContentValues contentValues = new ContentValues();
             contentValues.put(MediaStore.MediaColumns.DISPLAY_NAME, timestamp);
             contentValues.put(MediaStore.MediaColumns.MIME_TYPE, "video/mp4");
-//            int apiInt = Build.VERSION.SDK_INT;
-//            if (apiInt <= 29) {
-//                final String SAVE_DIR = "/DCIM/SYNCAM";
-//                movieDir = new File(Environment.getExternalStorageDirectory().getPath() + SAVE_DIR);
-//            } else {
-//                movieDir = new File(getExternalFilesDir(Environment.DIRECTORY_MOVIES) + "/");
-//            }
-//
-//            if (!movieDir.exists()) movieDir.mkdir();
-//
-//            //ファイル名作成
-//            Date date = new Date();
-//            String timestamp = String.valueOf(date.getTime());
-//            String vidFilePath = movieDir.getAbsolutePath() + "/" + android.os.Build.MODEL + "_" + timestamp + ".mp4";
-//            File vidFile = new File(vidFilePath);
-            //保存
             try {
                 if (ActivityCompat.checkSelfPermission(this, Manifest.permission.RECORD_AUDIO) != PackageManager.PERMISSION_GRANTED) {
                     return;
@@ -457,14 +434,6 @@ public class GuestActivity extends AppCompatActivity implements ImageAnalysis.An
             } catch (Exception e) {
                 e.printStackTrace();
             }
-
-            //フォト内に表示&フォーマットなどの選択
-//            ContentValues values = new ContentValues();
-//            ContentResolver contentResolver = getContentResolver();
-//            values.put(MIME_TYPE,"video/mp4");
-//            values.put(MediaStore.Video.Media.TITLE, vidFilePath);
-//            values.put("_data", vidFilePath);
-//            contentResolver.insert(MediaStore.Video.Media.EXTERNAL_CONTENT_URI, values);
         }
     }
 
@@ -475,24 +444,7 @@ public class GuestActivity extends AppCompatActivity implements ImageAnalysis.An
         ContentValues contentValues = new ContentValues();
         contentValues.put(MediaStore.MediaColumns.DISPLAY_NAME, timestamp);
         contentValues.put(MediaStore.MediaColumns.MIME_TYPE, "image/jpeg");
-//        File photoDir;
-//        //API Levelによってフォルダの変更
-//        int apiInt = Build.VERSION.SDK_INT;
-//        if (apiInt <= 29) {
-//            final String SAVE_DIR = "/DCIM/SYNCAM";
-//            photoDir = new File(Environment.getExternalStorageDirectory().getPath() + SAVE_DIR);
-//        } else {
-//            photoDir = new File(getExternalFilesDir(Environment.DIRECTORY_PICTURES) + "/");
-//        }
-//        if (!photoDir.exists())
-//            photoDir.mkdir();
-//        //ファイル名作成
-//        Date date = new Date();
-//        String timestamp = String.valueOf(date.getTime());
-//        String photoFilePath = photoDir.getAbsolutePath() + "/" + android.os.Build.MODEL + "_" + timestamp + ".jpg";
-//        File photoFile = new File(photoFilePath);
 
-        //保存
         imageCapture.takePicture(
                 new ImageCapture.OutputFileOptions.Builder(getContentResolver(),
                         MediaStore.Images.Media.EXTERNAL_CONTENT_URI,
@@ -509,13 +461,6 @@ public class GuestActivity extends AppCompatActivity implements ImageAnalysis.An
                     }
                 }
         );
-        //フォト内に表示&フォーマットなどの選択
-//        ContentValues values = new ContentValues();
-//        ContentResolver contentResolver = getContentResolver();
-//        values.put(MIME_TYPE, "image/jpeg");
-//        values.put(MediaStore.Images.Media.TITLE, photoFilePath);
-//        values.put("_data", photoFilePath);
-//        contentResolver.insert(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, values);
     }
 
     //下のバー消去メソッド
@@ -545,7 +490,7 @@ public class GuestActivity extends AppCompatActivity implements ImageAnalysis.An
         //解像度のリセット
         resolutionX = 3840;
         resolutionY = 2160;
-        new Handler().postDelayed(() ->{
+        new Handler().postDelayed(() -> {
             //静止画画面で待機
             previewView.post(() -> cameraProviderFuture.addListener(() -> {
                 try {
@@ -555,7 +500,7 @@ public class GuestActivity extends AppCompatActivity implements ImageAnalysis.An
                     e.printStackTrace();
                 }
             }, getExecutor()));
-        },1500);
+        }, 1500);
     };
 
     //動画撮影開始
@@ -578,7 +523,7 @@ public class GuestActivity extends AppCompatActivity implements ImageAnalysis.An
             //解像度のリセット
             resolutionX = 3840;
             resolutionY = 2160;
-            new Handler().postDelayed(() ->{
+            new Handler().postDelayed(() -> {
                 //静止画画面で待機
                 previewView.post(() -> cameraProviderFuture.addListener(() -> {
                     try {
@@ -588,7 +533,7 @@ public class GuestActivity extends AppCompatActivity implements ImageAnalysis.An
                         e.printStackTrace();
                     }
                 }, getExecutor()));
-            },1500);
+            }, 1500);
         }
     };
 
@@ -597,9 +542,9 @@ public class GuestActivity extends AppCompatActivity implements ImageAnalysis.An
         //共有プリファレンスの準備
         sharedPreferences = PreferenceManager.getDefaultSharedPreferences(GuestActivity.this);
         //端末固有のラグを修正する設定を取得
-        if(sharedPreferences.getString("Syncam-Setting-CameraLag", "0").equals("")){
+        if (sharedPreferences.getString("Syncam-Setting-CameraLag", "0").equals("")) {
             deviceCameraLag = 0;
-        }else {
+        } else {
             deviceCameraLag = Integer.parseInt(sharedPreferences.getString("Syncam-Setting-CameraLag", "0"));
         }
         //画面を暗くする設定値の返却
@@ -607,7 +552,7 @@ public class GuestActivity extends AppCompatActivity implements ImageAnalysis.An
     }
 
     //ディスプレイ解像度を取得
-    public Point getRealDisplaySize(){
+    public Point getRealDisplaySize() {
         Display display = GuestActivity.this.getWindowManager().getDefaultDisplay();
         Point point = new Point();
         display.getRealSize(point);

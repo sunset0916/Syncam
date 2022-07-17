@@ -10,18 +10,15 @@
     </PreferenceCategory>
     <PreferenceCategory app:title="高度な設定">
         <EditTextPreference
+            android:summary="詳細設定マニュアルを参照"
             app:defaultValue="0"
             app:key="Syncam-Setting-CameraLag"
             app:title="端末固有のラグの修正(ミリ秒)"
-            app:useSimpleSummaryProvider="false"
-            android:summary="詳細設定マニュアルを参照" />
+            app:useSimpleSummaryProvider="false" />
     </PreferenceCategory>
     <PreferenceCategory app:title="ヘルプ">
         <Preference
-            android:title="詳細設定マニュアル"
-            android:key="Syncam-Manual" />
-        <Preference
-            app:title="保存場所について"
-            android:key="Syncam-Storage-Location" />
+            android:key="Syncam-Manual"
+            android:title="詳細設定マニュアル" />
     </PreferenceCategory>
 </PreferenceScreen>

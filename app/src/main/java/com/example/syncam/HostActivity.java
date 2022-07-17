@@ -1,14 +1,16 @@
 package com.example.syncam;
 
 import android.annotation.SuppressLint;
+import android.content.ContentValues;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.media.MediaRecorder;
-import android.os.Build;
+import android.net.Uri;
 import android.os.Bundle;
-import android.os.Environment;
 import android.os.Handler;
 import android.os.Looper;
+import android.os.ParcelFileDescriptor;
+import android.provider.MediaStore;
 import android.util.TypedValue;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -30,7 +32,6 @@ import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 
-import java.io.File;
 import java.io.IOException;
 import java.sql.Date;
 import java.text.DateFormat;
@@ -53,6 +54,7 @@ public class HostActivity extends AppCompatActivity implements View.OnClickListe
 
     //レコーダー変数
     private MediaRecorder recorder = null;
+    ParcelFileDescriptor file;
 
     //終了確認ダイアログ
     AlertDialog alertDialog;
@@ -129,90 +131,27 @@ public class HostActivity extends AppCompatActivity implements View.OnClickListe
             @SuppressLint("SetTextI18n")
             @Override
             public void onChildAdded(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) {
-                //snapshotの内容を文字列型で格納
-                String s = String.valueOf(snapshot.getValue());
-                //文字列のIndexを指定するための変数
-                int start, end;
-                //型番・デバイス番号・メーカー名を格納するための変数
-                String model, deviceNumber, manufacturer;
-                //sに格納された文字列から必要な情報を取り出して変数に格納する処理
-                if (s.contains(", model=")) {
-                    start = s.indexOf(", model=") + 8;
-                    if ((s.indexOf(", deviceNumber=") - start) < 0 && (s.indexOf(", manufacturer=") - start) < 0) {
-                        end = s.indexOf("}");
-                        model = s.substring(start, end);
-                        if (s.indexOf("deviceNumber=") < s.indexOf("manufacturer=")) {
-                            start = 20;
-                            end = s.indexOf(", manufacturer=");
-                            deviceNumber = s.substring(start, end);
-                            start += 17;
-                            end = s.indexOf(", model=");
-                            manufacturer = s.substring(start, end);
-                        } else {
-                            start = 14;
-                            end = s.indexOf(", deviceNumber=");
-                            manufacturer = s.substring(start, end);
-                            start = end + 21;
-                            end = s.indexOf(", model=");
-                            deviceNumber = s.substring(start, end);
-                        }
-                    } else if (s.indexOf("deviceNumber=") < s.indexOf("manufacturer=")) {
-                        end = s.indexOf(", manufacturer=");
-                        model = s.substring(start, end);
-                        start = 20;
-                        end = s.indexOf(", model=");
-                        deviceNumber = s.substring(start, end);
-                        start = s.indexOf(", manufacturer=") + 15;
-                        end = s.indexOf("}");
-                        manufacturer = s.substring(start, end);
-                    } else {
-                        end = s.indexOf(", deviceNumber=");
-                        model = s.substring(start, end);
-                        start = 14;
-                        end = s.indexOf(", model=");
-                        manufacturer = s.substring(start, end);
-                        start = s.indexOf(", deviceNumber=") + 21;
-                        end = s.indexOf("}");
-                        deviceNumber = s.substring(start, end);
-                    }
-                } else {
-                    start = 7;
-                    if (s.indexOf(", deviceNumber=") < s.indexOf(", manufacturer=")) {
-                        end = s.indexOf(", deviceNumber=");
-                        model = s.substring(start, end);
-                        start = end + 21;
-                        end = s.indexOf(", manufacturer=");
-                        deviceNumber = s.substring(start, end);
-                        start = end + 15;
-                        end = s.indexOf("}");
-                        manufacturer = s.substring(start, end);
-                    } else {
-                        end = s.indexOf(", manufacturer=");
-                        model = s.substring(start, end);
-                        start = end + 15;
-                        end = s.indexOf(", deviceNumber=");
-                        manufacturer = s.substring(start, end);
-                        start = end + 21;
-                        end = s.indexOf("}");
-                        deviceNumber = s.substring(start, end);
-                    }
-                }
+                DeviceInfo deviceInfo = new DeviceInfo(
+                        snapshot.child("deviceNumber").getValue().toString(),
+                        snapshot.child("manufacturer").getValue().toString(),
+                        snapshot.child("model").getValue().toString()
+                );
                 //新たなTextViewを生成
                 TextView tv = new TextView(HostActivity.this);
                 //生成したTextViewのレイアウトの設定
-                tv.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT,LinearLayout.LayoutParams.WRAP_CONTENT));
+                tv.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT));
                 //生成したTextViewに取り出したデバイス情報を格納
-                tv.setText("  "+deviceNumber + " " + manufacturer + " " + model);
+                tv.setText("  " + deviceInfo.getDeviceNumber().replace("device", "") + " " + deviceInfo.getManufacturer() + " " + deviceInfo.getModel());
                 //生成したTextViewの文字サイズの設定
                 tv.setTextSize(TypedValue.COMPLEX_UNIT_SP, 20);
                 //生成したTextViewにIDを設定
-                tv.setId(getResources().getIdentifier(deviceNumber, "id", "com.example.syncam"));
+                tv.setId(getResources().getIdentifier(deviceInfo.getDeviceNumber().replace("device", ""), "id", "com.example.syncam"));
                 //生成したTextViewを表示
                 l2.addView(tv);
                 //接続台数の表示を増やす
-                if(tvc.getText().toString().length() == 5) {
+                if (tvc.getText().toString().length() == 5) {
                     tvc.setText((Integer.parseInt(tvc.getText().toString().substring(0, 1)) + 1) + tvc.getText().toString().substring(1, 5));
-                }else{
+                } else {
                     tvc.setText((Integer.parseInt(tvc.getText().toString().substring(0, 2)) + 1) + tvc.getText().toString().substring(2, 6));
                 }
             }
@@ -226,11 +165,11 @@ public class HostActivity extends AppCompatActivity implements View.OnClickListe
             @Override
             public void onChildRemoved(@NonNull DataSnapshot snapshot) {
                 //TextViewを削除
-                l2.removeView(findViewById(getResources().getIdentifier(String.valueOf(snapshot.getKey()).substring(6, 8), "id", "com.example.syncam")));
+                l2.removeView(findViewById(getResources().getIdentifier(snapshot.child("deviceNumber").getValue().toString().replace("device", ""), "id", "com.example.syncam")));
                 //接続台数の表示を減らす
-                if(tvc.getText().toString().length() == 5) {
+                if (tvc.getText().toString().length() == 5) {
                     tvc.setText((Integer.parseInt(tvc.getText().toString().substring(0, 1)) - 1) + tvc.getText().toString().substring(1, 5));
-                }else{
+                } else {
                     tvc.setText((Integer.parseInt(tvc.getText().toString().substring(0, 2)) - 1) + tvc.getText().toString().substring(2, 6));
                 }
             }
@@ -310,12 +249,12 @@ public class HostActivity extends AppCompatActivity implements View.OnClickListe
 
             } else {
                 //今すぐ撮影モードが有効かどうかの判断
-                if(pref.getBoolean("Syncam-Setting-quickShot",false) && !videoMode){
+                if (pref.getBoolean("Syncam-Setting-quickShot", false) && !videoMode) {
                     new Handler().postDelayed(buttonEnabled, 2000);
                     new Handler().postDelayed(settingButtonEnabled, 2000);
                     ReadWrite.ref.child(MainActivity.rn).child("QuickShot").setValue("Start QuickShotMode");
                     ReadWrite.ref.child(MainActivity.rn).child("QuickShot").removeValue();
-                }else {
+                } else {
 
                     //画面暗転・動画/静止画モード・撮影開始時間・解像度の設定を格納する変数
                     String video, start, resolution;
@@ -398,9 +337,9 @@ public class HostActivity extends AppCompatActivity implements View.OnClickListe
     private final Runnable buttonEnabled = () -> {
         Button bStart = findViewById(R.id.bStart);
         bStart.setEnabled(true);
-        if(videoMode){
+        if (videoMode) {
             bStart.setBackgroundTintList(getResources().getColorStateList(R.color.red));
-        }else{
+        } else {
             bStart.setBackgroundTintList(getResources().getColorStateList(R.color.darkBlue));
         }
     };
@@ -523,7 +462,7 @@ public class HostActivity extends AppCompatActivity implements View.OnClickListe
                     .setNegativeButton("いいえ", null)
                     .show();
         } else {
-             //Activityの終了
+            //Activityの終了
             ActivityEnd();
         }
     }
@@ -568,40 +507,28 @@ public class HostActivity extends AppCompatActivity implements View.OnClickListe
     }
 
     //録音動作
-    private void startRecording() {
+    private void startRecording() throws IOException {
+        long timestamp = System.currentTimeMillis();
+        ContentValues contentValues = new ContentValues();
+        contentValues.put(MediaStore.MediaColumns.DISPLAY_NAME, timestamp + ".wav");
+        contentValues.put(MediaStore.MediaColumns.MIME_TYPE, "audio/wav");
+        Uri uri = getContentResolver().insert(MediaStore.Audio.Media.EXTERNAL_CONTENT_URI, contentValues);
+        file = getContentResolver().openFileDescriptor(uri, "w");
 
-        //APIレベルによってフォルダの変更
-        int apiInt = Build.VERSION.SDK_INT;
-        //録音ファイル変数
-        File fileName;
-        if (apiInt <= 29) {
-            final String SAVE_DIR = "/MUSIC/AUDIO";
-            fileName = new File(Environment.getExternalStorageDirectory().getPath() + SAVE_DIR);
-        } else {
-            fileName = new File(getExternalFilesDir(Environment.DIRECTORY_MUSIC) + "/");
+        if (file != null) {
+            recorder = new MediaRecorder();
+            recorder.setAudioSource(MediaRecorder.AudioSource.MIC);
+            recorder.setOutputFormat(MediaRecorder.OutputFormat.DEFAULT);
+            recorder.setOutputFile(file.getFileDescriptor());
+            recorder.setAudioEncoder(MediaRecorder.AudioEncoder.AMR_NB);
+            try {
+                recorder.prepare();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            //録音開始
+            recorder.start();
         }
-
-        if (!fileName.exists())
-            fileName.mkdir();
-
-        //ファイル名作成
-        java.util.Date date = new java.util.Date();
-        String timestamp = String.valueOf(date.getTime());
-        String fileNamePath = fileName.getAbsolutePath() + "/" + android.os.Build.MODEL + "_" + timestamp + ".wav";
-        //フォーマットなどの選択
-        recorder = new MediaRecorder();
-        recorder.setAudioSource(MediaRecorder.AudioSource.MIC);
-        recorder.setOutputFormat(MediaRecorder.OutputFormat.DEFAULT);
-        recorder.setOutputFile(fileNamePath);
-        recorder.setAudioEncoder(MediaRecorder.AudioEncoder.AMR_NB);
-        //録音準備
-        try {
-            recorder.prepare();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        //録音開始
-        recorder.start();
     }
 
     //録音停止メソッド
@@ -612,7 +539,13 @@ public class HostActivity extends AppCompatActivity implements View.OnClickListe
     }
 
     //録音開始ハンドラー変数
-    private final Runnable funcA = this::startRecording;
+    private final Runnable funcA = () -> {
+        try {
+            startRecording();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    };
 
     //録音停止ハンドラー変数
     private final Runnable funcAs = this::stopRecording;
